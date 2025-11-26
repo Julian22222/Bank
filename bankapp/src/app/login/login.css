@@ -36,3 +36,11 @@
   cursor: pointer;
   font-weight: bold;
 }
+
+.user1-login {
+  border: "black 1px solid";
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: #006a4d;
+  color: white;
+}

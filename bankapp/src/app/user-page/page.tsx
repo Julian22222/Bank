@@ -1,20 +1,15 @@
-"use client";
-
-import React from "react";
 import "./user-page.css";
-import { useGlobal } from "../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
-import UserPageHeader from "@/src/components/UserPageHeader";
-import UserBanner from "@/src/components/UserBanner";
-import AccountOverview from "@/src/components/AccountOverview";
-import Savings from "@/src/components/Savings";
-import CreditCard from "@/src/components/CreditCard";
-import Loan from "@/src/components/Loan";
-import RecentTransactions from "@/src/components/RecentTransactions";
-import UserFooter from "@/src/components/UserFooter";
+
+import UserPageHeader from "@/src/app/user-page/UserPageHeader";
+import UserBanner from "@/src/app/user-page//UserBanner";
+import AccountOverview from "@/src/app/user-page/AccountOverview";
+import Savings from "@/src/app/user-page/Savings";
+import CreditCard from "@/src/app/user-page/CreditCard";
+import Loan from "@/src/app/user-page/Loan";
+import RecentTransactions from "@/src/app/user-page/RecentTransactions";
+import UserFooter from "@/src/app/user-page/UserFooter";
 
 export default function UserPage() {
-  const { activeUser, setActiveUser } = useGlobal();
-
   return (
     <div
       style={{

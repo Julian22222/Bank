@@ -1,7 +1,6 @@
-"use client";
-import BankingHighlights from "@/src/components/BankingHighlights";
-import Header from "@/src/components/Header";
-import LogOnSection from "@/src/components/LogOnSection";
+import BankingHighlights from "@/src/app/(home)/BankingHighlights";
+import Header from "@/src/app/(home)/Header";
+import LogOnSection from "@/src/app/(home)/LogOnSection";
 import Link from "next/link";
 import React from "react";
 
