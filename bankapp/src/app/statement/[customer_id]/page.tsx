@@ -4,6 +4,8 @@
 //if you add "use cleint " to the layout, all its children will become client components too, which is not desired.
 //If your layout or provider imports any "use client" modules incorrectly, or the page imports a client-only module in the wrong way, you may get the params Promise error after navigation.
 
+import SortTrx from "@/src/components/SortTrx";
+import UserPageHeader from "../../user-page/UserPageHeader";
 import StatementClient from "./StatementClient";
 import { use } from "react";
 export default function StatementPage({
@@ -11,20 +13,20 @@ export default function StatementPage({
 }: {
   params: Promise<{ customer_id: string }>; //params is a Promise that resolves to an object with customer_id
 }) {
-  console.log("SERVER check:", typeof window === "undefined");
+  console.log(
+    "SERVER check FROM statement/page.tsx:",
+    typeof window === "undefined"
+  );
   //"SERVER check: true" — this means your page is correctly a Server Component
 
   //params is a Promise and must be unwrapped with await or React.use() before accessing its properties
   const resolvedParams = use(params); // unwrap the Promise
-  console.log("Statement Page Params:", resolvedParams.customer_id);
+  // console.log("Statement Page Params:", resolvedParams.customer_id);
 
   return (
     <div>
-      <form>
-        <label>Search Statement:</label>
-        <input />
-        <button type="submit">Search</button>
-      </form>
+      <UserPageHeader />
+      <SortTrx />
       <StatementClient />;
     </div>
   );

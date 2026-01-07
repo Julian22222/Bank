@@ -2,8 +2,8 @@ export default function LogOn() {
   return (
     <section
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1920&q=80')",
+        backgroundImage: "url(/mainbankPic.jpg)",
+        // "url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1920&q=80')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         color: "white",

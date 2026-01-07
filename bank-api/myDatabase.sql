@@ -49,9 +49,9 @@ VALUES (1, 'Julian', 'Golovens', 'julian@test.com', '123', '123-456-7890', '123 
 (3, 'Den', 'Jason', 'superben@gmail.com', '56789', '123-999-7890', '456 Market St, Salford, IL', '1982-08-15');
 
 INSERT INTO accounts (customer_id, account_type, account_nr, balance)
-VALUES (1, 'normal', '12-34-56 / 98765432', 2253.93),
-(1, 'savings', '98-76-54 / 12345678', 1500.00),
-(2, 'normal', '11-22-33 / 11223344', 1400.00);
+VALUES (1, 'Main', '12-34-56 / 98765432', 2253.93),
+(1, 'Saver', '98-76-54 / 12345678', 1500.00),
+(2, 'Main', '11-22-33 / 11223344', 1400.00);
 
 INSERT INTO transactions (account_id, customer_id, money_amount, balance, details) 
 VALUES

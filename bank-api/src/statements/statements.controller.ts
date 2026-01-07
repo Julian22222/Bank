@@ -25,6 +25,11 @@ export class StatementsController {
     return await this.statementsService.findOne(+id);
   }
 
+  @Get('balance/:account_id')
+  async findBalance(@Param('account_id') account_id: string) {
+    return await this.statementsService.findBalance(+account_id); // +account_id <-- to convert string to number
+  }
+
   @Post()
   create(@Body() createStatementDto: CreateStatementDto) {
     return this.statementsService.create(createStatementDto);

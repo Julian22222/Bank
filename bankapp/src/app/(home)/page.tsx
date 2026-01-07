@@ -45,15 +45,42 @@ export default function Home() {
           }}
         >
           {[
-            "Current Accounts",
-            "Credit Cards",
-            "Loans",
-            "Mortgages",
-            "Savings & ISAs",
-            "Insurance",
-            "Pensions & Investments",
-            "Car Finance",
-          ].map((prod, i) => (
+            {
+              title: "Current Accounts",
+              desc: "Flexible accounts to suit your needs.",
+              img: "/bank10.jpg",
+            },
+            {
+              title: "Credit Cards",
+              desc: "Find the right credit card for you.",
+              img: "/bank2.jpg",
+            },
+            {
+              title: "Loans",
+              desc: "Personal and business loan options.",
+              img: "/bank19.jpg",
+            },
+            {
+              title: "Mortgages",
+              desc: "Home buying made easy with our mortgage plans.",
+              img: "/bank13.jpg",
+            },
+            {
+              title: "Savings & ISAs",
+              desc: "Grow your savings with competitive rates.",
+              img: "/bank14.jpg",
+            },
+            {
+              title: "Insurance",
+              desc: "Protect what matters most with our insurance plans.",
+              img: "/bank15.jpg",
+            },
+            {
+              title: "Pensions & Investments",
+              desc: "Plan for your future with our pension and investment options.",
+              img: "/bank16.jpg",
+            },
+          ].map((card, i) => (
             <div
               key={i}
               style={{
@@ -63,10 +90,15 @@ export default function Home() {
                 backgroundColor: "#f9f9f9",
               }}
             >
-              <h3 style={{ color: "#004c3f" }}>{prod}</h3>
+              <h3 style={{ color: "#004c3f" }}>{card.title}</h3>
               <p style={{ fontSize: "14px" }}>
-                {`Find out more about ${prod.toLowerCase()}.`}
+                {`Find out more about ${card.desc.toLowerCase()}.`}
               </p>
+              <img
+                src={card.img}
+                alt={card.title}
+                style={{ width: "100%", height: "180px", objectFit: "cover" }}
+              />
               <a href="#" style={{ ...linkButtonStyle }}>
                 Explore
               </a>
@@ -154,9 +186,14 @@ export default function Home() {
           million customers already use it.
         </p>
         <img
-          src="https://images.unsplash.com/photo-1586953208448-57530cde6f0c?auto=format&fit=crop&w=600&q=80"
+          src="/bank6.jpg"
           alt="mobile banking"
-          style={{ width: "250px", marginTop: "20px", borderRadius: "8px" }}
+          style={{
+            width: "350px",
+            borderRadius: "8px",
+            display: "block",
+            margin: "0 auto",
+          }}
         />
         <div style={{ marginTop: "30px" }}>
           <a

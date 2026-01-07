@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import UserPageHeader from "../../user-page/UserPageHeader";
 import { Transaction } from "@/src/shared/types/transaction.interface";
 import { useGlobal } from "../../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
 
@@ -10,8 +9,6 @@ export default function BankStatement() {
 
   return (
     <>
-      <UserPageHeader />
-
       <section
         style={{
           backgroundColor: "white",

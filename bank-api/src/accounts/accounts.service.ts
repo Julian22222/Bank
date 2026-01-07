@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { error } from 'console';
 const pool = require('../../data/dbconnection');
 
 @Injectable()
@@ -58,9 +59,31 @@ export class AccountsService {
     }
   }
 
-  // update(id: number, updateAccountDto: UpdateAccountDto) {
-  //   return `This action updates a #${id} account`;
-  // }
+  update(id: number, updateAccountDto: UpdateAccountDto) {
+    // return `This action updates a #${id} account`;
+
+    // Alternatively, to update an account in the database by ID:
+    try {
+      const { customer_id, account_type, account_nr, balance } =
+        updateAccountDto;
+
+      const id = pool.query(
+        `SELECT account_id FROM accounts WHERE customer_id = $1;`,
+        [customer_id],
+      );
+
+      const updatedAccount = pool.query(
+        `UPDATE accounts SET customer_id = $1, account_type = $2, account_nr = $3, balance = $4 WHERE account_id = $5 RETURNING *;`,
+        [customer_id, account_type, account_nr, balance, id],
+      );
+      //use RETURNING * to get the updated account record
+
+      return 'User account updated successfully';
+    } catch (error) {
+      console.error('Error updating account:', error);
+      throw error;
+    }
+  }
 
   remove(id: number) {
     // return `This action removes a #${id} account`;

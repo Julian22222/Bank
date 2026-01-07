@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -31,10 +32,10 @@ export class AccountsController {
     return this.accountsService.create(createAccountDto);
   }
 
-  //   @Patch(':id')
-  //   update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-  //     return this.accountsService.update(+id, updateAccountDto);
-  //   }
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+    return this.accountsService.update(+id, updateAccountDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

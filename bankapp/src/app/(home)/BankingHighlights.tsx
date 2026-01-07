@@ -14,17 +14,19 @@ export default function BankingHighlights() {
         {
           title: "Everyday Banking",
           text: "Explore our current accounts designed to fit your daily needs.",
-          img: "https://images.unsplash.com/photo-1567427013953-7fc3d5ad9f9c?auto=format&fit=crop&w=600&q=80",
+          img: "/bank1.jpg",
         },
         {
           title: "Loans & Credit Cards",
           text: "Flexible borrowing options to support your goals and plans.",
-          img: "https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=600&q=80",
+          img: "/bank3.jpeg",
+          // img: "https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?auto=format&fit=crop&w=600&q=80",
         },
         {
           title: "Savings & Investments",
           text: "Make your money work harder with our range of saving options.",
-          img: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=600&q=80",
+          img: "/bank9.jpeg",
+          // img: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=600&q=80",
         },
       ].map((card, i) => (
         <div

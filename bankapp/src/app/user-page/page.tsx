@@ -8,8 +8,21 @@ import CreditCard from "@/src/app/user-page/CreditCard";
 import Loan from "@/src/app/user-page/Loan";
 import RecentTransactions from "@/src/app/user-page/RecentTransactions";
 import UserFooter from "@/src/app/user-page/UserFooter";
+import QuickActions from "@/src/components/QuickActions";
 
-export default function UserPage() {
+const fetchAllUsrTransactions = async () => {
+  try {
+    const data = await fetch("http://localhost:3005/statements");
+    return data.json();
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    return [];
+  }
+};
+
+export default async function UserPage() {
+  let allTx = await fetchAllUsrTransactions();
+
   return (
     <div
       style={{
@@ -51,47 +64,10 @@ export default function UserPage() {
         </div>
 
         {/* Recent Transactions */}
-        <RecentTransactions />
+        <RecentTransactions allTx={allTx} />
 
         {/* Quick Actions */}
-        <section
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            gap: "20px",
-            backgroundColor: "#e6f2ef",
-            borderRadius: "10px",
-            padding: "30px",
-          }}
-        >
-          {[
-            { icon: "💰", label: "Top Up Account" },
-            { icon: "💳", label: "Pay Credit Card" },
-            { icon: "🏦", label: "Open New Account" },
-            { icon: "📊", label: "Spending Insights" },
-            { icon: "📄", label: "Download Statement" },
-          ].map((action, i) => (
-            <a
-              key={i}
-              href="#"
-              style={{
-                textDecoration: "none",
-                backgroundColor: "white",
-                padding: "20px",
-                width: "180px",
-                textAlign: "center",
-                borderRadius: "8px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                color: "#004c3f",
-                fontWeight: "bold",
-              }}
-            >
-              <div style={{ fontSize: "36px" }}>{action.icon}</div>
-              {action.label}
-            </a>
-          ))}
-        </section>
+        <QuickActions />
       </main>
 
       {/* User Footer */}

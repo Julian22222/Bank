@@ -36,9 +36,9 @@ export default function LoginForm({ users }: Props) {
         console.log("User found:", user);
         setLoginError(false);
         setActiveUser(user);
-        console.log("All Users:", allUsers);
-        console.log("Active User before redirect:", activeUser);
-        console.log("Active User set to:", user);
+        // console.log("All Users:", allUsers);
+        // console.log("Active User before redirect:", activeUser);
+        // console.log("Active User set to:", user);
         // Redirect to user page
         // window.location.href = "http://localhost:3000/user-page";
         router.push("/user-page");

@@ -5,17 +5,21 @@ import { useGlobal } from "../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
 import { useEffect, useState } from "react";
 import { Transaction } from "@/src/shared/types/transaction.interface";
 
-export default function RecentTransactions() {
+interface Props {
+  allTx: Transaction[];
+}
+
+export default function RecentTransactions({ allTx }: Props) {
   const { activeUser, allTransactions, currUserTrx, setCurrUserTrx } =
     useGlobal();
 
   // const [transActs, setTransActs] = useState<Transaction[]>([]);
   const [lastFiveTxns, setLastFiveTxns] = useState<Transaction[]>([]);
 
-  const fetchAllUsrTransactions = async () => {
-    //all transaction for the current user
-    const data = await fetch("http://localhost:3005/statements");
-    const allTx = await data.json();
+  const fetchAllUsrTransactions = (allTx: Transaction[]) => {
+    //   //all transaction for the current user
+    //   const data = await fetch("http://localhost:3005/statements");
+    //   const allTx = await data.json();
 
     // console.log("All Transactions fetched:", allTx);
 
@@ -47,22 +51,23 @@ export default function RecentTransactions() {
       ),
     }));
 
-    setCurrUserTrx(formatedUserTx);
-
-    ///////////////////////////////?????????????????????????
+    setCurrUserTrx(formatedUserTx); //React schedules the update, but DOES NOT update immediately
+    //therefore we need to use 2 useEffects to handle dependent state updates, wait until currUserTrx is updated before deriving lastFiveTxns from it
     console.log("currUserTrx: CONTEXT ", currUserTrx);
   };
 
-  const getUSerTxns = async () => {
-    const recentFive = currUserTrx.slice(0, 5);
-
-    setLastFiveTxns(recentFive);
-  };
+  useEffect(() => {
+    fetchAllUsrTransactions(allTx);
+  }, [activeUser, allTx]);
 
   useEffect(() => {
-    fetchAllUsrTransactions();
-    getUSerTxns();
-  }, [activeUser]);
+    const recentFive = currUserTrx.slice(0, 5);
+    setLastFiveTxns(recentFive);
+  }, [currUserTrx]);
+
+  //First effect sets currUserTrx
+  //Second effect automatically runs once currUserTrx changes
+  //Now your last 5 transactions always show up.
 
   return (
     <section
@@ -98,7 +103,7 @@ export default function RecentTransactions() {
               <td
                 style={{
                   ...tdStyle,
-                  color: t.money_amount.startsWith("-") ? "red" : "#006a4d",
+                  color: t.money_amount?.startsWith("-") ? "red" : "#006a4d",
                 }}
               >
                 {t.money_amount}
