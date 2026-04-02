@@ -15,8 +15,10 @@ interface GlobalContextType {
   setAllTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
   currUserTrx: Transaction[];
   setCurrUserTrx: React.Dispatch<React.SetStateAction<Transaction[]>>;
-  CurrUserAllAccounts: Account[];
+  currUserAllAccounts: Account[];
   setCurrUserAllAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
+  userAccountType: string | null;
+  setUserAccountType: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const Context = createContext<GlobalContextType | null>(null);
@@ -26,7 +28,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   const [activeUser, setActiveUser] = React.useState<User | null>(null);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
   const [currUserTrx, setCurrUserTrx] = useState<Transaction[]>([]);
-  const [CurrUserAllAccounts, setCurrUserAllAccounts] = useState<Account[]>([]);
+  const [currUserAllAccounts, setCurrUserAllAccounts] = useState<Account[]>([]);
+  const [userAccountType, setUserAccountType] = useState<string | null>(null);
 
   return (
     <Context.Provider
@@ -39,8 +42,10 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
         setAllTransactions,
         currUserTrx,
         setCurrUserTrx,
-        CurrUserAllAccounts,
+        currUserAllAccounts,
         setCurrUserAllAccounts,
+        userAccountType,
+        setUserAccountType,
       }}
     >
       {children}

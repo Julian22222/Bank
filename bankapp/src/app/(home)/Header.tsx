@@ -16,10 +16,7 @@ export default function Header() {
         zIndex: 10,
       }}
     >
-      <Link
-        href="http://localhost:3000/"
-        style={{ color: "white", textDecoration: "none" }}
-      >
+      <Link href="/" style={{ color: "white", textDecoration: "none" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Image
             src="/elephant3.png"

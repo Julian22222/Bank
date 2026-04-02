@@ -1,6 +1,7 @@
 import BankingHighlights from "@/src/app/(home)/BankingHighlights";
 import Header from "@/src/app/(home)/Header";
 import LogOnSection from "@/src/app/(home)/LogOnSection";
+import Footer from "../../components/Footer";
 import Link from "next/link";
 import React from "react";
 
@@ -314,31 +315,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer
-        style={{
-          backgroundColor: "#004c3f",
-          color: "white",
-          textAlign: "center",
-          padding: "40px 20px",
-          marginTop: "40px",
-        }}
-      >
-        <p>&copy; {new Date().toLocaleDateString().slice(-4)} Big Bank </p>
-        <div style={{ marginTop: "10px" }}>
-          <a href="#" style={{ ...footerLinkStyle }}>
-            Accessibility
-          </a>
-          <a href="#" style={{ ...footerLinkStyle }}>
-            Privacy
-          </a>
-          <a href="#" style={{ ...footerLinkStyle }}>
-            Cookies
-          </a>
-          <a href="#" style={{ ...footerLinkStyle }}>
-            Terms & Conditions
-          </a>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

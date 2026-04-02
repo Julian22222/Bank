@@ -7,12 +7,21 @@ import Savings from "@/src/app/user-page/Savings";
 import CreditCard from "@/src/app/user-page/CreditCard";
 import Loan from "@/src/app/user-page/Loan";
 import RecentTransactions from "@/src/app/user-page/RecentTransactions";
-import UserFooter from "@/src/app/user-page/UserFooter";
 import QuickActions from "@/src/components/QuickActions";
+import Footer from "@/src/components/Footer";
+require("dotenv").config();
 
+// If user-page/page.tsx fetchAllusersTransactions and i need this data in AccountOverview and RecentTransactions (in 2 client components),
+// i need to fetch data first in Page.tsx and pass this data -(allTx) down as props to both components,
+// This way, both components can access the same transaction data without needing to fetch it separately, improving performance and ensuring consistency across your application.
+//No, you don't need to setAllTransactions in AccountOverview and RecentTransactions components. You can set Set global state in one place (AccountOverview.tsx):
+//But filter in AccountOverview and RecentTransactions components directly from allTx - from passed props (no need to wait for global state update).
+//Why This Works? - comes from server component, Immediate filtering: Uses allTx directly, avoiding async state update delays from Global state,
 const fetchAllUsrTransactions = async () => {
   try {
-    const data = await fetch("http://localhost:3005/statements");
+    const data = await fetch(
+      `${process.env.NEXT_PUBLIC_BACK_END_URL}/statements`,
+    );
     return data.json();
   } catch (error) {
     console.error("Error fetching transactions:", error);
@@ -42,7 +51,7 @@ export default async function UserPage() {
         style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto" }}
       >
         {/* Account Overview */}
-        <AccountOverview />
+        <AccountOverview allTx={allTx} />
 
         {/* Savings & Credit Section */}
         <div
@@ -70,8 +79,8 @@ export default async function UserPage() {
         <QuickActions />
       </main>
 
-      {/* User Footer */}
-      <UserFooter />
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

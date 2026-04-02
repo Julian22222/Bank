@@ -3,13 +3,24 @@ import { useGlobal } from "../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
 import React from "react";
 import { useRouter } from "next/navigation";
 import { User } from "../../shared/types/user.interface";
+import { Account } from "@/src/shared/types/account.interface";
+import Link from "next/link";
 
 interface Props {
   users: User[];
+  AllUsersAccounts: Account[]; // Add this line to include the AllUsersAccounts prop
 }
 
-export default function LoginForm({ users }: Props) {
-  const { allUsers, setAllUsers, activeUser, setActiveUser } = useGlobal();
+export default function LoginForm({ users, AllUsersAccounts }: Props) {
+  const {
+    allUsers,
+    setAllUsers,
+    activeUser,
+    setActiveUser,
+    setUserAccountType,
+    userAccountType,
+    setCurrUserAllAccounts,
+  } = useGlobal();
 
   // setAllUsers(users);
 
@@ -23,19 +34,26 @@ export default function LoginForm({ users }: Props) {
 
     setAllUsers(users);
 
-    console.log("Form submitted");
-    console.log("Form Input:", formInput);
+    // console.log("Form submitted");
+    // console.log("Form Input:", formInput);
 
-    console.log("All Users from hadleSubmit:", allUsers);
+    // console.log("All Users from hadleSubmit:", allUsers);
 
-    allUsers.map((user) => {
+    allUsers.map((user: User) => {
       if (
         user.email === formInput.email &&
         user.password === formInput.password
       ) {
-        console.log("User found:", user);
+        console.log("User found - from LoginForm:", user);
         setLoginError(false);
         setActiveUser(user);
+
+        const userAccounts = AllUsersAccounts.filter(
+          (account: Account) => account.customer_id === user.customer_id,
+        );
+
+        setUserAccountType(userAccounts[0].account_type); // Assuming the first account's type is representative of the user's account type
+        setCurrUserAllAccounts(userAccounts); // Set the current user's accounts in context
         // console.log("All Users:", allUsers);
         // console.log("Active User before redirect:", activeUser);
         // console.log("Active User set to:", user);
@@ -44,7 +62,7 @@ export default function LoginForm({ users }: Props) {
         router.push("/user-page");
         // redirect("http://localhost:3000/user-page");
       } else {
-        console.log("User not found");
+        console.log("User not found - from LoginForm:", user);
         setLoginError(true);
       }
     });
@@ -60,6 +78,12 @@ export default function LoginForm({ users }: Props) {
   const handleUser1Login = () => {
     setFormInput({ email: "julian@test.com", password: "123" });
   };
+
+  const handleUser2Login = () => {
+    setFormInput({ email: "tomSimpson@gmail.com", password: "01234" });
+  };
+
+  // console.log("userAccountType", userAccountType);
 
   return (
     <main className="main-login-container">
@@ -108,20 +132,35 @@ export default function LoginForm({ users }: Props) {
               Remember my User ID
             </label>
           </div>
-          <button
-            className="user1-login"
-            type="button"
-            onClick={handleUser1Login}
-          >
-            Login as User1
-          </button>
-
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <button
+              className="user1-login"
+              type="button"
+              onClick={handleUser1Login}
+            >
+              Login as User1
+            </button>
+            <button
+              className="user1-login"
+              type="button"
+              onClick={handleUser2Login}
+            >
+              Login as User2
+            </button>
+          </div>
           {/* Submit Button */}
 
           <input type="submit" value="Log on" className="login-button" />
         </form>
+        {/* <button
+          className="admin-login"
+          type="button"
+          onClick={() => router.push("/admin-login")}
+        >
+          Login as Admin
+        </button> */}
 
-        {loginError && (
+        {loginError ?? (
           <div
             style={{
               marginTop: "15px",
@@ -135,14 +174,22 @@ export default function LoginForm({ users }: Props) {
         )}
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Link href="/registration" style={linkStyle}>
+            Register for Internet Banking
+          </Link>
+          <br />
           <a href="#" style={linkStyle}>
             Forgotten your login details?
           </a>
-          <br />
-          <a href="#" style={linkStyle}>
-            Register for Internet Banking
-          </a>
         </div>
+        <br />
+        <button
+          className="admin-login"
+          type="button"
+          onClick={() => router.push("/admin-login")}
+        >
+          Login as Admin
+        </button>
 
         {/* Divider */}
         <div

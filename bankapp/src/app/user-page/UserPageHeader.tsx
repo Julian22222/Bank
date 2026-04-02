@@ -2,43 +2,50 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useGlobal } from "../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
 
-const GetAllUserAccounts = async () => {
-  const response = await fetch("http://localhost:3005/accounts");
+// const GetAllUserAccounts = async () => {
+//   const response = await fetch("http://localhost:3005/accounts");
 
-  const result = await response.json();
+//   const result = await response.json();
 
-  if (!result || result.length === 0) {
-    throw new Error("No posts found"); // Handle error if no posts are found, will send this message to Error page- error.tsx
-    //throw new Error("Failed to fetch posts"); // Handle error if fetch failss
-  }
+//   if (!result || result.length === 0) {
+//     throw new Error("No posts found"); // Handle error if no posts are found, will send this message to Error page- error.tsx
+//     //throw new Error("Failed to fetch posts"); // Handle error if fetch failss
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
 export default function UserPageHeader() {
-  const { activeUser, setCurrUserAllAccounts } = useGlobal();
+  const { activeUser, setActiveUser, userAccountType } = useGlobal();
+  const router = useRouter();
 
-  useEffect(() => {
-    try {
-      const fetchAccounts = async () => {
-        const allUsersAccts = await GetAllUserAccounts();
+  const handleLogout = () => {
+    setActiveUser(null);
+    router.push("/");
+  };
 
-        const allCurrentUserAccounts = allUsersAccts.filter(
-          (acct: any) => acct.customer_id === activeUser?.customer_id
-        );
+  // useEffect(() => {
+  //   try {
+  //     const fetchAccounts = async () => {
+  //       const allUsersAccts = await GetAllUserAccounts();
 
-        setCurrUserAllAccounts(allCurrentUserAccounts);
-      };
+  //       const allCurrentUserAccounts = allUsersAccts.filter(
+  //         (acct: any) => acct.customer_id === activeUser?.customer_id,
+  //       );
 
-      fetchAccounts();
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-      throw error;
-    }
-  }, []);
+  //       setCurrUserAllAccounts(allCurrentUserAccounts);
+  //     };
+
+  //     fetchAccounts();
+  //   } catch (error) {
+  //     console.error("Error fetching accounts:", error);
+  //     throw error;
+  //   }
+  // }, []);
 
   return (
     <header
@@ -51,10 +58,7 @@ export default function UserPageHeader() {
         alignItems: "center",
       }}
     >
-      <Link
-        href="http://localhost:3000/"
-        style={{ color: "white", textDecoration: "none" }}
-      >
+      <Link href="/" style={{ color: "white", textDecoration: "none" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Image
             src="/elephant3.png"
@@ -68,24 +72,24 @@ export default function UserPageHeader() {
         </div>
       </Link>
       <nav>
-        <Link href="http://localhost:3000/" style={navLinkStyle}>
+        <Link href="/" style={navLinkStyle}>
           Home
         </Link>
-        <Link href="http://localhost:3000/user-page" style={navLinkStyle}>
+        <Link href="/user-page" style={navLinkStyle}>
           Dashboard
         </Link>
-        <Link href="/accounts/123" style={navLinkStyle}>
-          Accounts
-        </Link>
         <Link
-          href={`http://localhost:3000/statement/${activeUser?.customer_id}`}
+          href={`/statement/${userAccountType}/${activeUser?.last_name}`}
           style={navLinkStyle}
         >
-          Payments
+          Transactions
         </Link>
-        <Link href="#" style={navLinkStyle}>
+        <Link href={`/account/${activeUser?.customer_id}`} style={navLinkStyle}>
+          Account info
+        </Link>
+        <button onClick={handleLogout} style={navLinkStyle}>
           Log out
-        </Link>
+        </button>
       </nav>
     </header>
   );

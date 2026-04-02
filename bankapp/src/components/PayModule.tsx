@@ -11,11 +11,11 @@ interface Props {
 }
 
 export function PayModule({ setShowPayModule, additionalParam }: Props) {
-  const { activeUser, CurrUserAllAccounts, currUserTrx } = useGlobal();
+  const { activeUser, currUserAllAccounts, currUserTrx } = useGlobal();
 
   console.log(
     "currUserTrx from paymodule",
-    currUserTrx[currUserTrx.length - 1]
+    currUserTrx[currUserTrx.length - 1],
   );
 
   //   const [data, setData] = useState<Transaction>({
@@ -37,19 +37,19 @@ export function PayModule({ setShowPayModule, additionalParam }: Props) {
         <input
           type="hidden"
           name="accountId"
-          value={CurrUserAllAccounts[0]?.account_id}
+          value={currUserAllAccounts[0]?.account_id}
         />
         {/* hidden input to pass account_id to ->  addPayment function */}
         <input
           type="hidden"
           name="accountType"
-          value={CurrUserAllAccounts[0]?.account_type}
+          value={currUserAllAccounts[0]?.account_type}
         />
         {/* hidden input to pass account_type to ->  addPayment function */}
         <input
           type="hidden"
           name="accountNumber"
-          value={CurrUserAllAccounts[0]?.account_nr}
+          value={currUserAllAccounts[0]?.account_nr}
         />
         {/* hidden input to pass account_nr to ->  addPayment function */}
         <input

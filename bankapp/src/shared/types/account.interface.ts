@@ -1,4 +1,5 @@
 export interface Account {
+  transaction_date: string;
   account_id?: number;
   customer_id: number;
   account_type: string;

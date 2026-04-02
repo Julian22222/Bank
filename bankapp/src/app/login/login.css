@@ -39,8 +39,22 @@
 
 .user1-login {
   border: "black 1px solid";
-  padding: 5px;
+  padding: 10px;
   margin-bottom: 10px;
-  background-color: #006a4d;
+  background-color: #4ca68e;
   color: white;
+  border-radius: 4px;
+}
+
+.admin-login {
+  width: 100%;
+  margin-top: 10px;
+  background-color: #a45d16;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }

@@ -78,8 +78,8 @@ VALUES
 (1, 1, -35.00, 2339.17, 'Movie Tickets'),
 (1, 1, -78.24, 2260.93, 'Gas Station Fuel'),
 (1, 1, -7.00, 2253.93, 'Coffee Shop Visit'),
-(2, 2, +500.00, 1500.00, 'Initial deposit'),
-(3, 2, -100.00, 1400.00, 'Initial deposit');
+(2, 1, +500.00, 1500.00, 'Initial deposit'),
+(3, 2, 1400.00, 1400.00, 'Initial deposit');
 
 
 SELECT * FROM customers;

@@ -23,10 +23,10 @@ export default function SortTrx({}: Props) {
     const filtered = allTransactions.filter(
       (trx) =>
         trx.customer_id === activeUser.customer_id &&
-        trx.details.toLowerCase().includes(searchTerm.toLowerCase())
+        trx.details.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
-    setCurrUserTrx(filtered);
+    setCurrUserTrx(filtered.reverse()); // Reverse to show most recent first
   }, [searchTerm]);
 
   let handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

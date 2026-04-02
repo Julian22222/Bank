@@ -10,11 +10,17 @@ interface Props {
 }
 
 export default function RecentTransactions({ allTx }: Props) {
-  const { activeUser, allTransactions, currUserTrx, setCurrUserTrx } =
-    useGlobal();
+  const {
+    activeUser,
+    currUserTrx,
+    setCurrUserTrx,
+    userAccountType,
+    currUserAllAccounts,
+  } = useGlobal();
 
   // const [transActs, setTransActs] = useState<Transaction[]>([]);
   const [lastFiveTxns, setLastFiveTxns] = useState<Transaction[]>([]);
+  const [thisUserTrx, setThisUserTrx] = useState<Transaction[]>([]);
 
   const fetchAllUsrTransactions = (allTx: Transaction[]) => {
     //   //all transaction for the current user
@@ -23,23 +29,39 @@ export default function RecentTransactions({ allTx }: Props) {
 
     // console.log("All Transactions fetched:", allTx);
 
+    // const accountID = allTx.filter(
+    //   (tx: Transaction) =>
+    //     tx.customer_id === activeUser?.customer_id &&
+    //     tx.account_id === currUserAllAccounts[0]?.account_id, // Filter by the first account's ID
+    // );
+
+    const accountID = currUserAllAccounts.find(
+      (account) => account.account_type === userAccountType,
+    )?.account_id;
+
     const userTx = allTx.filter(
-      (tx: Transaction) => tx.customer_id === activeUser?.customer_id
+      (tx: Transaction) =>
+        tx.customer_id === activeUser?.customer_id &&
+        tx.account_id === accountID,
     );
 
+    // console.log("User Transactions filtered:", userTx);
+
     //sort transactions by date descending
-    const sortedTxns = userTx.sort((a: Transaction, b: Transaction) => {
-      const dateA = a.transaction_date
-        ? new Date(a.transaction_date).getTime()
-        : 0;
-      const dateB = b.transaction_date
-        ? new Date(b.transaction_date).getTime()
-        : 0;
-      return dateB - dateA;
-    });
+    // const sortedTxns = userTx.sort((a: Transaction, b: Transaction) => {
+    //   const dateA = a.transaction_date
+    //     ? new Date(a.transaction_date).getTime()
+    //     : 0;
+    //   const dateB = b.transaction_date
+    //     ? new Date(b.transaction_date).getTime()
+    //     : 0;
+    //   return dateB - dateA;
+    // });
+
+    // const sortedTxns = userTx.reverse(); // Reverse to show most recent first
 
     //format transaction_date from YYYY-MM-DD to DD MMM YYYY
-    const formatedUserTx = sortedTxns.map((tx: Transaction) => ({
+    const formatedUserTx = userTx.map((tx: Transaction) => ({
       ...tx,
       transaction_date: new Date(tx.transaction_date || "").toLocaleDateString(
         "en-GB",
@@ -47,13 +69,15 @@ export default function RecentTransactions({ allTx }: Props) {
           day: "2-digit",
           month: "short",
           year: "numeric",
-        }
+          hour: "2-digit",
+          minute: "2-digit",
+        },
       ),
     }));
 
-    setCurrUserTrx(formatedUserTx); //React schedules the update, but DOES NOT update immediately
+    setThisUserTrx(formatedUserTx); //React schedules the update, but DOES NOT update immediately
     //therefore we need to use 2 useEffects to handle dependent state updates, wait until currUserTrx is updated before deriving lastFiveTxns from it
-    console.log("currUserTrx: CONTEXT ", currUserTrx);
+    // console.log("currUserTrx: CONTEXT ", currUserTrx);
   };
 
   useEffect(() => {
@@ -61,9 +85,9 @@ export default function RecentTransactions({ allTx }: Props) {
   }, [activeUser, allTx]);
 
   useEffect(() => {
-    const recentFive = currUserTrx.slice(0, 5);
+    const recentFive = thisUserTrx.reverse().slice(0, 5);
     setLastFiveTxns(recentFive);
-  }, [currUserTrx]);
+  }, [thisUserTrx]);
 
   //First effect sets currUserTrx
   //Second effect automatically runs once currUserTrx changes
@@ -115,7 +139,7 @@ export default function RecentTransactions({ allTx }: Props) {
       </table>
       <div style={{ textAlign: "right", marginTop: "10px" }}>
         <Link
-          href={`http://localhost:3000/statement/${activeUser?.customer_id}`}
+          href={`http://localhost:3000/statement/${userAccountType}/${activeUser?.last_name}`} // Adjust the URL as needed
           style={linkButtonStyle}
         >
           View All Transactions

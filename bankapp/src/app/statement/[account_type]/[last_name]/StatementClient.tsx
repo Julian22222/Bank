@@ -1,11 +1,62 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+// import { Transaction } from "@/src/shared/types/transaction.interface";
+import { useGlobal } from "../../../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
 import { Transaction } from "@/src/shared/types/transaction.interface";
-import { useGlobal } from "../../Context"; //IMPORT GLOBAL CONTEXT, Global UseState
+import { Account } from "@/src/shared/types/account.interface";
 
-export default function BankStatement() {
-  const { currUserTrx } = useGlobal();
+export default function StatementClient() {
+  const {
+    activeUser,
+    allTransactions,
+    currUserAllAccounts,
+    userAccountType,
+    setAllTransactions,
+  } = useGlobal();
+
+  const [currUserMainAccountTrx, setCurrUserMainAccountTrx] = useState<
+    Transaction[]
+  >([]);
+
+  useEffect(() => {
+    const fetchAndFilter = async () => {
+      let transactions = allTransactions;
+
+      if (allTransactions.length === 0) {
+        try {
+          const data = await fetch(
+            `${process.env.NEXT_PUBLIC_BACK_END_URL}/statements`,
+          );
+          transactions = await data.json();
+          setAllTransactions(transactions);
+        } catch (error) {
+          console.error("Error fetching transactions:", error);
+          return;
+        }
+      }
+
+      // Now filter with the transactions data
+      const accountID = currUserAllAccounts.find(
+        (account) => account.account_type === userAccountType,
+      )?.account_id;
+
+      const filteredTransactions = transactions
+        .reverse()
+        .filter(
+          (tx: Transaction) =>
+            tx.customer_id === activeUser?.customer_id &&
+            tx.account_id === accountID,
+        );
+
+      console.log("filteredTransactions for statement:", filteredTransactions);
+      setCurrUserMainAccountTrx(filteredTransactions);
+    };
+
+    if (activeUser && currUserAllAccounts.length > 0 && userAccountType) {
+      fetchAndFilter();
+    }
+  }, [activeUser, currUserAllAccounts, userAccountType, allTransactions]);
 
   return (
     <>
@@ -37,9 +88,20 @@ export default function BankStatement() {
             </tr>
           </thead>
           <tbody>
-            {currUserTrx.map((tx, i) => (
+            {currUserMainAccountTrx.map((tx, i) => (
               <tr key={i} style={{ borderBottom: "1px solid #ddd" }}>
-                <td style={tdStyle}>{tx.transaction_date}</td>
+                <td style={tdStyle}>
+                  {new Date(tx.transaction_date || "").toLocaleDateString(
+                    "en-GB",
+                    {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    },
+                  )}
+                </td>
                 <td style={tdStyle}>{tx.details}</td>
                 <td
                   style={{
