@@ -62,7 +62,9 @@ export class AdminController {
   }
 
   @Delete(':adminId')
-  remove(@Param('adminId', ParseIntPipe) adminId: number) {
+  remove(
+    @Param('adminId', ParseIntPipe) adminId: number,
+  ): Promise<{ message: string }> {
     return this.adminService.remove(adminId);
   }
 }

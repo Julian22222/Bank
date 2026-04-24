@@ -58,7 +58,9 @@ export class AccountsController {
   }
 
   @Delete(':accountId')
-  remove(@Param('accountId', ParseIntPipe) accountId: number) {
+  remove(
+    @Param('accountId', ParseIntPipe) accountId: number,
+  ): Promise<{ message: string }> {
     return this.accountsService.remove(accountId);
   }
 }

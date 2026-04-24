@@ -37,7 +37,6 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @HttpCode(200)
   updateUserDetails(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -46,7 +45,6 @@ export class UsersController {
   }
 
   @Patch(':id/password')
-  @HttpCode(200)
   updateAdminPassword(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePasswordUserDto: UpdatePasswordUserDto,
@@ -55,7 +53,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<object> {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
     return this.usersService.remove(id);
   }
 }

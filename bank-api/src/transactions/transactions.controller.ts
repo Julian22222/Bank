@@ -32,7 +32,9 @@ export class TransactionsController {
   }
 
   @Get(':transactionId')
-  async findOne(@Param('transactionId', ParseIntPipe) transactionId: number) {
+  async findOne(
+    @Param('transactionId', ParseIntPipe) transactionId: number,
+  ): Promise<TransactionDto> {
     return await this.transactionsService.findOne(transactionId);
   }
 
@@ -45,7 +47,9 @@ export class TransactionsController {
   }
 
   @Post()
-  create(@Body() createStatementDto: CreateTransactionDto) {
+  create(
+    @Body() createStatementDto: CreateTransactionDto,
+  ): Promise<TransactionDto> {
     return this.transactionsService.create(createStatementDto);
   }
 
@@ -54,12 +58,14 @@ export class TransactionsController {
   update(
     @Param('transactionId', ParseIntPipe) transactionId: number,
     @Body() updateStatementDto: UpdateTransactionDto,
-  ) {
+  ): Promise<TransactionDto> {
     return this.transactionsService.update(transactionId, updateStatementDto);
   }
 
   @Delete(':transactionId')
-  remove(@Param('transactionId', ParseIntPipe) transactionId: number) {
+  remove(
+    @Param('transactionId', ParseIntPipe) transactionId: number,
+  ): Promise<{ message: string }> {
     return this.transactionsService.remove(transactionId);
   }
 }
