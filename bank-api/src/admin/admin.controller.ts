@@ -6,47 +6,63 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  HttpCode,
+  ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { UpdatePasswordAdminDto } from './dto/update-password.dto';
+import { AdminResponseDto } from './dto/response-admin.dto';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Get('allUsers')
-  findAll() {
-    return this.adminService.getAllUsers();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findUser(+id);
-  }
-
-  @Get('allAccounts')
-  findAllAccounts() {
-    return this.adminService.getAllAccounts();
-  }
-
-  @Get('allTransactions')
-  findAllTransactions() {
-    return this.adminService.getAllTransactions();
-  }
-
-  // @Post()
-  // create(@Body() createAdminDto: CreateAdminDto) {
-  //   return this.adminService.create(createAdminDto);
+  // @Get()
+  // checkServer() {
+  //   return 'Admin API is working!';
   // }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-  //   return this.adminService.update(+id, updateAdminDto);
-  // }
+  @Get()
+  findAll(): Promise<AdminResponseDto[]> {
+    return this.adminService.findAll();
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.adminService.remove(+id);
-  // }
+  @Get(':adminId')
+  findOne(
+    @Param('adminId', ParseIntPipe) adminId: number,
+  ): Promise<AdminResponseDto> {
+    return this.adminService.findOne(adminId);
+  }
+
+  @Post()
+  createNewAccount(
+    @Body() createAdminDto: CreateAdminDto,
+  ): Promise<AdminResponseDto> {
+    return this.adminService.create(createAdminDto);
+  }
+
+  @Patch(':adminId')
+  updateAdminDetails(
+    @Param('adminId', ParseIntPipe) adminId: number,
+    @Body() updateAdminDto: UpdateAdminDto,
+  ): Promise<AdminResponseDto> {
+    return this.adminService.update(adminId, updateAdminDto);
+  }
+
+  @Patch(':adminId/password')
+  updateAdminPassword(
+    @Param('adminId', ParseIntPipe) adminId: number,
+    @Body() updatePasswordDto: UpdatePasswordAdminDto,
+  ) {
+    return this.adminService.updatePassword(adminId, updatePasswordDto);
+  }
+
+  @Delete(':adminId')
+  remove(@Param('adminId', ParseIntPipe) adminId: number) {
+    return this.adminService.remove(adminId);
+  }
 }

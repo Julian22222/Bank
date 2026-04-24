@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { error } from 'console';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const PORT = process.env.PORT ?? 3005;
@@ -14,8 +14,21 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // await app.listen(process.env.PORT ?? 3005);
-  await app.listen(PORT);
-  console.log(`Server is running on port ${PORT}`);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  try {
+    // await app.listen(process.env.PORT ?? 3005);
+    await app.listen(PORT);
+    console.log(`Server is running on port ${PORT}`);
+  } catch (err) {
+    console.error('Error starting server:', err);
+    process.exit(1);
+  }
 }
 bootstrap();

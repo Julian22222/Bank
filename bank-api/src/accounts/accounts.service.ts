@@ -1,17 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { error } from 'console';
-const pool = require('../../data/dbconnection');
+import { AdminService } from '../admin/admin.service';
+import { TransactionsService } from '../transactions/transactions.service';
+
+// const pool = require('../../data/dbconnection');
+
+import { PoolClient, Pool } from 'pg';
+import { PG_POOL } from '../database/database.module';
+import { CreateMessageDto } from '../messages/dto/create-message.dto';
+import { AccountDto } from './dto/account.dto';
+import { MessagesService } from '../messages/messages.service';
 
 @Injectable()
 export class AccountsService {
-  async findAll() {
-    // return `This action returns all accounts`;
+  constructor(
+    @Inject(PG_POOL) private readonly pool: Pool,
+    private readonly adminService: AdminService,
+    private readonly transactionsService: TransactionsService,
+    private readonly messagesService: MessagesService,
+  ) {}
 
-    // Alternatively, to fetch all accounts from the database:
+  async findAll(): Promise<AccountDto[]> {
     try {
-      const allAccounts = await pool.query('SELECT * FROM accounts');
+      const allAccounts = await this.pool.query('SELECT * FROM accounts');
 
       return allAccounts.rows;
     } catch (error) {
@@ -21,37 +38,75 @@ export class AccountsService {
     }
   }
 
-  async findOne(id: number) {
-    // return `This action returns a #${id} account`;
-
-    // Alternatively, to fetch a single account from the database by ID:
+  //show accounts table + customers data
+  async getAllAccountsCustomers() {
     try {
-      const allAccountsOfUser = await pool.query(
-        `SELECT * FROM accounts WHERE customer_id = $1`,
+      const result = await this.pool.query(
+        `SELECT accounts.*, customers.first_name, customers.last_name, customers.email, customers.phone, customers.customer_address, customers.dob FROM accounts LEFT JOIN customers ON accounts.customer_id = customers.customer_id`,
+      );
+
+      if (!result.rows.length) {
+        throw new NotFoundException('Accounts not found');
+      }
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+      throw error;
+    }
+  }
+
+  //account data + balance
+  async findUserAccountAndBalance(id: number) {
+    try {
+      const resultArr = await this.pool.query(
+        `SELECT accounts.*, transactions.balance FROM accounts LEFT JOIN transactions ON accounts.account_id = transactions.account_id WHERE accounts.account_id = $1`,
         [id],
       );
-      return allAccountsOfUser.rows;
+
+      if (!resultArr.rows.length) {
+        throw new NotFoundException('Account and Balance not found');
+      }
+
+      return resultArr.rows[resultArr.rows.length - 1];
+    } catch (error) {
+      console.error('Error fetching Account and Balance:', error);
+      throw error;
+    }
+  }
+
+  async findOne(id: number): Promise<AccountDto> {
+    try {
+      const allAccountsOfUser = await this.pool.query(
+        `SELECT * FROM accounts WHERE account_id = $1`,
+        [id],
+      );
+
+      if (allAccountsOfUser.rows.length === 0) {
+        throw new NotFoundException('Account not found');
+      }
+
+      return allAccountsOfUser.rows[0];
     } catch (error) {
       console.error('Error fetching account:', error);
       throw error;
     }
   }
 
-  create(createAccountDto: CreateAccountDto) {
-    // return 'This action adds a new account';
+  async create(
+    createAccountDto: CreateAccountDto,
+    client?: PoolClient,
+  ): Promise<AccountDto> {
+    const executor = client ?? this.pool;
 
-    // Alternatively, to insert a new account into the database:
-    const { customer_id, account_type } = createAccountDto;
+    const { customer_id, account_type, account_nr } = createAccountDto;
 
     try {
-      const result = pool.query(
-        `INSERT INTO accounts (customer_id, account_type) VALUES ($1, $2) RETURNING *;`,
-        [customer_id, account_type],
+      const result = await executor.query(
+        `INSERT INTO accounts (customer_id, account_type, account_nr) VALUES ($1, $2, $3) RETURNING *;`,
+        [customer_id, account_type, account_nr],
       );
-      //use RETURNING * to get the newly created account record
-      //you only need RETURNING * when you want PostgreSQL to give you back the inserted (or updated/deleted) row immediately after the query.
-      //Use RETURNING * --> with INSERT, UPDATE, or DELETE statements if you want to see what was affected.
-      //DON'T use RETURNING * --> with SELECT statements.
+
       return result.rows[0];
     } catch (error) {
       console.error('Error creating account:', error);
@@ -59,46 +114,120 @@ export class AccountsService {
     }
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    // return `This action updates a #${id} account`;
+  async update(
+    account_id: number,
+    updateAccountDto: UpdateAccountDto,
+  ): Promise<AccountDto> {
+    const fields: string[] = [];
+    const values: any[] = [];
+    let index = 1;
 
-    // Alternatively, to update an account in the database by ID:
+    for (const [key, value] of Object.entries(updateAccountDto)) {
+      if (value !== undefined) {
+        fields.push(`${key} = $${index}`);
+        values.push(value);
+        index++;
+      }
+    }
+
+    if (fields.length === 0) {
+      throw new BadRequestException('No fields to update');
+    }
+
+    values.push(account_id);
+
+    const query = `
+    UPDATE accounts
+    SET ${fields.join(', ')}
+    WHERE account_id = $${index}
+    RETURNING *
+  `;
+
     try {
-      const { customer_id, account_type, account_nr, balance } =
-        updateAccountDto;
+      const result = await this.pool.query(query, values);
 
-      const id = pool.query(
-        `SELECT account_id FROM accounts WHERE customer_id = $1;`,
-        [customer_id],
-      );
+      if (!result.rows.length) {
+        throw new NotFoundException('Error, User not found');
+      }
 
-      const updatedAccount = pool.query(
-        `UPDATE accounts SET customer_id = $1, account_type = $2, account_nr = $3, balance = $4 WHERE account_id = $5 RETURNING *;`,
-        [customer_id, account_type, account_nr, balance, id],
-      );
-      //use RETURNING * to get the updated account record
-
-      return 'User account updated successfully';
+      return result.rows[0];
     } catch (error) {
       console.error('Error updating account:', error);
       throw error;
     }
   }
 
-  remove(id: number) {
-    // return `This action removes a #${id} account`;
+  async remove(accountId: number) {
+    const client = await this.pool.connect();
 
-    // Alternatively, to delete an account from the database by ID:
     try {
-      const deletedAccount = pool.query(
+      await client.query('BEGIN');
+
+      const accountsWithCustomers = await this.getAllAccountsCustomers();
+
+      const customerData = accountsWithCustomers.find(
+        (user) => user.account_id === accountId,
+      );
+
+      if (!customerData) {
+        throw new NotFoundException('Account not found');
+      }
+
+      const customerId = customerData.customer_id;
+
+      const customerName = customerData.first_name + customerData.last_name;
+
+      const DeletedMsg = `Dear ${customerName}, Unfortunately your account has been closed.`;
+
+      const newMsg: CreateMessageDto = {
+        customer_id: customerId,
+        msg_subject: 'Account deletion',
+        msg_status: 'common',
+        msg_body: DeletedMsg,
+        msg_created_by: 'autogenerated',
+      };
+
+      await this.messagesService.create(newMsg, client);
+
+      await this.transactionsService.removeAllAccountTrx(accountId, client);
+
+      const deletedAccount = await client.query(
         `DELETE FROM accounts WHERE account_id = $1 RETURNING *;`,
+        [accountId],
+      );
+
+      if (deletedAccount.rowCount === 0) {
+        throw new NotFoundException('Account not found');
+      }
+
+      await client.query('COMMIT');
+
+      return { message: 'Account deleted successfully' };
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Error deleting account:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async removeAllUserAcc(id: number, client?: PoolClient) {
+    const executor = client ?? this.pool;
+
+    try {
+      const deletedAccount = await executor.query(
+        `DELETE FROM accounts WHERE customer_id = $1 RETURNING *;`,
         [id],
       );
-      //use RETURNING * to get the deleted account record
 
-      return 'User account deleted successfully';
+      if (deletedAccount.rowCount === 0) {
+        throw new NotFoundException('Accounts not found');
+      }
+
+      return { message: 'All Accounts deleted successfully' };
     } catch (error) {
-      console.error('Error deleting account:', error);
+      console.error('Error deleting accounts:', error);
       throw error;
     }
   }
