@@ -4,5 +4,5 @@ export type Admin = {
   password: string;
   phone: string;
   customer_address: string;
-  dob: Date;
+  dob: string;
 };

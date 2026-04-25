@@ -76,7 +76,7 @@ describe('UsersController', () => {
       password: 'mypassword',
       phone: '123456789',
       customer_address: 'Manchester, UK',
-      dob: new Date('1990-01-01'),
+      dob: '1990-01-01',
     };
 
     expect(await controller.create(newUser)).toEqual({
@@ -109,7 +109,7 @@ describe('UsersController', () => {
       email: 'john.doe@example.com',
       phone: '123456789',
       customer_address: 'Manchester, UK',
-      dob: new Date('1990-01-01'),
+      dob: '1990-01-01',
       created_at: '2026-04-20 20:53:22.314',
     };
 
@@ -136,7 +136,7 @@ describe('UsersController', () => {
       email: 'john.doe@example.com',
       phone: '123456789',
       customer_address: 'Manchester, UK',
-      dob: new Date('1990-01-01'),
+      dob: '1990-01-01',
     };
 
     mockUsersService.update.mockRejectedValue(new Error('User not found'));

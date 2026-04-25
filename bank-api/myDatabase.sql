@@ -13,7 +13,7 @@ CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(15) NOT NULL,
     customer_address VARCHAR(255) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE accounts (
     account_id SERIAL PRIMARY KEY,
     customer_id INT REFERENCES customers(customer_id),
     account_type VARCHAR(20) NOT NULL,
-    account_nr VARCHAR(30) UNIQUE NOT NULL,
+    account_nr VARCHAR(30) UNIQUE NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -64,8 +64,8 @@ CREATE TABLE messages (
 
 INSERT INTO customers
 (customer_id, first_name, last_name, email, password, phone, customer_address, dob) 
-VALUES (1, 'Julian', 'Golovens', 'julian@test.com', '123', '123-456-7890', '123 Main St, Springfield, IL', '1995-06-15'),
-(2, 'Tom', 'Simpsons', 'tomSimpson@gmail.com', '01234', '123-456-7890', '456 Main St, Springfield, IL', '1985-06-15');
+VALUES (1, 'Julian', 'Golovens', 'julian@test.com', '123456', '+447892828658', '123 Main St, Springfield, IL', '1995-06-15'),
+(2, 'Tom', 'Simpsons', 'tomSimpson@gmail.com', '234567', '+447892828655', '456 Main St, Springfield, IL', '1985-06-15');
 
 
 INSERT INTO accounts (customer_id, account_type, account_nr)
@@ -103,7 +103,7 @@ VALUES
 
 INSERT INTO admins
 (admin_name, email, password, phone, customer_address, dob) 
-VALUES ('Sam', 'Sam@admin.com', '6789', '123456789', 'Manchester, 156 Manchester Road', '1995-06-15');
+VALUES ('Sam', 'sam@admin.com', '123456', '+447835473879', 'Manchester, 156 Manchester Road', '1995-06-15');
 
 
 SELECT * FROM customers;

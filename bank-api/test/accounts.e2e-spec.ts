@@ -84,7 +84,7 @@ describe('AccountsController (e2e)', () => {
   });
 
   // =========================
-  // ✅ GET ALL USER ACCOUNTS → 200
+  // ✅ GET ACCOUNT → 200
   // =========================
   it('GET /accounts/1 → 200', async () => {
     const mockUserAccounts = [
@@ -94,12 +94,7 @@ describe('AccountsController (e2e)', () => {
         account_type: 'Main',
         account_nr: '12-34-56 / 98765432',
         balance: 2253.93,
-      },
-      {
-        customer_id: 1,
-        account_type: 'Saver',
-        account_nr: '98-76-54 / 12345678',
-        balance: 1500.0,
+        created_at: '2026-04-25 14:31:44.473',
       },
     ];
 
@@ -112,7 +107,7 @@ describe('AccountsController (e2e)', () => {
   });
 
   //   // =========================
-  //   // ❌ GET ALL ACCOUNTS OF USER → 404
+  //   // ❌ GET ACCOUNT  → 404
   //   // =========================
   it('GET /accounts/999 → 404', async () => {
     mockAccountsService.findOne.mockRejectedValue(
@@ -133,8 +128,9 @@ describe('AccountsController (e2e)', () => {
     };
 
     mockAccountsService.create.mockResolvedValue({
-      account_id: 3,
+      account_id: 2,
       ...newAccount,
+      created_at: '2026-04-25 14:31:44.476',
     });
 
     await request(app.getHttpServer())
@@ -142,8 +138,9 @@ describe('AccountsController (e2e)', () => {
       .send(newAccount)
       .expect(201)
       .expect({
-        account_id: 3,
+        account_id: 2,
         ...newAccount,
+        created_at: '2026-04-25 14:31:44.476',
       });
   });
 

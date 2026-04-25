@@ -203,10 +203,6 @@ export class TransactionsService {
         [accountId],
       );
 
-      if (deletedTrx.rowCount === 0) {
-        throw new NotFoundException('Transactions not found');
-      }
-
       return {
         message: 'All account transactions deleted successfully for this user',
       };
