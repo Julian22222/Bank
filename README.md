@@ -18,7 +18,7 @@ Bank App is a polished, enterprise-ready digital banking platform built to showc
 
 This repository demonstrates product thinking through coherent feature flows, modular architecture, API-driven frontend integration, and readiness for scaling in enterprise environments.
 
-## Demo Login Credentials
+## ✅ Demo Login Credentials
 
 You can use the following test accounts to explore the application:
 
