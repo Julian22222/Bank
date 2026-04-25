@@ -64,8 +64,8 @@ CREATE TABLE messages (
 
 INSERT INTO customers
 (customer_id, first_name, last_name, email, password, phone, customer_address, dob) 
-VALUES (1, 'Julian', 'Golovens', 'julian@test.com', '123456', '+447892828658', '123 Main St, Springfield, IL', '1995-06-15'),
-(2, 'Tom', 'Simpsons', 'tomSimpson@gmail.com', '234567', '+447892828655', '456 Main St, Springfield, IL', '1985-06-15');
+VALUES (1, 'Julian', 'Golovens', 'julian@test.com', 'Iw2jbiKQtDlm9dqV3H3fOu35UJbG85Gw50aEjIIoSwW8xhNn8nusC', '+447892828658', '123 Main St, Springfield, IL', '1995-06-15'),
+(2, 'Tom', 'Simpsons', 'tomsimpson@test.com', '$2b$10$yI33zf9VaPsT3ydsJUznFu9VIuDe.4M9xEg7F/Juy9yFxNeSoLeDq', '+447892828655', '456 Main St, Springfield, IL', '1985-06-15');
 
 
 INSERT INTO accounts (customer_id, account_type, account_nr)
@@ -103,7 +103,7 @@ VALUES
 
 INSERT INTO admins
 (admin_name, email, password, phone, customer_address, dob) 
-VALUES ('Sam', 'sam@admin.com', '123456', '+447835473879', 'Manchester, 156 Manchester Road', '1995-06-15');
+VALUES ('Sam', 'sam@admin.com', '$2b$10$CBMBY/pEjOv4Uq.KK1zGX..Aeceq1v0PGu92qXw72xogjG.1qUNe2', '+447835473879', 'Manchester, 156 Manchester Road', '1995-06-15');
 
 
 SELECT * FROM customers;

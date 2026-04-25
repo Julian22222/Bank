@@ -1,0 +1,107 @@
+name: Bank API test
+
+on:
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        working-directory: bank-api
+        run: npm ci
+
+      - name: Build project
+        working-directory: bank-api
+        run: npm run build
+
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        working-directory: bank-api
+        run: npm ci
+
+      - name: Run unit tests and e2e tests
+        working-directory: bank-api
+        run: |
+          mkdir -p artifacts 
+          npm start &
+          sleep 5
+          npm test -- --coverage --json --outputFile=artifacts/unit_tests.json > artifacts/unit_tests.txt
+          npm run test:e2e -- --coverage > artifacts/e2e_tests.txt
+
+      # - name: create unit_test2 file for artifact
+      #   working-directory: bank-api
+      #   run: npm test -- --json > artifacts/unit_tests.json
+
+      # - name: create e2e_test file Notes for artifact
+      #   working-directory: bank-api
+      #   run: npm run test:e2e > artifacts/e2e_tests.txt
+
+      # - name: create unit_test coverage file for artifact
+      #   working-directory: bank-api
+      #   run: npm test -- --coverage --json --outputFile=artifacts/unit_tests.json > artifacts/unit_tests.txt
+
+      # - name: create e2e_test file coverage for artifact
+      #   working-directory: bank-api
+      #   run: npm test:e2e -- --coverage > artifacts/e2e_tests_coverage.txt
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: |
+            bank-api/build
+            bank-api/artifacts
+            bank-api/coverage
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        working-directory: bank-api
+        run: npm ci
+
+      - name: Get tests from Bank API project
+        uses: actions/download-artifact@v4
+        with:
+          path: build
+          name: build-files
+
+      - name: Show files / Check files
+        run: ls -R build
+
+      - name: deploy
+        run: echo AWS deploying ...
