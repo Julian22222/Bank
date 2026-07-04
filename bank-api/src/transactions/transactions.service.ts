@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -15,10 +16,12 @@ import { TransactionDto } from './dto/transactions.dto';
 export class TransactionsService {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
 
+  private readonly logger = new Logger(TransactionsService.name);
+
   async findAll(): Promise<TransactionDto[]> {
     try {
       const allTransactions = await this.pool.query(
-        'SELECT * FROM transactions',
+        'SELECT * FROM transactions ORDER BY transaction_date DESC;',
       );
 
       if (!allTransactions.rows.length) {
@@ -28,6 +31,7 @@ export class TransactionsService {
       return allTransactions.rows;
     } catch (error) {
       console.error('Error fetching statements:', error);
+      this.logger.error(error);
       throw error;
     }
   }
@@ -38,7 +42,7 @@ export class TransactionsService {
       const result = await this.pool.query(
         `SELECT transactions.*, customers.first_name, customers.last_name, customers.email, customers.phone, customers.customer_address, customers.dob, accounts.account_type 
         FROM transactions LEFT JOIN customers ON transactions.customer_id = customers.customer_id
-        LEFT JOIN accounts ON transactions.account_id = accounts.account_id`,
+        LEFT JOIN accounts ON transactions.account_id = accounts.account_id ORDER BY transactions.transaction_date DESC`,
       );
 
       if (!result.rows.length) {
@@ -49,7 +53,27 @@ export class TransactionsService {
 
       return result.rows;
     } catch (error) {
-      console.error('Error fetching user all accounts transactions::', error);
+      console.error('Error fetching user all accounts transactions:', error);
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async userSingleAccountAllTransactions(
+    customerId: number,
+    accountId: number,
+  ) {
+    try {
+      const result = await this.pool.query(
+        `SELECT * FROM transactions WHERE transactions.customer_id = $1 AND transactions.account_id = $2 ORDER BY transactions.transaction_date DESC`,
+        [customerId, accountId],
+      );
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching user single account transactions:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -68,6 +92,8 @@ export class TransactionsService {
       return transaction.rows[0];
     } catch (error) {
       console.error('Error fetching statement:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -76,7 +102,7 @@ export class TransactionsService {
   async findCurrentUserAllTrx(userId: number) {
     try {
       const allTransactionsOfUser = await this.pool.query(
-        `SELECT * FROM transactions WHERE customer_id = $1`,
+        `SELECT * FROM transactions WHERE customer_id = $1 ORDER BY transaction_date DESC;`,
         [userId],
       );
 
@@ -87,6 +113,8 @@ export class TransactionsService {
       return allTransactionsOfUser.rows;
     } catch (error) {
       console.error('Error fetching statement:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -152,6 +180,8 @@ export class TransactionsService {
       return result.rows[0];
     } catch (error) {
       console.error('Error updating transaction:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -170,6 +200,8 @@ export class TransactionsService {
       return { message: 'Transaction deleted successfully' };
     } catch (error) {
       console.error('Error deleted transaction:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -190,6 +222,8 @@ export class TransactionsService {
       return { message: 'All transactions deleted successfully for this user' };
     } catch (error) {
       console.error('Error deleted transactions:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }
@@ -208,6 +242,8 @@ export class TransactionsService {
       };
     } catch (error) {
       console.error('Error deleted transactions:', error);
+      this.logger.error(error);
+
       throw error;
     }
   }

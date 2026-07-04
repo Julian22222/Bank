@@ -1,0 +1,35 @@
+/* /////////////////////////page.tsx */
+
+.mainBlock {
+  margin: 0;
+  background-image: url("/LogInPic/Login1.jpg");
+  background-size: cover;
+  background-position: center;
+  font-family: Arial, sans-serif;
+}
+
+/* ////////////////////////////////LoginForm  */
+
+.loginBtn {
+  border-color: #006a4d !important;
+  border-width: 2px;
+  color: #006a4d !important;
+}
+
+.loginBtn:hover {
+  background-color: #006a4d !important;
+  border-color: #006a4d !important;
+  color: white !important;
+}
+
+.adminLoginBtn {
+  border-color: #a45d16 !important;
+  border-width: 2px;
+  color: #a45d16 !important;
+}
+
+.adminLoginBtn:hover {
+  background-color: #a45d16 !important;
+  border-color: #a45d16 !important;
+  color: white !important;
+}

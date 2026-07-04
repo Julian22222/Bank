@@ -1,6 +1,6 @@
-import { Admin } from 'types/admin.type';
+import { AdminCreate } from '../../types/adminCreate.type';
 
-export const allAdmins: Admin[] = [
+export const allAdmins: AdminCreate[] = [
   {
     admin_name: 'Sam',
     email: 'sam@admin.com',

@@ -15,7 +15,13 @@ export class MessagesService {
 
   async findAll() {
     try {
-      const result = await this.pool.query(`SELECT * FROM messages`);
+      const result = await this.pool.query(
+        `SELECT messages.*, customers.first_name, customers.last_name, customers.dob 
+        FROM messages 
+        LEFT JOIN customers 
+        ON messages.customer_id = customers.customer_id 
+        ORDER BY messages.sent_at DESC`,
+      );
 
       if (!result.rows.length) {
         throw new NotFoundException('Messages not found');
@@ -31,7 +37,12 @@ export class MessagesService {
   async findAllUserMessages(userId: number) {
     try {
       const result = await this.pool.query(
-        `SELECT * FROM messages WHERE customer_id = $1`,
+        `SELECT messages.*, customers.first_name, customers.last_name, customers.dob 
+        FROM messages 
+        LEFT JOIN customers
+        ON messages.customer_id = customers.customer_id
+        WHERE messages.customer_id = $1 
+        ORDER BY messages.sent_at DESC`,
         [userId],
       );
 

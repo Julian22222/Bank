@@ -7,6 +7,8 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { AdminModule } from './admin/admin.module';
 import { DatabaseModule } from './database/database.module';
 import { MessagesModule } from './messages/messages.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthAdminModule } from './auth-admin/auth-admin.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { MessagesModule } from './messages/messages.module';
     AdminModule,
     DatabaseModule,
     MessagesModule,
+    AuthModule,
+    AuthAdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

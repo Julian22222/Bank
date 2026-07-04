@@ -1,8 +1,12 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
+  InternalServerErrorException,
+  Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,8 +19,10 @@ import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { UserResponseDto } from './dto/response-user.dto';
 import { AdminService } from '../admin/admin.service';
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
-import { CreateTransactionDto } from 'src/transactions/dto/create-transaction.dto';
+import { CreateTransactionDto } from '../transactions/dto/create-transaction.dto';
 import { MessagesService } from '../messages/messages.service';
+// import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -25,68 +31,123 @@ export class UsersService {
     @Inject(PG_POOL) private readonly pool: Pool,
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
-    private readonly adminService: AdminService,
+    // private readonly adminService: AdminService,
     private readonly messagesService: MessagesService,
+    // private readonly jwtService: JwtService,
   ) {}
 
+  private readonly logger = new Logger(UsersService.name);
+
   async findAll(): Promise<UserResponseDto[]> {
-    try {
-      const allUsersFromDB = await this.pool
-        .query(`SELECT customer_id, first_name, last_name, 
+    const allUsersFromDB = await this.pool
+      .query(`SELECT customer_id, first_name, last_name, 
         email, phone, customer_address, dob, created_at FROM customers`);
 
-      const data = allUsersFromDB.rows;
+    const data = allUsersFromDB.rows;
 
-      const userDataNoPasswordArray: UserResponseDto[] = data.map((user) => ({
-        customer_id: user.customer_id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        phone: user.phone,
-        customer_address: user.customer_address,
-        dob: user.dob,
-        created_at: user.created_at,
-      }));
+    const userDataNoPasswordArray: UserResponseDto[] = data.map((user) => ({
+      customer_id: user.customer_id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone: user.phone,
+      customer_address: user.customer_address,
+      phone_verified: user.phone_verified,
+      email_verified: user.email_verified,
+      dob: user.dob,
+      created_at: user.created_at,
+    }));
 
-      return userDataNoPasswordArray;
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      throw new BadRequestException(error.message);
-      // throw error;
-    }
+    return userDataNoPasswordArray;
   }
 
   async findOne(id: number): Promise<UserResponseDto> {
-    try {
-      const userFromDB = await this.pool.query(
-        `SELECT customer_id, first_name, last_name, 
-        email, phone, customer_address, dob, created_at FROM customers WHERE customer_id = $1`,
-        [id],
-      );
+    const userFromDB = await this.pool.query(
+      `SELECT customer_id, first_name, last_name, 
+        email, phone, customer_address, dob, phone_verified, email_verified, created_at FROM customers WHERE customer_id = $1`,
+      [id],
+    );
 
-      if (!userFromDB.rows.length) {
-        throw new NotFoundException('User not found');
-      }
-
-      const data = userFromDB.rows[0];
-
-      const userDataNoPassword: UserResponseDto = {
-        customer_id: data.customer_id,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        phone: data.phone,
-        customer_address: data.customer_address,
-        dob: data.dob,
-        created_at: data.created_at,
-      };
-
-      return userDataNoPassword;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-      // throw error;
+    if (!userFromDB.rows.length) {
+      throw new NotFoundException('User not found');
     }
+
+    const data = userFromDB.rows[0];
+
+    const userDataNoPassword: UserResponseDto = {
+      customer_id: data.customer_id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      phone: data.phone,
+      customer_address: data.customer_address,
+      phone_verified: data.phone_verified,
+      email_verified: data.email_verified,
+      dob: data.dob,
+      created_at: data.created_at,
+    };
+
+    return userDataNoPassword;
   }
+
+  // async login(loginData: LoginDto) {
+  //   const { email, password } = loginData;
+
+  //   const result = await this.pool.query(
+  //     `SELECT * FROM customers WHERE email = $1`,
+  //     [email],
+  //   );
+
+  //   const user = result.rows[0];
+
+  //   if (!user) {
+  //     throw new UnauthorizedException('Invalid email or password');
+  //   }
+
+  //   const isMatch = await bcrypt.compare(password, user.password);
+
+  //   if (!isMatch) {
+  //     throw new UnauthorizedException('Invalid email or password');
+  //   }
+
+  //   // 👇 JWT payload (keep it small!)
+  //   const payload = {
+  //     sub: user.customer_id,
+  //     email: user.email,
+  //     // user: user.role
+  //   };
+
+  //   // 🔐 Access Token
+  //   const accessToken = this.jwtService.sign(payload, {
+  //     secret: process.env.JWT_SECRET,
+  //     expiresIn: '15m',
+  //   });
+
+  //   // 🔄 Refresh Token
+  //   const refreshToken = this.jwtService.sign(payload, {
+  //     secret: process.env.JWT_REFRESH_SECRET,
+  //     expiresIn: '7d',
+  //   });
+
+  //   const userResponse: UserResponseDto = {
+  //     //returning user data with no password
+  //     customer_id: user.customer_id,
+  //     first_name: user.first_name,
+  //     last_name: user.last_name,
+  //     email: user.email,
+  //     phone: user.phone,
+  //     customer_address: user.customer_address,
+  //     dob: user.dob,
+  //     created_at: user.created_at,
+  //   };
+
+  //   // Return response with both tokens and user data
+  //   return {
+  //     access_token: accessToken,
+  //     refresh_token: refreshToken,
+  //     userResponse,
+  //   };
+  // }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const {
@@ -110,7 +171,7 @@ export class UsersService {
 
       const newUser = await client.query(
         `INSERT INTO customers (first_name, last_name, email, password, phone, customer_address, dob) VALUES ($1, $2, $3, $4, $5, $6, $7) 
-        RETURNING customer_id, first_name, last_name, email, phone, customer_address, dob, created_at`,
+        RETURNING customer_id, first_name, last_name, email, phone, customer_address, dob, phone_verified, email_verified, created_at`,
         [
           first_name,
           last_name,
@@ -121,10 +182,6 @@ export class UsersService {
           dob,
         ],
       );
-
-      if (!newUser.rows.length) {
-        throw new BadRequestException('Failed to create user');
-      }
 
       let newAccount;
 
@@ -148,12 +205,6 @@ export class UsersService {
         };
 
         newAccount = await this.accountsService.create(accObj, client);
-
-        if (!newAccount) {
-          throw new BadRequestException(
-            'Failed to create account for the new user',
-          );
-        }
       }
 
       if (newAccount) {
@@ -169,12 +220,6 @@ export class UsersService {
           transObj,
           client,
         );
-
-        if (!newTransaction) {
-          throw new BadRequestException(
-            'Failed to create initial statement for the new user',
-          );
-        }
 
         const userData = newUser.rows[0];
 
@@ -212,6 +257,8 @@ export class UsersService {
         email: userData.email,
         phone: userData.phone,
         customer_address: userData.customer_address,
+        phone_verified: userData.phoneVerified,
+        email_verified: userData.emailVerified,
         dob: userData.dob,
         created_at: userData.created_at,
       };
@@ -222,6 +269,11 @@ export class UsersService {
     } catch (error) {
       await client.query('ROLLBACK');
       console.error('Error creating user:', error);
+      this.logger.error(error);
+      if (error.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
+
       throw error;
     } finally {
       client.release();
@@ -267,6 +319,11 @@ export class UsersService {
       return result.rows[0];
     } catch (error) {
       console.error('Error updating user info', error);
+      this.logger.error(error);
+
+      if (error.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
       throw error;
     }
   }
@@ -301,13 +358,15 @@ export class UsersService {
       );
 
       await this.pool.query(
-        `UPDATE customers SET password = $1 WHERE admin_id = $2`,
+        `UPDATE customers SET password = $1 WHERE customer_id = $2`,
         [hashedPassword, userId],
       );
 
       return { message: 'Password updated successfully' };
     } catch (error) {
       console.error('Error updating user password', error);
+      this.logger.error(error);
+
       throw error;
     }
   }

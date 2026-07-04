@@ -34,7 +34,7 @@ export const mockAdminService = {
   update: jest.fn().mockReturnValue({
     admin_id: 1,
     admin_name: 'Billy',
-    email: 'billy"test.com',
+    email: 'billy@test.com',
     phone: '123456789',
     customer_address: 'address test',
     dob: '1993-01-01',

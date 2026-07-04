@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsNotEmpty,
@@ -41,6 +42,14 @@ export class UserResponseDto {
   @IsNotEmpty({ message: 'DOB is required' })
   @IsDateString({}, { message: 'Date of birth must be a valid date' })
   dob: Date;
+
+  @IsNotEmpty({ message: 'Phone verification is required' })
+  @IsBoolean()
+  phone_verified: boolean;
+
+  @IsNotEmpty({ message: 'Email verification is required' })
+  @IsBoolean()
+  email_verified: boolean;
 
   @IsDateString()
   created_at: string;

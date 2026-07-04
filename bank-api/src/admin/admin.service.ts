@@ -11,6 +11,7 @@ import { PoolClient, Pool } from 'pg';
 import { PG_POOL } from '../database/database.module';
 import { AdminResponseDto } from './dto/response-admin.dto';
 import { UpdatePasswordAdminDto } from './dto/update-password.dto';
+import { AdminLoginDto } from './dto/admin_login.dto';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -46,33 +47,77 @@ export class AdminService {
   }
 
   async findOne(adminId: number) {
-    try {
-      const result = await this.pool.query(
-        `SELECT admins.admin_id, admins.admin_name, admins.email, 
+    const result = await this.pool.query(
+      `SELECT admins.admin_id, admins.admin_name, admins.email, 
         admins.phone, admins.customer_address, admins.dob, 
         admins.created_at FROM admins WHERE admin_id = $1`,
-        [adminId],
+      [adminId],
+    );
+
+    if (!result.rows.length) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    const data = result.rows[0];
+
+    const adminDataNoPassword: AdminResponseDto = {
+      admin_id: data.admin_id,
+      admin_name: data.admin_name,
+      email: data.email,
+      phone: data.phone,
+      customer_address: data.customer_address,
+      dob: data.dob,
+      created_at: data.created_at,
+    };
+
+    return adminDataNoPassword;
+  }
+
+  async findUsersToRegister() {
+    try {
+      const result = await this.pool.query('SELECT * FROM registration');
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching all new users to register:', error);
+      throw error;
+    }
+  }
+
+  async login(loginData: AdminLoginDto) {
+    const { email, password, rememberMe } = loginData;
+
+    try {
+      const result = await this.pool.query(
+        `SELECT * FROM admins WHERE email = $1`,
+        [email],
       );
 
       if (!result.rows.length) {
         throw new NotFoundException('Admin not found');
       }
 
-      const data = result.rows[0];
+      const admin = result.rows[0];
 
-      const adminDataNoPassword: AdminResponseDto = {
-        admin_id: data.admin_id,
-        admin_name: data.admin_name,
-        email: data.email,
-        phone: data.phone,
-        customer_address: data.customer_address,
-        dob: data.dob,
-        created_at: data.created_at,
+      const isMatch = await bcrypt.compare(password, admin.password);
+
+      if (!isMatch) {
+        throw new BadRequestException('Invalid credentials');
+      }
+
+      const adminResponse: AdminResponseDto = {
+        admin_id: admin.admin_id,
+        admin_name: admin.admin_name,
+        email: admin.email,
+        phone: admin.phone,
+        customer_address: admin.customer_address,
+        dob: admin.dob,
+        created_at: admin.created_at,
       };
 
-      return adminDataNoPassword;
+      return adminResponse;
     } catch (error) {
-      console.error('Error fetching admin:', error);
+      console.error('Error during admin login:', error);
       throw error;
     }
   }
@@ -183,6 +228,24 @@ export class AdminService {
       return { message: 'Password updated successfully' };
     } catch (error) {
       console.error('Error updating admin password', error);
+      throw error;
+    }
+  }
+
+  async removeUserFromRegister(registrationId: number) {
+    try {
+      const result = await this.pool.query(
+        `DELETE FROM registration WHERE registration_id = $1 RETURNING *;`,
+        [registrationId],
+      );
+
+      if (!result.rowCount) {
+        throw new NotFoundException('User to Register not found');
+      }
+
+      return { message: 'User from registration deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting User from Registration:', error);
       throw error;
     }
   }

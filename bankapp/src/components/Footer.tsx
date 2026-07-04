@@ -1,45 +1,40 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer
-      style={{
-        backgroundColor: "#004c3f",
-        color: "white",
-        textAlign: "center",
-        padding: "30px 20px",
-        marginTop: "60px",
-      }}
+      className=" text-white text-center py-4 mt-5"
+      style={{ backgroundColor: "#004c3f" }}
     >
-      <p style={{ marginBottom: "10px" }}>
-        &copy; {new Date().toLocaleDateString().slice(-4)} Big Bank. All rights
-        reserved.
+      <p className="mb-2">
+        &copy; {new Date().getFullYear()} Big Bank. All rights reserved.
       </p>
-      <div>
-        <a href="#" style={footerLinkStyle}>
+
+      <div className="d-flex flex-wrap justify-content-center gap-3">
+        <Link href="#" className="text-white text-decoration-none small">
           Privacy
-        </a>
-        <a href="#" style={footerLinkStyle}>
+        </Link>
+
+        <Link href="#" className="text-white text-decoration-none small">
           Security
-        </a>
-        <a href="#" style={footerLinkStyle}>
+        </Link>
+
+        <Link href="#" className="text-white text-decoration-none small">
           Accessibility
-        </a>
-        <a href="#" style={{ ...footerLinkStyle }}>
+        </Link>
+
+        <Link href="#" className="text-white text-decoration-none small">
           Cookies
-        </a>
-        <a href="#" style={{ ...footerLinkStyle }}>
+        </Link>
+
+        <Link href="#" className="text-white text-decoration-none small">
           Terms & Conditions
-        </a>
-        <a href="#" style={{ ...footerLinkStyle }}>
+        </Link>
+
+        <Link href="#" className="text-white text-decoration-none small">
           Help
-        </a>
+        </Link>
       </div>
     </footer>
   );
 }
-
-const footerLinkStyle: React.CSSProperties = {
-  color: "white",
-  textDecoration: "none",
-  margin: "0 10px",
-  fontSize: "14px",
-};

@@ -3,221 +3,525 @@
 ## 🚀 Live Demo
 
 https://your-app-url.com
-Test account: [test@test.com](mailto:test@test.com) / 123456
 
-## 🧠 Overview
+## 📌 Test Accounts
 
-Bank App is a polished, enterprise-ready digital banking platform built to showcase full-stack product delivery at scale. It combines a secure NestJS REST API with a high-performance Next.js customer portal to support end-to-end banking operations:
+### 👤 Customer User1
 
-- Customer and admin role-based access (authentication, user sessions, policy enforcement)
-- End-to-end account management (create, read, update, delete accounts, balance computation, and multi-account handling)
-- Transactional statements and reporting (filtered views by account, type, and dates)
-- Persistent data layer with PostgreSQL and resilient API orchestration in NestJS
-- Frontend/UX using Next.js web app patterns for responsive, secure user workflows
-- Deployment-ready process management via PM2 and configurable environment variables
+- Email: `julik.golovenj@gmail.com`
+- Password: `password123`
 
-This repository demonstrates product thinking through coherent feature flows, modular architecture, API-driven frontend integration, and readiness for scaling in enterprise environments.
+### 👤 Customer User2
 
-## ✅ Demo Login Credentials
+- Email: `tomsimpson@test.com`
+- Password: `tom123`
 
-You can use the following test accounts to explore the application:
+### 👤 Admin User
 
-👤 Customer User1:
+- Email: `sam@admin.com`
+- Password: `admin123`
 
-- Email: julian@test.com
-- Password: password123
-
-👤 Customer User2:
-
-- Email: tomSimpson@test.com
-- Password: tom123
-
-🛠️ Admin User:
-
-- Email: sam@admin.com
-- Password: admin123
-
-## ✨ Features
-
-- User authentication (JWT)
-- Create and manage projects
-<!-- - Drag-and-drop task board (Kanban style) -->
-- REST API with ASP.NET Core
-- PostgreSQL database integration
-- Responsive React UI
-
-## 🛠 Tech Stack
-
-- Frontend: Next.js + TypeScript
-- Backend: Nest.js
-- Database: PostgreSQL
-- Styling: Bootstrap
-
-## 📸 Screenshots
+# 📸 Screenshots
 
 (put images here of different pages of your project)
 
-Recruiters are lazy (not an insult — just reality).
+### User Dashboard
 
-Add:
+![pic1](https://github.com/Julian22222/Bank/blob/main/screenshots/home.jpg)
 
-screenshots
-GIFs
-UI previews
+### Accounts
 
-Without visuals: they skip your repo
+![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/accounts.jpg)
 
-## Repository structure
+### Messages
 
-- `/bank-api`: NestJS backend service (CRUD, PostgreSQL, JWT-style auth patterns, service modules for users/accounts/statements/admin).
-- `/bankapp`: Next.js frontend (React 19, Tailwind/CSS, pages for login/registration/account/statement and customer dashboard).
-- `/ecosystem.config.js`: PM2 process manager settings for production deployment.
+![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/messages.jpg)
 
-## ⚙️ Setup
+### Admin - User dashboard
 
-(steps)
+![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-user-dashboard.jpg)
 
-### Backend: `bank-api`
+### Admin - Transactions
 
-#### Features implemented
+![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-transactions.jpg)
 
-- Users module: create/read/update/delete users
-- Accounts module: CRUD for bank accounts
-- Statements module: transaction statements
-- Admin module: admin user workflows
-- CORS / configuration via `.env` + `dotenv`
-- Jest unit + e2e tests
+# 📖 Overview
 
-#### Run backend
+Bank App is a full-stack digital banking platform that allows customers to securely manage their bank accounts through a modern web application.
 
-1. `cd bank-api`
-2. `npm install`
-3. create and configure `.env` (e.g. `DATABASE_URL`, `PORT=3000`)
-4. `npm run start:dev` (development)
-5. `npm run start:prod` after `npm run build`
+The system provides customer and administrator portals with role-based access, allowing users to manage accounts, view transaction history, and perform administrative tasks.
 
-#### Backend scripts
+The application follows a typical enterprise architecture where a **Next.js frontend** communicates with a **NestJS REST API**, which stores and retrieves data from **PostgreSQL**.
 
-- `npm run build`
-- `npm run start`
-- `npm run start:dev`
-- `npm run lint`
-- `npm test`
-- `npm run test:e2e`
+The project was built to demonstrate full-stack software engineering practices including:
 
-#### Database
+- REST API development
+- Authentication & Authorization
+- Database design
+- CRUD operations
+- Secure backend architecture
+- Responsive frontend development
+- Testing
+- Production-ready deployment structure
 
-- `bank-api/myDatabase.sql` has base schema stubs.
-- using `pg` driver for Postgres; adapt `src/app.module.ts` datasource configuration.
+# ✨ Features
 
-### Frontend: `bankapp`
+## Authentication
 
-#### Features implemented
+- User registration
+- User login
+- JWT authentication
+- Password hashing
+- Protected API endpoints
+- Role-based authorization
+- Customer and Admin accounts
 
-- Registration and Login UI
-- Customer account page
-- Statement listing by account type
-- Banking highlights and quick actions
-- Uses React 19 + Next 15 and Bootstrap
+## Customer Features
 
-#### Run frontend
+- View dashboard
+- Create bank accounts
+- Edit account information
+- Delete accounts
+- View account balances
+- View transaction history
+- Filter statements
+- Responsive user interface
 
-1. `cd bankapp`
-2. `npm install`
-3. `npm run dev` (app at `http://localhost:3000`)
-4. `npm run build && npm run start` for production
+## Administrator Features
 
-#### Frontend scripts
+- View all users
+- Manage users
+- View all transactions
+- Administrative dashboard
+- Role management
 
-- `npm run dev`
-- `npm run build`
-- `npm run start`
-- `npm run lint`
-- `npm run json-server` (mock data API on port 3005)
+## Backend Features
 
-### Root commands
+- REST API
+- Modular NestJS architecture
+- DTO validation
+- Global validation pipes
+- Error handling
+- PostgreSQL integration
+- Environment configuration
+- PM2 production support
 
-- `npm run start2` (PM2 startup using `ecosystem.config.js`)
+## Frontend Features
 
-## Environment setup
+- Next.js App
+- TypeScript
+- Bootstrap UI
+- Responsive design
+- Client-side validation
+- API integration
+- Authentication pages
 
-Recommended `.env` values (backend):
+# 🛠 Tech Stack
 
-- `DATABASE_URL=postgres://<user>:<pass>@localhost:5432/<db>`
-- `PORT=3000`
-- `JWT_SECRET=your-secret`
+## Frontend
 
-## Future improvements
+- Next.js
+- React
+- TypeScript
+- Bootstrap
 
-- Add full JWT auth + role-based guards in NestJS
-- Add production PostgreSQL migrations (TypeORM/Prisma)
-- Add centralized API client and service layer for frontend
-- Add Cypress/Puppeteer end-to-end tests
-- Add CI configuration (GitHub Actions)
+## Backend
 
-## Notes
+- NestJS
+- Node.js
+- TypeScript
 
-- Ensure backend is running before using frontend interactions that hit API endpoints.
-- `bankapp` currently contains a local `json-server` option for quick API mocks.
+## Database
+
+- PostgreSQL
+
+## Testing
+
+- Jest
+- Supertest
+
+## Deployment
+
+- PM2
+
+# 🏗 Architecture
+
+```text
+                Next.js Frontend
+                        │
+                  HTTPS REST API
+                        │
+                 NestJS Backend
+                        │
+                  PostgreSQL Database
+```
+
+# 📁 Project Structure
+
+```text
+bank-app/
+│
+├── bank-api/
+│   ├── src/
+│   │   ├── accounts/
+│   │   ├── admin/
+│   │   ├── auth/
+|   |   ├── auth-admin/
+|   |   ├── database/
+|   |   ├── messages/
+│   │   ├── transactions/
+│   │   ├── users/
+│   │   └── main.ts
+│   │
+│   ├── test/
+│   ├── myDatabase.sql
+│   └── package.json
+│
+├── bankapp/
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+|   |   └── styles/
+│   │
+│   ├── public/
+│   └── package.json
+│
+├── ecosystem.config.js
+└── package.json
+```
+
+# 🔄 Request Flow
+
+```text
+User
+
+↓
+
+Next.js Frontend
+
+↓
+
+REST API Request
+
+↓
+
+NestJS Controller
+
+↓
+
+Service Layer
+
+↓
+
+PostgreSQL Database
+
+↓
+
+JSON Response
+
+↓
+
+Frontend UI
+```
+
+# ⚙️ Installation
+
+## Prerequisites
+
+- Node.js 18+
+- npm
+- PostgreSQL
+
+## Clone Repository
+
+```bash
+git clone https://github.com/yourusername/bank-app.git
+
+cd bank-app
+```
+
+# Backend Setup
+
+```bash
+cd bank-api
+
+npm install
+```
+
+Create a `.env` file.
+
+Example:
+
+```env
+DATABASE_URL=postgres://postgres:password@localhost:5432/bankdb
+
+PORT=3000
+
+JWT_SECRET=your-secret-key
+```
+
+Run development server
+
+```bash
+npm run start:dev
+```
+
+Build production
+
+```bash
+npm run build
+
+npm run start:prod
+```
+
+# Frontend Setup
+
+```bash
+cd bankapp
+
+npm install
+```
+
+Create `.env.local`
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+Run development server
+
+```bash
+npm run dev
+```
+
+Production
+
+```bash
+npm run build
+
+npm run start
+```
+
+# 📦 Backend Scripts
+
+```bash
+npm run start
+
+npm run start:dev
+
+npm run build
+
+npm run lint
+
+npm test
+
+npm run test:e2e
+```
+
+# 📦 Frontend Scripts
+
+```bash
+npm run dev
+
+npm run build
+
+npm run start
+
+npm run lint
+```
+
+# 🌐 REST API
+
+## Authentication
+
+```http
+POST /auth/login
+
+POST /auth/logout
+
+POST /auth/register
+
+POST /auth/refresh
+```
+
+## Users
+
+```http
+GET /users/me
+
+GET /users
+
+GET /users/:id
+
+POST /users
+
+PATCH /users/:id
+
+PATCH /users/password
+
+PATCH /users/:id/password
+
+DELETE /users/:id
+```
+
+## Accounts
+
+```http
+GET /accounts
+
+GET /accounts/me
+
+GET /accounts/user/:accountId/balance
+
+GET /accounts/:id
+
+POST /accounts
+
+PATCH /accounts/:id
+
+DELETE /accounts/:id
+```
+
+## Transactions
+
+```http
+GET /transactions
+
+GET /transactions/my
+
+GET /transactions/user/:userId
+
+GET /transactions/:id
+
+POST /transactions
+
+PATCH /transactions/:id
+
+DELETE /transactions/:id
+```
+
+## Messages
+
+```http
+GET /messages
+
+GET /messages/user/:userId
+
+GET /messages/my
+
+GET /messages/:id
+
+POST /messages
+
+PATCH /messages/:id
+
+DELETE /messages/:id
+```
+
+## Administration
+
+```http
+GET /admin
+
+GET /admin/me
+
+GET /admin/:id
+
+GET /admin/user-registration
+
+POST /admin
+
+PATCH /admin/:id
+
+PATCH /admin/:id/password
+
+GET /admin/transactions
+```
+
+# 🧪 Testing
+
+Backend
+
+```bash
+npm test
+```
+
+End-to-End
+
+```bash
+npm run test:e2e
+```
+
+Frontend
+
+```bash
+npm run lint
+```
+
+Testing includes
+
+- Unit tests
+- Integration tests
+- API endpoint tests
+- Validation testing
+
+# 🚀 Deployment
+
+The application is production-ready and supports deployment using PM2.
+
+Start using:
+
+```bash
+npm run start2
+```
+
+Deployment architecture:
+
+```text
+Browser
+
+↓
+
+Next.js Frontend
+
+↓
+
+NestJS API
+
+↓
+
+PostgreSQL
+```
+
+# 🔒 Security
+
+- JWT Authentication
+- Password Hashing
+- Role-Based Authorization
+- Protected Routes
+- DTO Validation
+- Request Validation
+- Environment Variables
+- Secure REST API
+
+# 🚀 Future Improvements
+
+- Docker support
+- GitHub Actions CI/CD
+- Swagger API documentation
+- Redis caching
+- Email verification
+- Password reset
+- Two-factor authentication
+- Audit logging
+- Rate limiting
+- Account lockout after failed login attempts
+- File upload support
+- Notification system
+- Cypress
+- messages microservice
+- production PostgreSQL migrations (TypeORM/Prisma)
 
 ## License
 
 MIT
-
-<!-- ////////////////////////////// -->
-
-## Tech stack
-
-- TypeScript
-- Node.js
-- NestJS (backend)
-- Next.js (frontend)
-- PostgreSQL (database, via `pg` in backend)
-- PM2
-- ESLint + Prettier
-
-## 🧩 Architecture
-
-Client (Next.js) - Frontend
-↓
-API (Nest.js) - Backend
-↓
-Database (PostgreSQL)
-
-## Testing
-
-- Backend:
-  - `npm run test` (unit)
-  - `npm run test:e2e`
-- Frontend:
-  - `npm run lint`
-
-### High-level architecture
-
-1. Frontend (`bankapp`): Next.js app running in browser.
-   - UI pages: login, registration, account overview, statements, admin dashboard.
-   - Calls backend API endpoints for authentication and data operations.
-
-2. Backend (`bank-api`): NestJS REST API.
-   - Modules: `users`, `accounts`, `statements`, `admin`.
-   - Controllers expose endpoints and delegate logic to services.
-   - Services encapsulate business rules and repository interactions.
-   - PostgreSQL holds core data; initialized using `myDatabase.sql`.
-
-3. Data store: PostgreSQL.
-   - `users`, `accounts`, `statements`, and admin-related tables.
-   - Connection via `DATABASE_URL` and `pg` driver.
-
-### Request flow
-
-- User interacts with frontend page.
-- Frontend sends HTTPS request to backend API (e.g., `/api/users`, `/api/accounts`).
-- Backend controller receives request, validates payload, and calls service.
-- Service uses repository/DB to execute SQL via `pg`.
-- Response propagated back to frontend.
-
-### Deployment architecture
-
-- Dev: `npm run start:dev` in `bank-api`, `npm run dev` in `bankapp`.
-- Prod: `npm run build` + `npm run start` in each module.
-- Optional PM2 orchestrates backend using `ecosystem.config.js`.

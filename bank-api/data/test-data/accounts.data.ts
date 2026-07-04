@@ -1,6 +1,6 @@
-import { Account } from 'types/account.type';
+import { IAccount } from '../../../shared/types/account.interface';
 
-export const allAccounts: Account[] = [
+export const allAccounts: IAccount[] = [
   {
     customer_id: 1,
     account_type: 'Main',

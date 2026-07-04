@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateMessageDto {
   @IsOptional()
@@ -16,6 +16,10 @@ export class UpdateMessageDto {
   @IsOptional()
   @IsString()
   msg_body?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  is_read?: boolean;
 
   @IsOptional()
   @IsString()

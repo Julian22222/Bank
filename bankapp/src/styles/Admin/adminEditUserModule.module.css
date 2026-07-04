@@ -1,0 +1,24 @@
+.mainBlock {
+  background-image: url("/LogInPic/BackgroundPic2.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.cardBlock {
+  max-width: 650px;
+}
+
+.closeBtn {
+  top: 15px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 20px;
+}
+
+.closeBtn:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}

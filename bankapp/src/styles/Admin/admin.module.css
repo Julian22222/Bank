@@ -1,0 +1,134 @@
+/* /////page.tsx */
+
+.loginBlock {
+  font-family: Arial, sans-serif;
+  background-image: url("/LogInPic/Login1.jpg");
+}
+
+/* ///////////LoginFormAdmin */
+.adminLoginBtn {
+  border-color: #a45d16 !important;
+  color: #a45d16 !important;
+}
+
+.adminLoginBtn:hover {
+  background-color: #a45d16 !important;
+  border-color: #a45d16 !important;
+  color: white !important;
+}
+
+.backToMainBtn {
+  border-color: #006a4d !important;
+  color: #006a4d !important;
+}
+
+.backToMainBtn:hover {
+  background-color: #006a4d !important;
+  border-color: #006a4d !important;
+  color: white !important;
+}
+
+/* //////////admin-page */
+
+.mainBlock {
+  font-family: Arial, sans-serif;
+  background-image: url("/LogInPic/BackgroundPic2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+/* ///////////admin-user-page */
+.pageUserBlock {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background-image: url("/LogInPic/BackgroundPic2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.pageUserBlock > footer {
+  margin-top: auto;
+}
+
+/* ////////////UserTable */
+
+.adminTable {
+  font-family: Arial, sans-serif;
+}
+
+/* hover animation like your original */
+.adminTable tbody tr {
+  cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.adminTable tbody tr:hover {
+  transform: scale(1.01);
+  background: #f8fbff;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.12);
+}
+
+/* zebra rows */
+.adminTable tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* rounded hover edges */
+.adminTable tbody tr:hover td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.adminTable tbody tr:hover td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* /////////////allTransactions */
+
+.row {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+  cursor: pointer;
+}
+
+.row:hover {
+  transform: scale(1.01);
+  background: #f8fbff;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.12);
+}
+
+.clearBtn {
+  margin-left: -40px;
+}
+
+/* /////////////AdminMessageModule */
+
+.mainFormMessage {
+  max-width: 700px;
+  font-family: Arial, sans-serif;
+}
+
+.formCloseBtn {
+  top: 15px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 20px;
+}
+.formCloseBtn:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}

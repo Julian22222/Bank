@@ -1,6 +1,6 @@
-import { Transaction } from 'types/transaction.type';
+import { ITransaction } from '../../../shared/types/transaction.interface';
 
-export const transactions: Transaction[] = [
+export const transactions: ITransaction[] = [
   {
     account_id: 1,
     customer_id: 1,

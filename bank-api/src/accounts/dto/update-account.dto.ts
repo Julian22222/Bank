@@ -12,4 +12,12 @@ export class UpdateAccountDto {
   @IsOptional()
   @IsString()
   account_nr?: string;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @IsOptional()
+  @IsNumber()
+  overdraft_limit?: number;
 }

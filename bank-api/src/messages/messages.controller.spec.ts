@@ -5,9 +5,10 @@ import { mockMessagesService } from './messages.controller.mock';
 
 describe('MessagesController', () => {
   let controller: MessagesController;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [MessagesController],
       providers: [{ provide: MessagesService, useValue: mockMessagesService }],
     }).compile();
@@ -15,9 +16,41 @@ describe('MessagesController', () => {
     controller = module.get<MessagesController>(MessagesController);
   });
 
-  it('Test 1: should GET all messages', async () => {
-    const allMessages = [
-      {
+  afterEach(async () => {
+    jest.clearAllMocks();
+    await module.close();
+  });
+
+  describe('findAll', () => {
+    it('should return all messages', async () => {
+      const allMessages = [
+        {
+          message_id: 1,
+          customer_id: 1,
+          msg_subject: 'new account',
+          msg_status: 'common',
+          msg_body: 'Welcome to Big Bank',
+          msg_created_by: 'Anthony',
+          sent_at: '2026-04-21 19:12:55.863',
+        },
+        {
+          message_id: 2,
+          customer_id: 2,
+          msg_subject: 'new account',
+          msg_status: 'common',
+          msg_body: 'Welcome to Big Bank',
+          msg_created_by: 'Tom',
+          sent_at: '2026-04-15 19:12:55.863',
+        },
+      ];
+
+      expect(await controller.findAll()).toEqual(allMessages);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return one message', async () => {
+      const allMessages = {
         message_id: 1,
         customer_id: 1,
         msg_subject: 'new account',
@@ -25,75 +58,105 @@ describe('MessagesController', () => {
         msg_body: 'Welcome to Big Bank',
         msg_created_by: 'Anthony',
         sent_at: '2026-04-21 19:12:55.863',
-      },
-      {
-        message_id: 2,
-        customer_id: 2,
-        msg_subject: 'new account',
-        msg_status: 'common',
-        msg_body: 'Welcome to Big Bank',
-        msg_created_by: 'Tom',
-        sent_at: '2026-04-15 19:12:55.863',
-      },
-    ];
+      };
 
-    expect(await controller.findAll()).toEqual(allMessages);
-  });
+      const messageId = 1;
 
-  it('Test 2: should GET 1 message and return this new message', async () => {
-    const allMessages = {
-      message_id: 1,
-      customer_id: 1,
-      msg_subject: 'new account',
-      msg_status: 'common',
-      msg_body: 'Welcome to Big Bank',
-      msg_created_by: 'Anthony',
-      sent_at: '2026-04-21 19:12:55.863',
-    };
+      const result = await controller.findOne(messageId);
 
-    const messageId = 1;
+      expect(result).toEqual(allMessages);
+      expect(mockMessagesService.findOne).toHaveBeenCalledWith(messageId);
+      expect(result.message_id).toBe(messageId);
+    });
 
-    expect(await controller.findOne(messageId)).toEqual(allMessages);
-  });
-
-  it('Test 3: should CREATE a new message and return this new message', async () => {
-    const newMsg = {
-      customer_id: 1,
-      msg_subject: 'Bank account',
-      msg_status: 'urgent',
-      msg_body: 'test body',
-      msg_created_by: 'Johny',
-    };
-
-    expect(await controller.create(newMsg)).toEqual({
-      customer_id: 1,
-      msg_subject: 'Bank account',
-      msg_status: 'urgent',
-      msg_body: 'test body',
-      msg_created_by: 'Johny',
+    it('should throw if message is not found', async () => {
+      mockMessagesService.findOne.mockRejectedValue(
+        new Error('Message not found'),
+      );
+      await expect(controller.findOne(999)).rejects.toThrow(
+        'Message not found',
+      );
     });
   });
 
-  it('Test 2:should UPDATE a user`s message and return updated message', async () => {
-    const messageId = 1;
-    const updatedMsg = {
-      msg_body: 'updated body',
-    };
+  describe('create', () => {
+    it('should CREATE a new message and return it', async () => {
+      const newMsg = {
+        customer_id: 1,
+        msg_subject: 'Bank account',
+        msg_status: 'urgent',
+        msg_body: 'test body',
+        msg_created_by: 'Johny',
+      };
 
-    expect(await controller.update(messageId, updatedMsg)).toEqual({
-      customer_id: 1,
-      msg_subject: 'Bank account',
-      msg_status: 'urgent',
-      msg_body: 'updated body',
-      msg_created_by: 'Johny',
+      const result = await controller.create(newMsg);
+
+      expect(result).toEqual({
+        customer_id: 1,
+        msg_subject: 'Bank account',
+        msg_status: 'urgent',
+        msg_body: 'test body',
+        msg_created_by: 'Johny',
+      });
+
+      expect(mockMessagesService.create).toHaveBeenCalledWith(newMsg);
+      expect(result.msg_body).toBe('test body');
+      expect(result.msg_subject).toBe('Bank account');
+    });
+
+    it('should throw if create fails', async () => {
+      mockMessagesService.create.mockRejectedValue(new Error('Create failed'));
+      await expect(controller.create({} as any)).rejects.toThrow(
+        'Create failed',
+      );
     });
   });
 
-  it('Test 3: should REMOVE message and return text - Message deleted successfully', async () => {
-    const messageId = 2;
+  describe('update', () => {
+    it('should UPDATE a message and return it', async () => {
+      const messageId = 1;
+      const updatedMsg = {
+        msg_body: 'updated body',
+      };
 
-    expect(await controller.remove(messageId)).toEqual({
-      message: 'Message deleted successfully',
+      const result = await controller.update(messageId, updatedMsg);
+
+      expect(result).toEqual({
+        customer_id: 1,
+        msg_subject: 'Bank account',
+        msg_status: 'urgent',
+        msg_body: 'updated body',
+        msg_created_by: 'Johny',
+      });
+
+      expect(mockMessagesService.update).toHaveBeenCalledWith(
+        messageId,
+        updatedMsg,
+      );
+      expect(result.msg_body).toBe('updated body');
+    });
+
+    it('should throw if update fails', async () => {
+      mockMessagesService.update.mockRejectedValue(new Error('Update failed'));
+      await expect(controller.update(1, {} as any)).rejects.toThrow(
+        'Update failed',
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should REMOVE message and return text - Message deleted successfully', async () => {
+      const messageId = 2;
+
+      const result = await controller.remove(messageId);
+
+      expect(mockMessagesService.remove).toHaveBeenCalledWith(messageId);
+      expect(mockMessagesService.remove).toHaveBeenCalledTimes(1);
+      expect(result).toBeDefined();
+
+      expect(result).toEqual({
+        message: 'Message deleted successfully',
+      });
     });
   });
 });

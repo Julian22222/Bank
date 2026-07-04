@@ -10,40 +10,67 @@ import {
   HttpCode,
   ParseIntPipe,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionDto } from './dto/transactions.dto';
+import { TransactionWithDetailsDto } from './dto/transactionsWithDetails.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Get()
-  async findAll(): Promise<TransactionDto[]> {
-    return await this.transactionsService.findAll();
+  findAll(): Promise<TransactionDto[]> {
+    return this.transactionsService.findAll();
   }
 
   //show transactions + customers data + accounts.account_type
   @Get('with-details')
-  findAllWithDetails() {
+  findAllWithDetails(): Promise<TransactionWithDetailsDto[]> {
     return this.transactionsService.getAllTransactions();
   }
 
-  @Get(':transactionId')
-  async findOne(
-    @Param('transactionId', ParseIntPipe) transactionId: number,
-  ): Promise<TransactionDto> {
-    return await this.transactionsService.findOne(transactionId);
+  @Get(':customer_id/accounts/:account_id')
+  findUserSingleAccountTransactions(
+    @Param('customer_id', ParseIntPipe) customer_id: number,
+    @Param('account_id', ParseIntPipe) account_id: number,
+  ) {
+    return this.transactionsService.userSingleAccountAllTransactions(
+      customer_id,
+      account_id,
+    );
   }
 
-  //all transactiosns from all accounts of particular user
+  //all user transactions from all accounts
+  @Get('my')
+  //Get userId from JWT cookies
+  @UseGuards(JwtAuthGuard)
+  getUserAllTransactions(@Req() req): Promise<TransactionDto[] | null> {
+    console.log(
+      'FROM TransactionsController - Current user from JWT payload:',
+      req.user,
+    );
+    return this.transactionsService.findCurrentUserAllTrx(req.user.sub);
+  }
+
+  //all user transactions from all accounts
   @Get('user/:userId')
-  async findAllCurrentUSerTransactions(
+  findAllCurrentUSerTransactions(
     @Param('userId', ParseIntPipe) userId: number,
   ) {
-    return await this.transactionsService.findCurrentUserAllTrx(userId);
+    return this.transactionsService.findCurrentUserAllTrx(userId);
+  }
+
+  @Get(':transactionId')
+  findOne(
+    @Param('transactionId', ParseIntPipe) transactionId: number,
+  ): Promise<TransactionDto> {
+    return this.transactionsService.findOne(transactionId);
   }
 
   @Post()
