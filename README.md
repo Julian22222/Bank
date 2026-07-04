@@ -235,9 +235,7 @@ Frontend UI
 ## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/bank-app.git
-
-cd bank-app
+git clone https://github.com/Julian22222/Bank.git
 ```
 
 # Backend Setup
@@ -258,6 +256,8 @@ DATABASE_URL=postgres://postgres:password@localhost:5432/bankdb
 PORT=3000
 
 JWT_SECRET=your-secret-key
+
+JWT_REFRESH_SECRET=your-secret-key
 ```
 
 Run development server
@@ -305,6 +305,8 @@ npm run start
 # 📦 Backend Scripts
 
 ```bash
+npm run seed
+
 npm run start
 
 npm run start:dev
