@@ -1,4 +1,4 @@
-# Bank App – Full Stack Project Management App
+# Bank App – Full Stack Banking Platform
 
 ## 🚀 Live Demo
 
@@ -21,7 +21,7 @@ https://your-app-url.com
 - Email: `sam@admin.com`
 - Password: `admin123`
 
-# 📸 Screenshots
+## 📸 Screenshots
 
 (put images here of different pages of your project)
 
@@ -59,62 +59,61 @@ The project was built to demonstrate full-stack software engineering practices i
 - Authentication & Authorization
 - Database design
 - CRUD operations
-- Secure backend architecture
+- Layered backend architecture (controllers, services, repositories)
 - Responsive frontend development
 - Testing
 - Production-ready deployment structure
 
 # ✨ Features
 
-## Authentication
+## 🔐 Authentication
 
-- User registration
-- User login
+- User registration and login
 - JWT authentication
-- Password hashing
+- Password hashing with bcrypt
 - Protected API endpoints
-- Role-based authorization
-- Customer and Admin accounts
+- Role-based authorization (Customer & Admin)
 
-## Customer Features
+## 👤 Customer Features
 
-- View dashboard
-- Create bank accounts
-- Edit account information
-- Delete accounts
+- View account dashboard
+- Create, edit, and delete bank accounts
 - View account balances
 - View transaction history
-- Filter statements
+- Filter transaction statements
 - Responsive user interface
 
-## Administrator Features
+## 👨‍💼 Administrator Features
 
-- View all users
-- Manage users
+- View and manage users
 - View all transactions
 - Administrative dashboard
 - Role management
 
-## Backend Features
+## ⚙️ Backend Features
 
-- REST API
-- Modular NestJS architecture
+- RESTful API built with NestJS
+- Modular architecture
 - DTO validation
 - Global validation pipes
-- Error handling
-- PostgreSQL integration
-- Environment configuration
-- PM2 production support
+- Centralized error handling
+- PostgreSQL database integration
+- Environment-based configuration
 
-## Frontend Features
+## 🎨 Frontend Features
 
-- Next.js App
+- Next.js and React
 - TypeScript
 - Bootstrap UI
 - Responsive design
-- Client-side validation
-- API integration
-- Authentication pages
+- Client-side form validation
+- REST API integration
+
+## 🚀 DevOps & Deployment
+
+- CI/CD pipeline with GitHub Actions
+- PM2 process management
+- Environment variable configuration
 
 # 🛠 Tech Stack
 
@@ -369,13 +368,13 @@ DELETE /users/:id
 ## Accounts
 
 ```http
-GET /accounts
-
 GET /accounts/me
 
-GET /accounts/user/:accountId/balance
+GET /accounts
 
 GET /accounts/:id
+
+GET /accounts/user/:accountId/balance
 
 POST /accounts
 
@@ -387,13 +386,13 @@ DELETE /accounts/:id
 ## Transactions
 
 ```http
-GET /transactions
-
 GET /transactions/my
 
-GET /transactions/user/:userId
+GET /transactions
 
 GET /transactions/:id
+
+GET /transactions/user/:userId
 
 POST /transactions
 
@@ -405,13 +404,13 @@ DELETE /transactions/:id
 ## Messages
 
 ```http
-GET /messages
-
-GET /messages/user/:userId
-
 GET /messages/my
 
+GET /messages
+
 GET /messages/:id
+
+GET /messages/user/:userId
 
 POST /messages
 
@@ -423,9 +422,9 @@ DELETE /messages/:id
 ## Administration
 
 ```http
-GET /admin
-
 GET /admin/me
+
+GET /admin
 
 GET /admin/:id
 
@@ -509,20 +508,18 @@ PostgreSQL
 # 🚀 Future Improvements
 
 - Docker support
-- GitHub Actions CI/CD
-- Swagger API documentation
-- Redis caching
-- Email verification
-- Password reset
-- Two-factor authentication
+- Redis caching for frequently accessed data
+- Swagger/OpenAPI documentation
+- Email and phone verification
+- Password reset via email
+- Two-factor authentication (2FA)
 - Audit logging
 - Rate limiting
 - Account lockout after failed login attempts
-- File upload support
-- Notification system
-- Cypress
+- File uploads for user profile pictures
+- Real-time notifications with WebSockets
 - messages microservice
-- production PostgreSQL migrations (TypeORM/Prisma)
+- Database migrations using Prisma or TypeORM
 
 ## License
 
