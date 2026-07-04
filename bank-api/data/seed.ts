@@ -97,7 +97,7 @@ const seed = async ({ allusers, transactions, allAccounts }: Props) => {
     registration_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL UNIQUE,
+    email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(15) NOT NULL,
     customer_address VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,

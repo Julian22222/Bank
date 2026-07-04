@@ -10,6 +10,11 @@ const pool = new Pool({
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
+
+  // SSL configuration for secure connection to the database- Needs only for AWS RDS PostgreSQL
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 @Module({

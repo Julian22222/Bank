@@ -23,8 +23,6 @@ https://your-app-url.com
 
 ## 📸 Screenshots
 
-(put images here of different pages of your project)
-
 ### User Dashboard
 
 ![pic1](https://github.com/Julian22222/Bank/blob/main/screenshots/home.jpg)
