@@ -1,9 +1,9 @@
+import { loadParameters } from './config/aws-parameter-store.service';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 // import * as cookieParser from 'cookie-parser';
 import cookieParser from 'cookie-parser';
-import { loadParameters } from './config/aws-parameter-store.service';
 
 async function bootstrap() {
   //if useAWS = true -> use secret files from AWS Parameter store not from local .env
