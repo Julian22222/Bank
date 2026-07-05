@@ -6,10 +6,11 @@ import cookieParser from 'cookie-parser';
 import { loadParameters } from './config/aws-parameter-store.service';
 
 async function bootstrap() {
-  const isLocal = process.env.NODE_ENV !== 'production';
-
-  await loadParameters(); //load environment variables from AWS Parameter Store
-
+  //if useAWS = true -> use secret files from AWS Parameter store not from local .env
+  const useAWS = process.env.USE_AWS_PARAMETER_STORE === 'true';
+  if (useAWS) {
+    await loadParameters(); //load environment variables from AWS Parameter Store
+  }
   const PORT = process.env.PORT ?? 3005;
   const app = await NestFactory.create(AppModule);
 

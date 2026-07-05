@@ -13,19 +13,23 @@ const parameterNames = [
   'JWT_SECRET',
 ];
 
+//AWS SDK - to get secret values from Parameter store
 export async function loadParameters() {
-  for (const name of parameterNames) {
-    const response = await client.send(
-      new GetParameterCommand({
-        Name: name,
-        WithDecryption: true,
-      }),
-    );
+  try {
+    for (const name of parameterNames) {
+      const response = await client.send(
+        new GetParameterCommand({
+          Name: name,
+          WithDecryption: true,
+        }),
+      );
 
-    if (response.Parameter?.Value) {
-      process.env[name] = response.Parameter.Value;
+      if (response.Parameter?.Value) {
+        process.env[name] = response.Parameter.Value;
+      }
     }
+  } catch (err) {
+    console.error('AWS Parameter Store failed:', err.message);
+    throw err;
   }
-
-  console.log('JWT loaded:', process.env.JWT_SECRET);
 }
