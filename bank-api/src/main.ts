@@ -1,6 +1,6 @@
 import { loadParameters } from './config/aws-parameter-store.service';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+// import { NestFactory } from '@nestjs/core';
+// import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 // import * as cookieParser from 'cookie-parser';
 import cookieParser from 'cookie-parser';
@@ -12,6 +12,10 @@ async function bootstrap() {
     await loadParameters(); //load environment variables from AWS Parameter Store
   }
   const PORT = process.env.PORT ?? 3005;
+
+  const { NestFactory } = await import('@nestjs/core');
+  const { AppModule } = await import('./app.module');
+
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser()); //Without that, req.cookies will be undefined.
