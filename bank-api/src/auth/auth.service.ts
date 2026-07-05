@@ -7,12 +7,14 @@ import { PG_POOL } from '../database/database.module';
 import { Pool } from 'pg';
 import { UserResponseDto } from './dto/response-user.dto';
 import { LoginDto } from './dto/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(PG_POOL) private readonly pool: Pool,
     private readonly jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async login(loginData: LoginDto, res: Response) {
@@ -44,7 +46,8 @@ export class AuthService {
 
     // 🔐 Access Token
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
+      // secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '15m',
     });
 

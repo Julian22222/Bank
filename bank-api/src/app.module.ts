@@ -9,9 +9,14 @@ import { DatabaseModule } from './database/database.module';
 import { MessagesModule } from './messages/messages.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthAdminModule } from './auth-admin/auth-admin.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
     UsersModule,
     AccountsModule,
     TransactionsModule,
