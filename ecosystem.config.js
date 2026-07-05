@@ -24,7 +24,7 @@ module.exports = {
     {
       name: "bank-api",
       cwd: "./bank-api",
-      script: "dist/src/main.js",
+      script: "dist/main.js",
       watch: false,
       env: {
         NODE_ENV: "production",
