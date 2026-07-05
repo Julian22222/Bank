@@ -26,4 +26,6 @@ export async function loadParameters() {
       process.env[name] = response.Parameter.Value;
     }
   }
+
+  console.log('JWT loaded:', process.env.JWT_SECRET);
 }

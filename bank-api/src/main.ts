@@ -8,9 +8,7 @@ import { loadParameters } from './config/aws-parameter-store.service';
 async function bootstrap() {
   const isLocal = process.env.NODE_ENV !== 'production';
 
-  if (!isLocal) {
-    await loadParameters(); //load environment variables from AWS Parameter Store
-  }
+  await loadParameters(); //load environment variables from AWS Parameter Store
 
   const PORT = process.env.PORT ?? 3005;
   const app = await NestFactory.create(AppModule);
