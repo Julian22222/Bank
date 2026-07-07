@@ -27,8 +27,8 @@ module.exports = {
       script: "dist/src/main.js",
       watch: false,
       env: {
-        NODE_ENV: "production",
-        USE_AWS_PARAMETER_STORE: "true", //use secrets not from.env but from AWS Parameter strre
+        NODE_ENV: "production", //use secrets not from.env but from AWS Parameter strre
+        // USE_AWS_PARAMETER_STORE: "true",
         PORT: 3005,
       },
     },

@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   //if useAWS = true -> use secret files from AWS Parameter store not from local .env
-  const useAWS = process.env.USE_AWS_PARAMETER_STORE === 'true';
+  const useAWS = process.env.NODE_ENV === 'production';
   if (useAWS) {
     await loadParameters(); //load environment variables from AWS Parameter Store
   }
