@@ -30,10 +30,6 @@ export async function transferActions(
     );
 
     const allAccountsWithBalance = await res.json();
-    console.log(
-      "allAccountsWithBalance from transferModuleActions",
-      allAccountsWithBalance,
-    );
 
     const fromAccountObject = allAccountsWithBalance.find(
       (account: AccountWithBalance) =>

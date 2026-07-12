@@ -20,6 +20,7 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [allUsers, setAllUsers] = useState<IUserWithAccount[]>([]);
   const [customerId, setCustomerId] = useState<number | undefined>();
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [bodyText, setBodyText] = useState(
     `Dear ${searchTerm},\n\nWrite your text here... \n\nKind regards,\nYour Bank Team.`,
@@ -28,6 +29,7 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
   useEffect(() => {
     if (!activeAdmin) {
       router.push("/admin-login");
+      return;
     }
 
     const fetchAllUsers = async () => {
@@ -52,12 +54,14 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
     };
 
     fetchAllUsers();
-  }, [activeAdmin, userId, router]);
+  }, [activeAdmin, userId]);
 
   useEffect(() => {
-    setBodyText(
-      `Dear ${searchTerm},\n\nWrite your text here...\n\nKind regards,\nYour Bank Team.`,
-    );
+    if (searchTerm) {
+      setBodyText(
+        `Dear ${searchTerm},\n\nWrite your text here...\n\nKind regards,\nYour Bank Team.`,
+      );
+    }
   }, [searchTerm]);
 
   const filterUsers = useMemo(() => {
@@ -70,7 +74,7 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      if (!customerId) {
+      if (customerId === undefined) {
         alert("Please select a valid user");
         return;
       }
@@ -78,14 +82,18 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
       const newMessage = await handleAdminMessage(formData);
 
       if (!newMessage.success) {
-        throw new Error("Failed to send message");
+        setErrorMessage(newMessage.error);
+        throw new Error(newMessage.error || "Failed to send message");
       }
 
       setSearchTerm("");
       setShowMsgModule(false);
       // }
-    } catch {
-      alert("Failed to send message");
+    } catch (error) {
+      console.error("SEND MESSAGE ERROR:", error);
+      setErrorMessage(
+        error instanceof Error ? error.message : "An unknown error occurred",
+      );
     }
   };
 
@@ -166,12 +174,12 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
             </ul>
           )}
 
-        <input type="hidden" name="customerId" value={customerId ?? ""} />
+        <input type="hidden" name="customerId" value={customerId} />
 
         <input
           type="hidden"
           name="msgCreatedBy"
-          value={activeAdmin?.admin_name}
+          value={activeAdmin?.admin_name ?? ""}
         />
 
         {/* Subject */}
@@ -185,6 +193,7 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
 
           <input
             required
+            autoComplete="off"
             id="messageSubject"
             name="messageSubject"
             type="text"
@@ -235,6 +244,11 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
             className="form-control p-3 rounded-3 fs-6 resize-vertical bg-light"
           />
         </div>
+        {errorMessage && (
+          <div className="text-danger text-bold text-center">
+            {errorMessage}
+          </div>
+        )}
 
         {/* Submit */}
         <button

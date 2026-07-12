@@ -1,3 +1,4 @@
+import { apiFetch } from "@/src/lib/api";
 import UserDashboard from "./UserDashboard";
 import { cookies } from "next/headers";
 
@@ -5,7 +6,7 @@ const fetchAllUsrTransactions = async () => {
   const cookieStore = await cookies();
 
   try {
-    const res = await fetch(
+    const res = await apiFetch(
       `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions/my`,
       {
         headers: {

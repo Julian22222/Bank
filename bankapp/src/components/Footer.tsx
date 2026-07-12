@@ -3,8 +3,8 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer
-      className=" text-white text-center py-4 mt-5"
-      style={{ backgroundColor: "#004c3f" }}
+      className="bg-footer text-white text-center py-4 px-3"
+      style={{ backgroundColor: "#004c3f", marginTop: "auto" }}
     >
       <p className="mb-2">
         &copy; {new Date().getFullYear()} Big Bank. All rights reserved.

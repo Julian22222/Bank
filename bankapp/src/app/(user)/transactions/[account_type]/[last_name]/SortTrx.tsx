@@ -11,16 +11,17 @@ type Props = {
 };
 
 export default function SortTrx({ account_type, allTransactions }: Props) {
-  const { currUserAllAccounts } = useUser();
-
-  const { activeUser } = useUser();
+  const { currUserAllAccounts, activeUser, currUserTrx } = useUser();
 
   // console.log("activeUser from SORTTRX", activeUser);
   // console.log("currUserAllAccounts from SORTTRX", currUserAllAccounts);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const filteredTransactions = useMemo(() => {
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
+  const searchedTransactions = useMemo(() => {
     if (!activeUser) return [];
 
     const userAccount = currUserAllAccounts.find(
@@ -29,23 +30,30 @@ export default function SortTrx({ account_type, allTransactions }: Props) {
 
     if (!userAccount) return [];
 
-    const userAccountId = userAccount?.account_id;
-
-    // console.log("allTransactions", allTransactions);
+    const search = searchTerm.toLowerCase();
 
     return allTransactions.filter(
       (trx) =>
-        trx.customer_id === activeUser?.customer_id &&
-        trx.account_id === userAccountId &&
-        (trx.details || "").toLowerCase().includes(searchTerm.toLowerCase()),
+        trx.account_id === userAccount.account_id &&
+        trx.details?.toLowerCase().includes(search),
     );
   }, [
     searchTerm,
     allTransactions,
-    activeUser,
     currUserAllAccounts,
     account_type,
+    activeUser,
   ]);
+
+  const paginatedTransactions = useMemo(() => {
+    const start = (page - 1) * 20;
+
+    return searchedTransactions.slice(start, start + 20);
+  }, [searchedTransactions, page]);
+
+  useEffect(() => {
+    setPageCount(Math.ceil(allTransactions.length / 20));
+  }, [searchedTransactions]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -82,9 +90,48 @@ export default function SortTrx({ account_type, allTransactions }: Props) {
 
         {/* Transactions */}
         <TransactionClient
-          sortedTrx={filteredTransactions}
+          sortedTrx={paginatedTransactions}
           account_type={account_type}
         />
+
+        {/* PAGINATION */}
+        <div className="d-flex justify-content-center align-items-center gap-2 mt-4">
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Prev
+          </button>
+
+          {page > 1 && (
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => setPage(page - 1)}
+            >
+              {page - 1}
+            </button>
+          )}
+
+          <button className="btn btn-primary btn-sm fw-bold">{page}</button>
+
+          {page < pageCount && (
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => setPage(page + 1)}
+            >
+              {page + 1}
+            </button>
+          )}
+
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            disabled={page === pageCount}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

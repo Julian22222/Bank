@@ -1,10 +1,11 @@
+import { apiFetch } from "@/src/lib/api";
 import MessagesDashboard from "./MessagesDashboard";
 import { cookies } from "next/headers";
 
 const fetchAllUserMessages = async () => {
   const cookieStore = await cookies();
 
-  const response = await fetch(
+  const response = await apiFetch(
     `${process.env.NEXT_PUBLIC_BACK_END_URL}/messages/my`,
     {
       headers: {

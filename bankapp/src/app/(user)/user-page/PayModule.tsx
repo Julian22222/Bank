@@ -18,9 +18,7 @@ export default function PaymentForm({
   additionalParam,
   setMessageStatus,
 }: Props) {
-  const { currUserAllAccounts, currUserTrx } = useUser();
-
-  const { activeUser } = useUser();
+  const { activeUser, currUserAllAccounts, currUserTrx } = useUser();
 
   const router = useRouter();
 

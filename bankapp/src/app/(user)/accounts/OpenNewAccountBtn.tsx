@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "../UserContext";
 import { openNewAccountAction } from "../../actions/openNewAccountActions";
+import { apiFetch } from "@/src/lib/api";
 
 export function OpenNewAccountBtn() {
   const [open, setOpen] = useState(false);
@@ -32,7 +33,7 @@ export function OpenNewAccountBtn() {
         return;
       }
 
-      const accountsRes = await fetch(
+      const accountsRes = await apiFetch(
         `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${activeUser?.customer_id}/accounts-balance`,
       );
 

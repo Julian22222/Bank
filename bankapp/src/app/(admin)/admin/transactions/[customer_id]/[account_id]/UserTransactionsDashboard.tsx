@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AdminPageHeader from "../../../../../../components/AdminPageHeader";
 import Admin_ShowUser from "./Admin_ShowUser";
 import MoneyForm from "./AdminTransactionModule";
@@ -24,10 +24,19 @@ export default function UserTransactionsDashboard({
 
   const [showModule, setShowModule] = useState<boolean>(false);
   const [overdraftModule, setOverdraftModule] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
 
   const handleDownload = async () => {
     const element = pdfRef.current;
     if (!element) return;
+
+    const buttons = document.querySelectorAll(".no-print");
+
+    // Hide buttons before creating PDF
+    buttons.forEach((btn) => {
+      (btn as HTMLElement).style.display = "none";
+    });
 
     const html2pdf = (await import("html2pdf.js")).default;
 
@@ -42,9 +51,21 @@ export default function UserTransactionsDashboard({
         })
         .save();
     } finally {
-      element.classList.remove("pdf-export");
+      // Show buttons again on the page
+      buttons.forEach((btn) => {
+        (btn as HTMLElement).style.display = "";
+      });
     }
   };
+
+  useEffect(() => {
+    setPageCount(Math.ceil(userAccountTransactions.length / 20));
+  }, []);
+
+  const filteredTransactions = useMemo(() => {
+    const start = (page - 1) * 20;
+    return userAccountTransactions.slice(start, start + 20);
+  }, [page, userAccountTransactions]);
 
   const handleOverdraftLimit = () => {
     setOverdraftModule(true);
@@ -85,7 +106,7 @@ export default function UserTransactionsDashboard({
               <div className="text-end mb-3">
                 <button
                   onClick={() => setShowModule(true)}
-                  className="text-decoration-none text-white py-2 px-3 rounded ms-2"
+                  className="no-print text-decoration-none text-white py-2 px-3 rounded ms-2"
                   style={{ backgroundColor: "#004c3f" }}
                 >
                   Add Transaction
@@ -147,7 +168,7 @@ export default function UserTransactionsDashboard({
                 </tr>
               </thead>
               <tbody>
-                {userAccountTransactions.map((tx, i) => (
+                {filteredTransactions.map((tx, i) => (
                   <tr key={tx.transaction_id} className="border-bottom">
                     <td className="p-2 fs-6">
                       {formatDate(tx.transaction_date)}
@@ -169,6 +190,44 @@ export default function UserTransactionsDashboard({
               </tbody>
             </table>
           </section>
+          {/* PAGINATION */}
+          <div className="no-print d-flex justify-content-center align-items-center gap-2 mt-4 mb-4">
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Prev
+            </button>
+
+            {page > 1 && (
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => setPage(page - 1)}
+              >
+                {page - 1}
+              </button>
+            )}
+
+            <button className="btn btn-primary btn-sm fw-bold">{page}</button>
+
+            {page < pageCount && (
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => setPage(page + 1)}
+              >
+                {page + 1}
+              </button>
+            )}
+
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              disabled={page === pageCount}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </button>
+          </div>
         </>
       )}
     </>

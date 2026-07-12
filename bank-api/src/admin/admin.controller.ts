@@ -38,13 +38,6 @@ export class AdminController {
     return this.adminService.findOne(req.user.sub);
   }
 
-  @Get(':adminId')
-  findOne(
-    @Param('adminId', ParseIntPipe) adminId: number,
-  ): Promise<AdminResponseDto> {
-    return this.adminService.findOne(adminId);
-  }
-
   @Get()
   findAll(): Promise<AdminResponseDto[]> {
     return this.adminService.findAll();
@@ -53,6 +46,13 @@ export class AdminController {
   @Get('user-registration')
   findAllUsersToRegister() {
     return this.adminService.findUsersToRegister();
+  }
+
+  @Get(':adminId')
+  findOne(
+    @Param('adminId', ParseIntPipe) adminId: number,
+  ): Promise<AdminResponseDto> {
+    return this.adminService.findOne(adminId);
   }
 
   @Post('login')

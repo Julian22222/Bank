@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-// const pool = require('../../data/dbconnection');
 import { PoolClient, Pool } from 'pg';
 import { PG_POOL } from '../database/database.module';
 import { AdminResponseDto } from './dto/response-admin.dto';

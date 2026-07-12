@@ -74,7 +74,8 @@ export default function RightSideAccounts({
           >
             Edit Password
           </button>
-          {activeUser?.phoneVerified ? (
+
+          {/* {activeUser?.phoneVerified ? (
             <div className="badge bg-success">Phone Verified ✔️ </div>
           ) : (
             <button
@@ -83,7 +84,7 @@ export default function RightSideAccounts({
             >
               Verify Phone Number
             </button>
-          )}
+          )} */}
 
           {activeUser?.emailVerified ? (
             <div className="badge bg-success">Email Verified ✔️ </div>

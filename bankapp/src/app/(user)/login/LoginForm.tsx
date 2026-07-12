@@ -9,9 +9,8 @@ import { loadUser } from "../../actions/auth";
 import styles from "../../../styles/LoginPage/logon.module.css";
 
 export default function LoginForm() {
-  const { setUserAccountType, setCurrUserAllAccounts } = useUser();
-
-  const { setActiveUser } = useUser();
+  const { setActiveUser, setUserAccountType, setCurrUserAllAccounts } =
+    useUser();
 
   const router = useRouter();
 

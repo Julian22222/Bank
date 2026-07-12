@@ -53,7 +53,8 @@ export class AuthService {
 
     // 🔄 Refresh Token
     const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
+      // secret: process.env.JWT_REFRESH_SECRET,
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: '7d',
     });
 
@@ -99,7 +100,8 @@ export class AuthService {
       }
 
       const payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
+        // secret: process.env.JWT_REFRESH_SECRET,
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
       const accessToken = this.jwtService.sign(
@@ -108,15 +110,17 @@ export class AuthService {
           // email: payload.email,
         },
         {
-          secret: process.env.JWT_SECRET,
+          // secret: process.env.JWT_SECRET,
+          secret: this.configService.get<string>('JWT_SECRET'),
           expiresIn: '15m',
         },
       );
 
+      //Create new access token
       res.cookie('access_token', accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: false, //in production- secure:true
+        sameSite: 'lax', //in production-  sameSite:"none",
         maxAge: 15 * 60 * 1000,
       });
 

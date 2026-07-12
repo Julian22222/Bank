@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { loadParameters } from './config/aws-parameter-store.service';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-// import * as cookieParser from 'cookie-parser';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -14,7 +13,7 @@ async function bootstrap() {
   const PORT = process.env.PORT ?? 3005;
   const app = await NestFactory.create(AppModule);
 
-  app.use(cookieParser()); //Without that, req.cookies will be undefined.
+  app.use(cookieParser()); //Without that, req.cookies will be undefined. (req.cookies.access_token, req.cookies.refresh_token)
 
   // Enable CORS for Next.js frontend
   //This must be before app.listen(PORT).

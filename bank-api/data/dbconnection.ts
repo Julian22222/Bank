@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const pool = new Pool({
   // ///////////// local postgreSQL database details
@@ -7,8 +8,11 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
+
+  //ssl block to seed to AWS only
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 module.exports = pool;
-
-///ADD Environment Variables to GitHub Actions

@@ -17,7 +17,7 @@ export default function AdminTitle({ title, num }: AdminTitleProps) {
           duration: 0.7,
           ease: "easeOut",
         }}
-        className="position-relative fw-bold text-dark"
+        className="position-relative fw-bold text-dark d-flex align-items-center gap-2"
         style={{
           fontSize: "32px",
           letterSpacing: "-1px",
@@ -25,7 +25,18 @@ export default function AdminTitle({ title, num }: AdminTitleProps) {
           cursor: "default",
         }}
       >
-        {num} {title}
+        <span
+          className="bg-success text-white rounded-circle d-inline-flex justify-content-center align-items-center"
+          style={{
+            width: "35px",
+            height: "35px",
+            fontSize: "18px",
+          }}
+        >
+          {num}
+        </span>
+
+        <span>{title}</span>
         <motion.span
           initial={{ width: 0 }}
           animate={{ width: "100%" }}

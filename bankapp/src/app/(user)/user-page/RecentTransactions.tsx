@@ -10,18 +10,17 @@ interface Props {
 }
 
 export default function RecentTransactions({ allUserTransactions }: Props) {
-  const { userAccountType, currUserAllAccounts } = useUser();
-
-  const { activeUser } = useUser();
+  const { activeUser, userAccountType, currUserAllAccounts } = useUser();
 
   const [lastFiveTxns, setLastFiveTxns] = useState<ITransaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchAllUsrTransactions = (allTx: ITransaction[]) => {
+  const fetchAllUsrTransactions = (allUserTransactions: ITransaction[]) => {
     const accountID = currUserAllAccounts.find(
-      (account) => account.account_type === userAccountType,
+      (account) => account.account_type === "Main",
     )?.account_id;
 
-    const userTx = allTx.filter(
+    const userTx = allUserTransactions.filter(
       (tx: ITransaction) => tx.account_id === accountID,
     );
 
@@ -40,11 +39,12 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
     }));
 
     setLastFiveTxns(formatedUserTx.slice(0, 5));
+    setIsLoading(false);
   };
 
   useEffect(() => {
     fetchAllUsrTransactions(allUserTransactions);
-  }, [activeUser, allUserTransactions]);
+  }, [activeUser, allUserTransactions, currUserAllAccounts]);
 
   return (
     <section className="bg-white rounded shadow-sm p-4 mb-5">
@@ -62,7 +62,39 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
           </thead>
 
           <tbody>
-            {lastFiveTxns.map((t, i) => (
+            {isLoading ? (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  Loading...
+                </td>
+              </tr>
+            ) : lastFiveTxns.length > 0 ? (
+              lastFiveTxns.map((t, i) => (
+                <tr key={i}>
+                  <td>{t.transaction_date}</td>
+                  <td>{t.details}</td>
+
+                  <td
+                    className="fw-bold"
+                    style={{
+                      color: Number(t.money_amount) < 0 ? "red" : "#006a4d",
+                    }}
+                  >
+                    {Number(t.money_amount) < 0 ? "-" : ""}£
+                    {Math.abs(Number(t.money_amount)).toFixed(2)}
+                  </td>
+
+                  <td>£{t.balance}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  No transactions found
+                </td>
+              </tr>
+            )}
+            {/* {lastFiveTxns.map((t, i) => (
               <tr key={i}>
                 <td>{t.transaction_date}</td>
                 <td>{t.details}</td>
@@ -79,14 +111,14 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
 
                 <td>£{t.balance}</td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
 
       <div className="text-end mt-2">
         <Link
-          href={`/transactions/${userAccountType}/${activeUser?.last_name}`}
+          href={`/transactions/${userAccountType ?? "Main"}/${activeUser?.last_name}`}
           className="fw-bold text-decoration-none text-success"
         >
           View All Transactions

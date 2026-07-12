@@ -4,11 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "../UserContext";
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
 import Link from "next/link";
+import { apiFetch } from "@/src/lib/api";
 
 export function Savings() {
-  const { currUserAllAccounts } = useUser();
-
-  const { activeUser } = useUser();
+  const { activeUser, currUserAllAccounts } = useUser();
 
   const [userAccountsNoMain, setUserAccountsNoMain] = useState<
     AccountWithBalance[]
@@ -25,7 +24,7 @@ export function Savings() {
 
         const results = await Promise.all(
           savingsAccounts.map(async (account) => {
-            const res = await fetch(
+            const res = await apiFetch(
               `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${account.account_id}/with-balance`,
             );
 

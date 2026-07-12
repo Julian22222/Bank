@@ -9,12 +9,18 @@ export async function handleAdminMessage(formData: FormData) {
   const messageBody = formData.get("messageBody");
   const msgCreatedBy = formData.get("msgCreatedBy");
 
+  console.log("userID", userID);
+  console.log("messageSubject", messageSubject);
+  console.log("messageStatus", messageStatus);
+  console.log("messageBody", messageBody);
+  console.log("msgCreatedBy", msgCreatedBy);
+
   if (
     !userID ||
     !messageSubject ||
-    messageStatus ||
+    !messageStatus ||
     !messageBody ||
-    msgCreatedBy
+    !msgCreatedBy
   ) {
     return {
       success: false,

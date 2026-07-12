@@ -4,6 +4,7 @@ import { loadUser } from "../actions/auth-server";
 import { redirect } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import { loadUserAllAccounts } from "../actions/loadUserAccounts";
+import { loadUserAllTransactions } from "../actions/loadUserAllTransactions";
 
 export const metadata: Metadata = {
   title: "User Bank login",
@@ -27,27 +28,25 @@ export default async function UserLayout({
 }>) {
   let activeUser = null;
   let userAllAccounts = null;
+  let userAllTransactions = null;
 
   try {
     activeUser = await loadUser();
     userAllAccounts = await loadUserAllAccounts();
+    userAllTransactions = await loadUserAllTransactions();
   } catch {
     redirect("/login");
   }
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <UserProvider
+        initialUser={activeUser}
+        initialUserAllAccounts={userAllAccounts}
+        initialUserAllTransactions={userAllTransactions}
       >
-        <UserProvider
-          initialUser={activeUser}
-          initialUserAllAccounts={userAllAccounts}
-        >
-          {children}
-        </UserProvider>
-        ;
-      </body>
-    </html>
+        {children}
+      </UserProvider>
+    </div>
   );
 }

@@ -7,6 +7,7 @@ import PaymentForm from "@/src/app/(user)/user-page/PayModule";
 import { IAccount } from "../../../../../shared/types/account.interface";
 import { ITransaction } from "../../../../../shared/types/transaction.interface";
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
+import { apiFetch } from "@/src/lib/api";
 
 interface Props {
   allUserTransactions: ITransaction[];
@@ -19,9 +20,8 @@ export default function AccountOverview({
   showPayModule,
   setShowPayModule,
 }: Props) {
-  const { currUserAllAccounts, userAccountType, setCurrUserTrx } = useUser();
-
-  const { activeUser } = useUser();
+  const { activeUser, currUserAllAccounts, userAccountType, setCurrUserTrx } =
+    useUser();
 
   const [additionalParam, setAdditionalParam] = useState<string>("");
 
@@ -47,7 +47,7 @@ export default function AccountOverview({
       if (!mainAccountId) return;
 
       try {
-        const data = await fetch(
+        const data = await apiFetch(
           `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${mainAccountId}/with-balance`,
         );
 
@@ -122,7 +122,9 @@ export default function AccountOverview({
             className="fw-bold my-4"
             style={{ fontSize: "36px", color: "#006a4d" }}
           >
-            {"£" + Number(userCardDetails?.balance).toFixed(2)}
+            {userCardDetails
+              ? "£" + Number(userCardDetails?.balance).toFixed(2)
+              : "Loading..."}
           </h1>
 
           <div className="d-flex flex-wrap gap-3">
@@ -149,7 +151,7 @@ export default function AccountOverview({
             </button>
 
             <Link
-              href={`/transactions/${userAccountType}/${activeUser?.last_name}`}
+              href={`/transactions/${userAccountType ?? "Main"}/${activeUser?.last_name}`}
               className="btn fw-bold text-white"
               style={{ backgroundColor: "#006a4d" }}
             >

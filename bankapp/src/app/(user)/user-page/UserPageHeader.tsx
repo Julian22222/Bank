@@ -15,7 +15,7 @@ export default function UserPageHeader() {
   const navLinks = [
     { href: "/user-page", label: "Home" },
     {
-      href: `/transactions/${userAccountType}/${activeUser?.last_name}`,
+      href: `/transactions/${userAccountType ?? "Main"}/${activeUser?.last_name}`,
       label: "Transactions",
     },
     { href: "/accounts", label: "Accounts" },

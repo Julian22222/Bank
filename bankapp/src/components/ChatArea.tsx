@@ -42,7 +42,7 @@ export default function ChatArea({
             backgroundColor: "#e9ecef",
           }}
         >
-          <div>
+          <div className="text-break" style={{ whiteSpace: "pre-line" }}>
             {findMessage ? findMessage.msg_body : "No message selected"}
           </div>
 

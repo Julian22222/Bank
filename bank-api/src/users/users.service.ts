@@ -17,12 +17,9 @@ import { Pool } from 'pg';
 import { PG_POOL } from '../database/database.module';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { UserResponseDto } from './dto/response-user.dto';
-import { AdminService } from '../admin/admin.service';
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 import { CreateTransactionDto } from '../transactions/dto/create-transaction.dto';
 import { MessagesService } from '../messages/messages.service';
-// import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -31,9 +28,7 @@ export class UsersService {
     @Inject(PG_POOL) private readonly pool: Pool,
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
-    // private readonly adminService: AdminService,
     private readonly messagesService: MessagesService,
-    // private readonly jwtService: JwtService,
   ) {}
 
   private readonly logger = new Logger(UsersService.name);
@@ -89,65 +84,6 @@ export class UsersService {
 
     return userDataNoPassword;
   }
-
-  // async login(loginData: LoginDto) {
-  //   const { email, password } = loginData;
-
-  //   const result = await this.pool.query(
-  //     `SELECT * FROM customers WHERE email = $1`,
-  //     [email],
-  //   );
-
-  //   const user = result.rows[0];
-
-  //   if (!user) {
-  //     throw new UnauthorizedException('Invalid email or password');
-  //   }
-
-  //   const isMatch = await bcrypt.compare(password, user.password);
-
-  //   if (!isMatch) {
-  //     throw new UnauthorizedException('Invalid email or password');
-  //   }
-
-  //   // 👇 JWT payload (keep it small!)
-  //   const payload = {
-  //     sub: user.customer_id,
-  //     email: user.email,
-  //     // user: user.role
-  //   };
-
-  //   // 🔐 Access Token
-  //   const accessToken = this.jwtService.sign(payload, {
-  //     secret: process.env.JWT_SECRET,
-  //     expiresIn: '15m',
-  //   });
-
-  //   // 🔄 Refresh Token
-  //   const refreshToken = this.jwtService.sign(payload, {
-  //     secret: process.env.JWT_REFRESH_SECRET,
-  //     expiresIn: '7d',
-  //   });
-
-  //   const userResponse: UserResponseDto = {
-  //     //returning user data with no password
-  //     customer_id: user.customer_id,
-  //     first_name: user.first_name,
-  //     last_name: user.last_name,
-  //     email: user.email,
-  //     phone: user.phone,
-  //     customer_address: user.customer_address,
-  //     dob: user.dob,
-  //     created_at: user.created_at,
-  //   };
-
-  //   // Return response with both tokens and user data
-  //   return {
-  //     access_token: accessToken,
-  //     refresh_token: refreshToken,
-  //     userResponse,
-  //   };
-  // }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const {

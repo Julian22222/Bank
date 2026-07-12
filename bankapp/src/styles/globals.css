@@ -23,8 +23,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
 
 .pdf-export .no-print {
   display: none !important;
+}
+
+/* user/transactions/[account_type]/[last_name]/TransactionClient.tsx */
+.pdf-only {
+  display: none;
 }

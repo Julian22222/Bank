@@ -1,11 +1,12 @@
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
 import AccountsDashboard from "./AccountsDashboard";
 import { cookies } from "next/headers";
+import { apiFetch } from "@/src/lib/api";
 
 const fetchAllUserAccounts = async (): Promise<AccountWithBalance[]> => {
   const cookieStore = await cookies();
 
-  const response = await fetch(
+  const response = await apiFetch(
     `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/my-accounts-balance`,
     {
       headers: {

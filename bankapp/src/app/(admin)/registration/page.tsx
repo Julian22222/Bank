@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Footer from "@/src/components/Footer";
+
 import { registerNewUser } from "../../actions/registerNewUserActions";
 import { useRouter } from "next/navigation";
 import { ICreateUser } from "../../../../../shared/types/createNewUser.interface";
 import styles from "../../../styles/Admin/admin.module.css";
-import { p } from "framer-motion/client";
 import { useAdmin } from "../AdminContext";
+import Footer from "@/src/components/AdminFooter";
 
 export default function RegistrationPage() {
   const { newUserRegister, setNewUserRegister } = useAdmin();
@@ -87,10 +87,6 @@ export default function RegistrationPage() {
       setLoading(false);
     }
   };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <>
@@ -300,7 +296,7 @@ export default function RegistrationPage() {
               className="mt-2 p-3 rounded-4 border-0 text-white fs-5 fw-bold cursor-pointer shadow shadow-sm shadow-lg transition bg-primary bg-gradient"
               type="submit"
             >
-              Register New User
+              {!loading ? "Register New User" : "Registering..."}
             </button>
           </form>
 

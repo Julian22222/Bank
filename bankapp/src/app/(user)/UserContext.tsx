@@ -24,15 +24,19 @@ const UserContext = createContext<UserContextType | null>(null);
 export function UserProvider({
   initialUser,
   initialUserAllAccounts,
+  initialUserAllTransactions,
   children,
 }: {
   initialUser: IUserWithAccount | null;
   initialUserAllAccounts: AccountWithBalance[] | null;
+  initialUserAllTransactions: ITransaction[] | null;
   children: React.ReactNode;
 }) {
   const [activeUser, setActiveUser] = useState(initialUser);
 
-  const [currUserTrx, setCurrUserTrx] = useState<ITransaction[]>([]);
+  const [currUserTrx, setCurrUserTrx] = useState<ITransaction[]>(
+    initialUserAllTransactions ?? [],
+  );
   const [currUserAllAccounts, setCurrUserAllAccounts] = useState<
     AccountWithBalance[]
   >(initialUserAllAccounts ?? []);
