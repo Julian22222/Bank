@@ -20,7 +20,7 @@ import { UserResponseDto } from './dto/response-user.dto';
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 import { CreateTransactionDto } from '../transactions/dto/create-transaction.dto';
 import { MessagesService } from '../messages/messages.service';
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {

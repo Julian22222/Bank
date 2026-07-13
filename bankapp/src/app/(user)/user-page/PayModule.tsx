@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useUser } from "../UserContext";
 import { addPayment } from "../../actions/payActions";
-import { useRouter } from "next/navigation";
 import { transferActions } from "../../actions/transferMoneyActions";
 import styles from "../../../styles/User-Page/userPage.module.css";
 
@@ -20,17 +19,11 @@ export default function PaymentForm({
 }: Props) {
   const { activeUser, currUserAllAccounts, currUserTrx } = useUser();
 
-  const router = useRouter();
-
   const [type, setType] = useState<"PAY" | "TRANSFER">("PAY");
   const [fromAccountValue, setFromAccountValue] = useState("");
   const [toAccountValue, setToAccountValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!activeUser) router.push("/login");
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(e.currentTarget);

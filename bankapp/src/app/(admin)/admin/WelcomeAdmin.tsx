@@ -1,19 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
-import { useEffect } from "react";
 import { useAdmin } from "../AdminContext";
 
 export default function WelcomeAdmin() {
-  const router = useRouter();
   const { activeAdmin } = useAdmin();
-
-  useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-    }
-  }, [activeAdmin, router]);
 
   if (!activeAdmin) {
     return <p>Redirecting...</p>;

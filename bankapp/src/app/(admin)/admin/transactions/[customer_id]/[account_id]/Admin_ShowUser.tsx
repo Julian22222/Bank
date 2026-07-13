@@ -1,19 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useAdmin } from "@/src/app/(admin)/AdminContext";
 
 export default function Admin_ShowUser() {
   const { activeAdmin, adminPage_UserData } = useAdmin();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-    }
-  }, [activeAdmin, router]);
 
   if (!activeAdmin) return null;
 

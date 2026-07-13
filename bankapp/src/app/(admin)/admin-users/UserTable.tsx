@@ -16,12 +16,6 @@ export default function UserTable({ usersData, option, search }: Props) {
   const { activeAdmin } = useAdmin();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-    }
-  }, [activeAdmin, router]);
-
   const handleUserClick = (user: IUserWithAccount) => {
     router.push(`/admin/${user.customer_id}`);
   };

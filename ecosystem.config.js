@@ -28,7 +28,6 @@ module.exports = {
       watch: false,
       env: {
         NODE_ENV: "production", //use secrets not from.env but from AWS Parameter strre
-        // USE_AWS_PARAMETER_STORE: "true",
         PORT: 3005,
       },
     },
@@ -36,8 +35,13 @@ module.exports = {
       name: "bankapp",
       cwd: "./bankapp",
       script: "npm",
-      args: "run dev",
-      watch: true,
+      args: "start",
+      env: {
+        NODE_ENV: "production",
+        NEXT_PUBLIC_BACK_END_URL:
+          "http://ec2-108-129-233-222.eu-west-1.compute.amazonaws.com/api/",
+      },
+      watch: false,
     },
   ],
 };

@@ -11,7 +11,7 @@ import { PG_POOL } from '../database/database.module';
 import { AdminResponseDto } from './dto/response-admin.dto';
 import { UpdatePasswordAdminDto } from './dto/update-password.dto';
 import { AdminLoginDto } from './dto/admin_login.dto';
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {

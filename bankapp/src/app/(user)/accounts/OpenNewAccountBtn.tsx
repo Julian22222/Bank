@@ -11,7 +11,7 @@ export function OpenNewAccountBtn() {
     Saver: false,
     ISA: false,
   });
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const { activeUser, currUserAllAccounts, setCurrUserAllAccounts } = useUser();
 
@@ -20,7 +20,7 @@ export function OpenNewAccountBtn() {
   const handleAccountClick = (accountType: string) => async () => {
     if (!activeUser?.customer_id) return;
 
-    setLoading(true);
+    // setLoading(true);
 
     try {
       const createNewSavingAccount = await openNewAccountAction({
@@ -45,7 +45,7 @@ export function OpenNewAccountBtn() {
 
       setCurrUserAllAccounts(data);
     } finally {
-      setLoading(false);
+      // setLoading(false);
       setOpen(false);
     }
   };

@@ -1,6 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-const bcrypt = require('bcrypt');
-
+import bcrypt from 'bcrypt';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PG_POOL } from '../database/database.module';

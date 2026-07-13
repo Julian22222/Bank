@@ -19,7 +19,8 @@ export default function SortTrx({ account_type, allTransactions }: Props) {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
+
+  const pageCount = Math.ceil(allTransactions.length / 20);
 
   const searchedTransactions = useMemo(() => {
     if (!activeUser) return [];
@@ -50,10 +51,6 @@ export default function SortTrx({ account_type, allTransactions }: Props) {
 
     return searchedTransactions.slice(start, start + 20);
   }, [searchedTransactions, page]);
-
-  useEffect(() => {
-    setPageCount(Math.ceil(allTransactions.length / 20));
-  }, [searchedTransactions]);
 
   const clearSearch = () => {
     setSearchTerm("");

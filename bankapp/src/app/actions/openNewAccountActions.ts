@@ -16,7 +16,7 @@ export async function openNewAccountAction({
   const generating6Digits = randomInt(100000, 1000000).toString();
   const gen8Digits = randomInt(10000000, 100000000).toString();
 
-  let newAccountNr =
+  const newAccountNr =
     generating6Digits.slice(0, 2) +
     "-" +
     generating6Digits.slice(2, 4) +

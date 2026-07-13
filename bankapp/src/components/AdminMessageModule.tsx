@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { IUserWithAccount } from "../shared/types/userWithAccount.interface";
-import { useRouter } from "next/navigation";
-
 import { handleAdminMessage } from "../app/actions/adminMessageActions";
 import styles from "../styles/Admin/admin.module.css";
 import { useAdmin } from "../app/(admin)/AdminContext";
@@ -15,7 +13,6 @@ type Props = {
 
 export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
   const { activeAdmin } = useAdmin();
-  const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [allUsers, setAllUsers] = useState<IUserWithAccount[]>([]);
@@ -27,11 +24,6 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
   );
 
   useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-      return;
-    }
-
     const fetchAllUsers = async () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACK_END_URL}/users`,

@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-
 require("dotenv").config();
 
 export async function editUserPasswordActions(

@@ -11,21 +11,12 @@ interface Props {
 }
 
 export default function AdminUsersDashboard({ allTransactions }: Props) {
-  const router = useRouter();
   const { activeAdmin } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
 
-  useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-      return;
-    }
-
-    setPageCount(Math.ceil(allTransactions.length / 20));
-  }, [activeAdmin, router]);
+  const pageCount = Math.ceil(allTransactions.length / 20);
 
   const filteredTransactions = useMemo(() => {
     if (searchTerm.trim()) {

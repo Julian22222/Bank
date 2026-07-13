@@ -18,18 +18,8 @@ export default function AdminUserMessagesDashboard({
   userId,
   allMessages,
 }: Props) {
-  const { activeAdmin } = useAdmin();
-  const router = useRouter();
-
   const [findMessage, setFindMessage] = useState<MessageWithUser | null>(null);
   const [showMsgModule, setShowMsgModule] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!activeAdmin) {
-      router.push("/admin-login");
-      return;
-    }
-  }, [activeAdmin, router]);
 
   return (
     <>

@@ -25,7 +25,8 @@ export default function UserTransactionsDashboard({
   const [showModule, setShowModule] = useState<boolean>(false);
   const [overdraftModule, setOverdraftModule] = useState<boolean>(false);
   const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
+
+  const pageCount = Math.ceil(userAccountTransactions.length / 20);
 
   const handleDownload = async () => {
     const element = pdfRef.current;
@@ -57,10 +58,6 @@ export default function UserTransactionsDashboard({
       });
     }
   };
-
-  useEffect(() => {
-    setPageCount(Math.ceil(userAccountTransactions.length / 20));
-  }, []);
 
   const filteredTransactions = useMemo(() => {
     const start = (page - 1) * 20;
