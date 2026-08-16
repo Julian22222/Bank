@@ -12,7 +12,7 @@ export async function transferActions(
 ) {
   const cookieStore = await cookies();
 
-  const customerId = formData.get("userId");
+  // const customerId = formData.get("userId");
   // console.log("customerId type from TRANSFER ACTIONS", typeof customerId);
   const moneyAmount = Number(formData.get("money_amount")); // Get money_amount from the form as string and convert it to Number
   const moneyAmounNum = Number(Math.abs(moneyAmount).toFixed(2));

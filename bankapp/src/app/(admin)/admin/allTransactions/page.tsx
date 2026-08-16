@@ -1,7 +1,7 @@
 import AdminPageHeader from "../../../../components/AdminPageHeader";
 import TransactionsTitle from "./TransactionsTitle";
 import Footer from "../../../../components/AdminFooter";
-import styles from "../../../../styles/Accounts/accounts.module.css";
+// import styles from "../../../../styles/Accounts/accounts.module.css";
 import AdminUsersDashboard from "./AllTransactionsDashboard";
 import { ITransactionWithDetails } from "../../../../../../shared/types/transactionsWithDetails.interface";
 

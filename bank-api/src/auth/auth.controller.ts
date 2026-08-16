@@ -18,7 +18,7 @@ export class AuthController {
   // }
 
   @Post('login')
-  async login(
+  login(
     @Body() loginData: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 require("dotenv").config();
 
 export async function addPayment(formData: FormData) {

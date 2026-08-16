@@ -7,15 +7,17 @@ import { apiFetch } from "@/src/lib/api";
 
 export function OpenNewAccountBtn() {
   const [open, setOpen] = useState(false);
-  const [accountExists, setAccountExists] = useState({
-    Saver: false,
-    ISA: false,
-  });
+
   // const [loading, setLoading] = useState(false);
 
   const { activeUser, currUserAllAccounts, setCurrUserAllAccounts } = useUser();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const accountExists = {
+    Saver: currUserAllAccounts.some((acc) => acc.account_type === "Saver"),
+    ISA: currUserAllAccounts.some((acc) => acc.account_type === "ISA"),
+  };
 
   const handleAccountClick = (accountType: string) => async () => {
     if (!activeUser?.customer_id) return;
@@ -49,17 +51,6 @@ export function OpenNewAccountBtn() {
       setOpen(false);
     }
   };
-
-  useEffect(() => {
-    const newState = { Saver: false, ISA: false };
-
-    currUserAllAccounts.forEach((acc) => {
-      if (acc.account_type === "Saver") newState.Saver = true;
-      if (acc.account_type === "ISA") newState.ISA = true;
-    });
-
-    setAccountExists(newState);
-  }, [currUserAllAccounts]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "../UserContext";
 import Link from "next/link";
 import PaymentForm from "@/src/app/(user)/user-page/PayModule";
@@ -61,7 +61,7 @@ export default function AccountOverview({
     };
 
     fetchAccount_withBalance();
-  }, [activeUser, currUserAllAccounts]);
+  }, [activeUser, currUserAllAccounts, setCurrUserTrx]);
 
   useEffect(() => {
     if (!activeUser) return;

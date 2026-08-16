@@ -53,6 +53,7 @@ export default function PaymentForm({
       }
     } catch (err) {
       console.error(err);
+      setError(err instanceof Error ? err.message : String(err))
       setMessageStatus("Unexpected error occurred");
     } finally {
       setLoading(false);

@@ -29,7 +29,7 @@ export default function TransactionsTitle() {
           cursor: "default",
         }}
       >
-        All Users' Transactions
+        All Users Transactions
         {/* Animated underline */}
         <motion.span
           initial={{ width: 0 }}

@@ -23,7 +23,7 @@ export class AuthAdminController {
   }
 
   @Post('login')
-  async login(
+  login(
     @Body() loginData: LoginAdminDto,
     @Res({ passthrough: true }) res: Response,
   ) {

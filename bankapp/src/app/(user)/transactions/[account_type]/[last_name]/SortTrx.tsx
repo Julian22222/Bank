@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useUser } from "../../../UserContext";
 import TransactionClient from "./TransactionClient";
 import { ITransaction } from "../../../../../../../shared/types/transaction.interface";
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function SortTrx({ account_type, allTransactions }: Props) {
-  const { currUserAllAccounts, activeUser, currUserTrx } = useUser();
+  const { currUserAllAccounts, activeUser } = useUser();
 
   // console.log("activeUser from SORTTRX", activeUser);
   // console.log("currUserAllAccounts from SORTTRX", currUserAllAccounts);

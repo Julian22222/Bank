@@ -30,7 +30,7 @@ export default function SideBar({
   const filteredMessages = useMemo(() => {
     if (!Array.isArray(messages)) return [];
 
-    let all_msg = [...messages];
+    const all_msg = [...messages];
 
     if (searchTerm.trim() === "") return all_msg;
 

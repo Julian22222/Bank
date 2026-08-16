@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import styles from "../../../../styles/Accounts/accounts.module.css";
 import { ITransactionWithDetails } from "../../../../../../shared/types/transactionsWithDetails.interface";
 import { useAdmin } from "../../AdminContext";
@@ -11,8 +10,6 @@ interface Props {
 }
 
 export default function AdminUsersDashboard({ allTransactions }: Props) {
-  const { activeAdmin } = useAdmin();
-
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
@@ -84,16 +81,21 @@ export default function AdminUsersDashboard({ allTransactions }: Props) {
             </thead>
 
             <tbody>
-              {filteredTransactions.map((tx: any, i: number) => (
+              {filteredTransactions.map((tx: ITransactionWithDetails) => (
                 <tr key={tx.transaction_id} className={styles.row}>
                   <td>
-                    {new Date(tx.transaction_id).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {tx.transaction_date
+                      ? new Date(tx.transaction_date).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )
+                      : "N/A"}
                   </td>
 
                   <td>{tx.customer_id}</td>
@@ -104,13 +106,11 @@ export default function AdminUsersDashboard({ allTransactions }: Props) {
 
                   <td
                     className={
-                      tx.money_amount.startsWith("-")
-                        ? "text-danger"
-                        : "text-success"
+                      tx.money_amount < 0 ? "text-danger" : "text-success"
                     }
                   >
-                    {tx.money_amount.startsWith("-")
-                      ? `-£${tx.money_amount.slice(1)}`
+                    {tx.money_amount < 0
+                      ? `-£${Math.abs(tx.money_amount).toFixed(2)}`
                       : `£${tx.money_amount}`}
                   </td>
 

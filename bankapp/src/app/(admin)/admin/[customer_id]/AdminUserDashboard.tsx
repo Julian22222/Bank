@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AdminPageHeader from "../../../../components/AdminPageHeader";
 import AccountTypeBlock from "./AccountTypeBlock";
 import { ReturnUser } from "@/src/shared/types/returnUser.interface";
@@ -25,15 +25,15 @@ export default function AdminUserDashboard({
   userData,
   currentUserAccounts,
 }: Props) {
-  const [userAccounts, setUserAccounts] = useState<AccountWithBalance[]>([]);
+  // const [userAccounts, setUserAccounts] = useState<AccountWithBalance[]>([]);
   const [showModule, setShowModule] = useState<boolean>(false);
   const [showPasswordModule, setShowPasswordModule] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (showModule) return;
+  // useEffect(() => {
+  //   if (showModule) return;
 
-    setUserAccounts(currentUserAccounts);
-  }, [showModule]);
+  //   setUserAccounts(currentUserAccounts);
+  // }, [showModule, currentUserAccounts]);
 
   return (
     <>
@@ -149,7 +149,10 @@ export default function AdminUserDashboard({
             <br />
 
             {/* Accounts Section */}
-            <AccountTypeBlock userAccounts={userAccounts} userData={userData} />
+            <AccountTypeBlock
+              userAccounts={currentUserAccounts}
+              userData={userData}
+            />
 
             <br />
             <hr />

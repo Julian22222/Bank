@@ -29,7 +29,7 @@ export default function AdminUsersTitle() {
           cursor: "default",
         }}
       >
-        User's data
+        User&apos;s data
         {/* Animated underline */}
         <motion.span
           initial={{ width: 0 }}

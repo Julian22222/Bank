@@ -1,10 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-require("dotenv").config();
 
 export async function editUserPasswordActions(
-  customerId: number | undefined,
+  // customerId: number | undefined,
   oldPassword: string,
   newPassword: string,
 ) {

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { IUserWithAccount } from "@/src/shared/types/userWithAccount.interface";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import styles from "../../../styles/Admin/admin.module.css";
 import { useAdmin } from "../AdminContext";
 
@@ -13,7 +13,6 @@ type Props = {
 };
 
 export default function UserTable({ usersData, option, search }: Props) {
-  const { activeAdmin } = useAdmin();
   const router = useRouter();
 
   const handleUserClick = (user: IUserWithAccount) => {

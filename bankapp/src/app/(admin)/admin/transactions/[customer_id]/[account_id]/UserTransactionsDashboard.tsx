@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import AdminPageHeader from "../../../../../../components/AdminPageHeader";
 import Admin_ShowUser from "./Admin_ShowUser";
 import MoneyForm from "./AdminTransactionModule";

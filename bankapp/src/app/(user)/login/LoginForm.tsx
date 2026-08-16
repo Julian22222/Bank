@@ -3,7 +3,6 @@
 import { useUser } from "../UserContext";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IAccount } from "../../../../../shared/types/account.interface";
 import Link from "next/link";
 import { loadUser } from "../../actions/auth";
 import styles from "../../../styles/LoginPage/logon.module.css";
