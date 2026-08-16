@@ -51,7 +51,7 @@ export function EditUserPasswordModule({
       setIsLoading(true);
 
       await editUserPasswordActions(
-        activeUser?.customer_id,
+        // activeUser?.customer_id,
         formData.oldPassword,
         formData.newPassword,
       );
