@@ -5,7 +5,6 @@ import NewUserRegistration from "./NewUserRegistration";
 import WelcomeAdmin from "./WelcomeAdmin";
 import AdminTitle from "./AdminTitle";
 import styles from "../../../styles/Admin/admin.module.css";
-// require("dotenv").config();
 
 export default async function AdminPage() {
   const res = await fetch(

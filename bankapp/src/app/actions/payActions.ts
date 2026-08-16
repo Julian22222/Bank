@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-require("dotenv").config();
 
 export async function addPayment(formData: FormData) {
   const { additionalParam, LastBalance, money_amount, details, payee } =

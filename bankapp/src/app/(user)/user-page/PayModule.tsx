@@ -26,9 +26,9 @@ export default function PaymentForm({
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const formData = new FormData(e.currentTarget);
-
     e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
 
     try {
       setLoading(true);
