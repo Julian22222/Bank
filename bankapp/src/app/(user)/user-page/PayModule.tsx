@@ -37,23 +37,19 @@ export default function PaymentForm({
         (type === "PAY" && additionalParam === "Make A Payment") ||
         additionalParam === "Add Money to Your Account"
       ) {
-        const result = await addPayment(formData);
+        await addPayment(formData);
 
         setShowPayModule(false);
         setMessageStatus("Payment added successfully");
       } else {
-        const result = await transferActions(
-          formData,
-          fromAccountValue,
-          toAccountValue,
-        );
+        await transferActions(formData, fromAccountValue, toAccountValue);
 
         setShowPayModule(false);
         setMessageStatus("Money Transfer performed successfully");
       }
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : String(err))
+      setError(err instanceof Error ? err.message : String(err));
       setMessageStatus("Unexpected error occurred");
     } finally {
       setLoading(false);

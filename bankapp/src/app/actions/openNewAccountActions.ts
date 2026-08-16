@@ -2,7 +2,6 @@
 
 import { randomInt } from "crypto";
 import { revalidatePath } from "next/cache";
-require("dotenv").config();
 
 interface Props {
   accountType: string;

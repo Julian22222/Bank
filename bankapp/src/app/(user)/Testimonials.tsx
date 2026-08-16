@@ -31,7 +31,9 @@ export default function Testimonials() {
             className="bg-white p-3 rounded shadow-sm"
             style={{ width: "300px" }}
           >
-            <blockquote className="fst-italic">"{t.quote}"</blockquote>
+            <blockquote className="fst-italic">
+              &quot;{t.quote}&quot;
+            </blockquote>
 
             <p className="fw-bold mt-3 text-success">– {t.name}</p>
           </div>

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useUser } from "../UserContext";
-import { useEffect, useState } from "react";
 import { ITransaction } from "../../../../../shared/types/transaction.interface";
 
 interface Props {
@@ -12,19 +11,13 @@ interface Props {
 export default function RecentTransactions({ allUserTransactions }: Props) {
   const { activeUser, userAccountType, currUserAllAccounts } = useUser();
 
-  const [lastFiveTxns, setLastFiveTxns] = useState<ITransaction[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const accountID = currUserAllAccounts.find(
+    (account) => account.account_type === "Main",
+  )?.account_id;
 
-  const fetchAllUsrTransactions = (allUserTransactions: ITransaction[]) => {
-    const accountID = currUserAllAccounts.find(
-      (account) => account.account_type === "Main",
-    )?.account_id;
-
-    const userTx = allUserTransactions.filter(
-      (tx: ITransaction) => tx.account_id === accountID,
-    );
-
-    const formatedUserTx = userTx.map((tx: ITransaction) => ({
+  const lastFiveTxns = allUserTransactions
+    .filter((tx) => tx.account_id === accountID)
+    .map((tx) => ({
       ...tx,
       transaction_date: new Date(tx.transaction_date || "").toLocaleDateString(
         "en-GB",
@@ -36,15 +29,8 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
           minute: "2-digit",
         },
       ),
-    }));
-
-    setLastFiveTxns(formatedUserTx.slice(0, 5));
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchAllUsrTransactions(allUserTransactions);
-  }, [activeUser, allUserTransactions, currUserAllAccounts]);
+    }))
+    .slice(0, 5);
 
   return (
     <section className="bg-white rounded shadow-sm p-4 mb-5">
@@ -62,13 +48,7 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
           </thead>
 
           <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan={4} className="text-center">
-                  Loading...
-                </td>
-              </tr>
-            ) : lastFiveTxns.length > 0 ? (
+            {lastFiveTxns.length > 0 ? (
               lastFiveTxns.map((t, i) => (
                 <tr key={i}>
                   <td>{t.transaction_date}</td>
