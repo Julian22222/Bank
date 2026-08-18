@@ -70,15 +70,16 @@ export class AuthService {
     // 🍪 STORE BOTH IN HTTPONLY COOKIES
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: false, // true in production (HTTPS)
-      sameSite: 'lax',
+      secure: true, // true in production (HTTPS)
+      sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
+      // // 'lax' can block cross-site cookies in some browsers/setups
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: false, // true in production (HTTPS)
-      sameSite: 'lax',
+      secure: true, // true in production (HTTPS)
+      sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
