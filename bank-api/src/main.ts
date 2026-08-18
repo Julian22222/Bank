@@ -18,7 +18,12 @@ async function bootstrap() {
   // Enable CORS for Next.js frontend
   //This must be before app.listen(PORT).
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'], // Next.js frontend
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://ec2-108-129-233-222.eu-west-1.compute.amazonaws.com',
+      'http://ec2-54-171-55-239.eu-west-1.compute.amazonaws.com:3000',
+    ], // Next.js frontend
     methods: 'GET,POST,PUT,DELETE',
     credentials: true, //Without this → cookies will NEVER be sent
   });
