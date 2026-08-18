@@ -24,7 +24,7 @@ export default function LoginForm() {
         `${process.env.NEXT_PUBLIC_BACK_END_URL}/auth/login`,
         {
           method: "POST",
-          credentials: "include",
+          credentials: "include", //important to include cookies in the request
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formInput),
         },
@@ -46,6 +46,7 @@ export default function LoginForm() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${user.customer_id}/accounts-balance`,
         {
+          credentials: "include",
           cache: "no-store",
         },
       );
