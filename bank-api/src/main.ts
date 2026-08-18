@@ -9,6 +9,7 @@ async function bootstrap() {
   const useAWS = process.env.NODE_ENV === 'production';
   if (useAWS) {
     await loadParameters(); //load environment variables from AWS Parameter Store
+    console.log('JWT_SECRET loaded:', !!process.env.JWT_SECRET);
   }
   const PORT = process.env.PORT ?? 3005;
   const app = await NestFactory.create(AppModule);
