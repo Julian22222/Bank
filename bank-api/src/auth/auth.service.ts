@@ -43,6 +43,16 @@ export class AuthService {
       // user: user.role
     };
 
+    console.log('--- LOGIN DEBUG ---');
+    console.log(
+      'process.env.JWT_SECRET at request time:',
+      !!process.env.JWT_SECRET,
+    );
+    console.log(
+      'ConfigService JWT_SECRET at request time:',
+      !!this.configService.get<string>('JWT_SECRET'),
+    );
+
     // 🔐 Access Token
     const accessToken = this.jwtService.sign(payload, {
       // secret: process.env.JWT_SECRET,
