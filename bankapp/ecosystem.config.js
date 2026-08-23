@@ -21,3 +21,5 @@ module.exports = {
 // rm -rf .next
 // npm run build
 // pm2 restart bankapp
+
+// NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
