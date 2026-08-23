@@ -16,10 +16,16 @@ module.exports = {
   ],
 };
 
-// NEXT_PUBLIC_BACK_END_URL=https://abc123xyz.execute-api.eu-west-1.amazonaws.com
+//.env.production for build, doen't know your NEXT_PUBLIC_BACK_END_URL:
+// NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
+
+//Or
+//cat > .env.production << 'EOF'
+//NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
+//EOF
 
 // rm -rf .next
 // npm run build
 // pm2 restart bankapp
 
-// NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
+// NEXT_PUBLIC_BACK_END_URL=https://abc123xyz.execute-api.eu-west-1.amazonaws.com

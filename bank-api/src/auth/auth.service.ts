@@ -130,7 +130,7 @@ export class AuthService {
       res.cookie('access_token', accessToken, {
         httpOnly: true,
         secure: true, //in production- secure:true
-        sameSite: 'lax', //in production-  sameSite:"none",
+        sameSite: 'none', //in production-  sameSite:"none", when you have f-end and b-end in different domains
         maxAge: 15 * 60 * 1000,
       });
 
