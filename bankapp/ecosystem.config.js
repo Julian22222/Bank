@@ -27,5 +27,3 @@ module.exports = {
 // rm -rf .next
 // npm run build
 // pm2 restart bankapp
-
-// NEXT_PUBLIC_BACK_END_URL=https://abc123xyz.execute-api.eu-west-1.amazonaws.com

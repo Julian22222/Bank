@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 const fetchAllUsrTransactions = async () => {
   const cookieStore = await cookies();
 
+  console.log("DEBUG cookie string:", cookieStore.toString());
+
   try {
     const res = await apiFetch(
       `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions/my`,
