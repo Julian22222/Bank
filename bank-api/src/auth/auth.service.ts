@@ -129,7 +129,7 @@ export class AuthService {
       //Create new access token
       res.cookie('access_token', accessToken, {
         httpOnly: true,
-        secure: false, //in production- secure:true
+        secure: true, //in production- secure:true
         sameSite: 'lax', //in production-  sameSite:"none",
         maxAge: 15 * 60 * 1000,
       });

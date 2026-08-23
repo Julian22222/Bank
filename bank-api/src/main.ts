@@ -24,6 +24,7 @@ async function bootstrap() {
       'http://localhost:3001',
       'http://ec2-108-129-233-222.eu-west-1.compute.amazonaws.com',
       'http://ec2-54-171-55-239.eu-west-1.compute.amazonaws.com:3000',
+      'https://e0js8ws7va.execute-api.us-east-1.amazonaws.com/',
     ], // Next.js frontend
     methods: 'GET,POST,PUT,DELETE',
     credentials: true, //Without this → cookies will NEVER be sent
