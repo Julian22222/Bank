@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import styles from "../../../../styles/Accounts/accounts.module.css";
 import { ITransactionWithDetails } from "../../../../../../shared/types/transactionsWithDetails.interface";
-import { useAdmin } from "../../AdminContext";
 
 interface Props {
   allTransactions: ITransactionWithDetails[];

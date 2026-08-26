@@ -165,7 +165,7 @@ export default function UserTransactionsDashboard({
                 </tr>
               </thead>
               <tbody>
-                {filteredTransactions.map((tx, i) => (
+                {filteredTransactions.map((tx) => (
                   <tr key={tx.transaction_id} className="border-bottom">
                     <td className="p-2 fs-6">
                       {formatDate(tx.transaction_date)}

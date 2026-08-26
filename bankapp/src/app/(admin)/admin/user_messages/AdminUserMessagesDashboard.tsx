@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { MessageWithUser } from "@/src/shared/types/messageWithUser.interface";
 import AdminPageHeader from "../../../../components/AdminPageHeader";
 import SideBar from "@/src/components/SideBar";
 import ChatArea from "@/src/components/ChatArea";
 import { AdminMessageModule } from "@/src/components/AdminMessageModule";
-import { useAdmin } from "../../AdminContext";
 
 interface Props {
   userId: string | null;
