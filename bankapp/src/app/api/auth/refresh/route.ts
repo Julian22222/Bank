@@ -1,25 +1,40 @@
-// async refreshToken(refreshTokenDto: { refreshToken: string }) {
-//   try {
-//     const { refreshToken } = refreshTokenDto;
+// src/app/api/auth/refresh/route.ts
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
-//     if (!refreshToken) {
-//       throw new UnauthorizedException('No refresh token');
-//     }
+export async function POST() {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refresh_token")?.value;
 
-//     const payload = this.jwtService.verify(refreshToken, {
-//       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-//     });
+  if (!refreshToken) {
+    return NextResponse.json({ message: "No refresh token" }, { status: 401 });
+  }
 
-//     const accessToken = this.jwtService.sign(
-//       { sub: payload.sub, email: payload.email },
-//       {
-//         secret: this.configService.get<string>('JWT_SECRET'),
-//         expiresIn: '15m',
-//       },
-//     );
+  const backendRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BACK_END_URL}/auth/refresh`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    },
+  );
 
-//     return { accessToken };
-//   } catch {
-//     throw new UnauthorizedException('Invalid refresh token');
-//   }
-// }
+  if (!backendRes.ok) {
+    return NextResponse.json(
+      { message: "Invalid refresh token" },
+      { status: 401 },
+    );
+  }
+
+  const { accessToken } = await backendRes.json();
+
+  const res = NextResponse.json({ message: "Token refreshed" });
+  res.cookies.set("access_token", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 15 * 60,
+  });
+
+  return res;
+}
