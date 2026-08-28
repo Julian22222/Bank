@@ -1,13 +1,7 @@
 //this code can be used only in client side components
 
 export const loadUser = async () => {
-  const meRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/users/me`,
-    {
-      credentials: "include",
-      cache: "no-store",
-    },
-  );
+  const meRes = await fetch(`api/users/me`, { credentials: "include" }); // hits your own /api/users/me route
 
   if (!meRes.ok) {
     throw new Error("Failed to fetch user");
