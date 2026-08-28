@@ -40,7 +40,8 @@ export class AuthService {
     const payload = {
       sub: user.customer_id,
       email: user.email,
-      // user: user.role
+      // role: user.role
+      //subscription: "premium"
     };
 
     console.log('--- LOGIN DEBUG ---');
@@ -53,14 +54,14 @@ export class AuthService {
       !!this.configService.get<string>('JWT_SECRET'),
     );
 
-    // 🔐 Access Token
+    // 🔐 create Access Token
     const accessToken = this.jwtService.sign(payload, {
       // secret: process.env.JWT_SECRET,
       secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '15m',
     });
 
-    // 🔄 Refresh Token
+    // 🔄 create Refresh Token
     const refreshToken = this.jwtService.sign(payload, {
       // secret: process.env.JWT_REFRESH_SECRET,
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -68,20 +69,20 @@ export class AuthService {
     });
 
     // 🍪 STORE BOTH IN HTTPONLY COOKIES
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
-      // // 'lax' can block cross-site cookies in some browsers/setups
-      maxAge: 15 * 60 * 1000,
-    });
+    // res.cookie('access_token', accessToken, {
+    //   httpOnly: true,
+    //   secure: true, // true in production (HTTPS)
+    //   sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
+    //   // // 'lax' can block cross-site cookies in some browsers/setups
+    //   maxAge: 15 * 60 * 1000,
+    // });
 
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    // res.cookie('refresh_token', refreshToken, {
+    //   httpOnly: true,
+    //   secure: true, // true in production (HTTPS)
+    //   sameSite: 'none', //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // });
 
     const userResponse: UserResponseDto = {
       //returning user data with no password
@@ -97,6 +98,8 @@ export class AuthService {
 
     return {
       userResponse,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -118,6 +121,7 @@ export class AuthService {
         {
           sub: payload.sub,
           // email: payload.email,
+          //role: payload.role
         },
         {
           // secret: process.env.JWT_SECRET,

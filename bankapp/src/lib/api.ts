@@ -9,6 +9,7 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
 
   let response = await fetch(url, {
     ...options,
+    //  credentials: "include",
     headers,
     cache: "no-store",
   });

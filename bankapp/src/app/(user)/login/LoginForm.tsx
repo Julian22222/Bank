@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loadUser } from "../../actions/auth";
 import styles from "../../../styles/LoginPage/logon.module.css";
+import { NextResponse } from "next/server";
 
 export default function LoginForm() {
   const { setActiveUser, setUserAccountType, setCurrUserAllAccounts } =
@@ -20,15 +21,13 @@ export default function LoginForm() {
     e.preventDefault();
 
     try {
-      const loginRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_URL}/auth/login`,
-        {
-          method: "POST",
-          credentials: "include", //important to include cookies in the request
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formInput),
-        },
-      );
+      //fetch user api server
+      const loginRes = await fetch(`api/auth/login`, {
+        method: "POST",
+        credentials: "include", //important to include cookies in the request
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formInput),
+      });
 
       const response = await loginRes.json();
 
@@ -36,6 +35,7 @@ export default function LoginForm() {
 
       if (!loginRes.ok) {
         // throw new Error();
+
         console.error("Login failed:", await loginRes.text());
         setLoginError(response.message || "Failed to login");
         return;
