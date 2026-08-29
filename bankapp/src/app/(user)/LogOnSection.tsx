@@ -1,7 +1,16 @@
 import Link from "next/link";
 import styles from "../../styles/FirstPage/firstPage.module.css";
 
-export default function LogOn() {
+export default async function LogOn() {
+  console.log("start");
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/2/accounts-balance`,
+  );
+  console.log("res", res);
+
+  console.log("start");
+
   return (
     <section className={`text-white text-center py-5 ${styles.logOnSection}`}>
       <div className="container py-5">
