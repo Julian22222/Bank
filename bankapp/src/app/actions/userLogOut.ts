@@ -3,8 +3,12 @@
 import { cookies } from "next/headers";
 
 export async function userLogOut() {
+  console.log("Start Logout");
+
   try {
     const cookieStore = await cookies();
+
+    console.log("Cpookies", JSON.stringify(cookieStore));
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACK_END_URL}/auth/logout`,
@@ -16,6 +20,8 @@ export async function userLogOut() {
         },
       },
     );
+
+    console.log("response", JSON.stringify(res));
 
     if (!res.ok) {
       const errorText = await res.text();
