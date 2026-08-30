@@ -17,8 +17,8 @@ module.exports = {
 };
 
 //.env.production for build, doen't know your NEXT_PUBLIC_BACK_END_URL:
-// NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
+// export NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com
 
-// rm -rf .next
+// rm -rf .next  //<--delete file .next
 // npm run build
 // pm2 restart bankapp

@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     httpOnly: true,
     secure: true, // true in production (HTTPS)
     sameSite: "none", //in production-  sameSite:"none", or 'lax' if you want to allow cross-site requests,
+    // sameSite: "lax" - is used when F-End and B-End has the same domain
     maxAge: 15 * 60, //expire in 15min
   });
   res.cookies.set("refresh_token", refreshToken, {

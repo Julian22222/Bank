@@ -33,15 +33,15 @@ https://bigbankapp.duckdns.org
 
 ### Messages
 
-![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/messages.jpg)
+![pic3](https://github.com/Julian22222/Bank/blob/main/screenshots/messages.jpg)
 
 ### Admin - User dashboard
 
-![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-user-dashboard.jpg)
+![pic4](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-user-dashboard.jpg)
 
 ### Admin - Transactions
 
-![pic2](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-transactions.jpg)
+![pic5](https://github.com/Julian22222/Bank/blob/main/screenshots/admin-transactions.jpg)
 
 # 📖 Overview
 
@@ -143,20 +143,12 @@ The project was built to demonstrate full-stack software engineering practices i
 
 # 🏗 Architecture
 
-```text
-                Next.js Frontend
-                        │
-                  HTTPS REST API
-                        │
-                 NestJS Backend
-                        │
-                  PostgreSQL Database
-```
+![pic6](https://github.com/Julian22222/Bank/blob/main/screenshots/aws_architecture.png)
 
 # 📁 Project Structure
 
 ```text
-bank-app/
+Bank/
 │
 ├── bank-api/
 │   ├── src/
@@ -168,10 +160,13 @@ bank-app/
 |   |   ├── messages/
 │   │   ├── transactions/
 │   │   ├── users/
+│   │   ├── app.controller.ts
+│   │   ├── app.module.ts
+│   │   ├── app.service.ts
 │   │   └── main.ts
 │   │
 │   ├── test/
-│   ├── myDatabase.sql
+│   ├── ecosystem.config.js
 │   └── package.json
 │
 ├── bankapp/
@@ -181,8 +176,10 @@ bank-app/
 |   |   └── styles/
 │   │
 │   ├── public/
+│   ├── ecosystem.config.js
 │   └── package.json
 │
+├── shared/
 ├── ecosystem.config.js
 └── package.json
 ```
@@ -227,7 +224,10 @@ Frontend UI
 
 - Node.js 18+
 - npm
+- Next.js
+- NestJS
 - PostgreSQL
+- Bootstrap
 
 ## Clone Repository
 
@@ -250,7 +250,7 @@ Example:
 ```env
 DATABASE_URL=postgres://postgres:password@localhost:5432/bankdb
 
-PORT=3000
+PORT=3005
 
 JWT_SECRET=your-secret-key
 
@@ -468,10 +468,8 @@ Testing includes
 
 The application is production-ready and supports deployment using PM2.
 
-Start using:
-
 ```bash
-npm run start2
+pm2 start ecosystem.config.js
 ```
 
 Deployment architecture:
