@@ -2,7 +2,7 @@
 
 ## 🚀 Live Demo
 
-https://e0js8ws7va.execute-api.us-east-1.amazonaws.com
+https://bigbankapp.duckdns.org
 
 ## 📌 Test Accounts
 
