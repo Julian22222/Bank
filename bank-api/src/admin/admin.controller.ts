@@ -18,18 +18,20 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UpdatePasswordAdminDto } from './dto/update-password.dto';
 import { AdminResponseDto } from './dto/response-admin.dto';
-import { AdminLoginDto } from './dto/admin_login.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAdminGuard } from '../auth-admin/jwt-auth.guard';
+import { JwtAuthRole } from '../auth-admin/jwt-auth-role.guard';
+import { RolesGuard } from '../auth-admin/roles.guard';
+import { Roles } from '../auth-admin/roles.decorator';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('me')
-  @UseGuards(JwtAuthGuard) // This route is protected, only accessible with a valid JWT
+  @UseGuards(JwtAdminGuard) // This route is protected, only accessible with a valid JWT
   //JwtAuthGuard verifies the token. If valid, it calls the validate() method in JwtStrategy, which returns the payload (user info) and attaches it to req.user.
   //Then you can access req.user in your controller method to get the current user's info.
-  getCurrentAdmin(@Req() req) {
+  getCurrentAdmin(@Req() req): Promise<AdminResponseDto> {
     console.log(
       'FROM AdminController - Current admin from JWT payload:',
       req.user,
@@ -55,13 +57,10 @@ export class AdminController {
     return this.adminService.findOne(adminId);
   }
 
-  @Post('login')
-  login(@Body() loginData: AdminLoginDto) {
-    return this.adminService.login(loginData);
-  }
-
   @Post()
-  createNewAccount(
+  @UseGuards(JwtAdminGuard, RolesGuard)
+  @Roles('superAdmin')
+  createNewAdmin(
     @Body() createAdminDto: CreateAdminDto,
   ): Promise<AdminResponseDto> {
     return this.adminService.create(createAdminDto);
@@ -69,6 +68,7 @@ export class AdminController {
 
   //Can be used with JWT Auth Guard to update the current admin's details without needing to provide the adminId in the URL.
   @Patch(':adminId')
+  @UseGuards(JwtAdminGuard)
   updateAdminDetails(
     @Param('adminId', ParseIntPipe) adminId: number,
     @Body() updateAdminDto: UpdateAdminDto,
@@ -77,11 +77,13 @@ export class AdminController {
   }
 
   //Can be used with JWT Auth Guard to update the current admin's password without needing to provide the adminId in the URL.
-  @Patch(':adminId/password')
+  @Patch(':adminId/update-password')
+  @UseGuards(JwtAdminGuard, RolesGuard)
+  @Roles('superAdmin')
   updateAdminPassword(
     @Param('adminId', ParseIntPipe) adminId: number,
     @Body() updatePasswordDto: UpdatePasswordAdminDto,
-  ) {
+  ): Promise<{ message: string }> {
     return this.adminService.updatePassword(adminId, updatePasswordDto);
   }
 
@@ -94,6 +96,8 @@ export class AdminController {
 
   //Can be used with JWT Auth Guard
   @Delete(':adminId')
+  @UseGuards(JwtAdminGuard, RolesGuard)
+  @Roles('superAdmin')
   remove(
     @Param('adminId', ParseIntPipe) adminId: number,
   ): Promise<{ message: string }> {

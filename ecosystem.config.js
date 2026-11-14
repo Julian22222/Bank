@@ -38,7 +38,7 @@ module.exports = {
       args: "start",
       env: {
         NODE_ENV: "production",
-        NEXT_PUBLIC_BACK_END_URL:
+        BACK_END_URL:
           "http://ec2-108-129-233-222.eu-west-1.compute.amazonaws.com/api/",
       },
       watch: false,

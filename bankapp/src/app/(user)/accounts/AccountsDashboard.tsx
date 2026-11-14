@@ -9,11 +9,14 @@ import UserPageHeader from "../user-page/UserPageHeader";
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
 import LeftSideAccounts from "./LeftSideAccounts";
 import RightSideAccounts from "./RightSideAccounts";
+import { ISaverAccountType } from "../../../../../shared/types/saverAccountType.interface";
 
 export default function AccountsDashboard({
   userAllAccounts_withBalance,
+  allSaverAccounTypes,
 }: {
   userAllAccounts_withBalance: AccountWithBalance[];
+  allSaverAccounTypes: ISaverAccountType[];
 }) {
   const [showEditUserModule, setShowEditUserModule] = useState(false);
   const [showChangePasswordModule, setShowChangePasswordModule] =
@@ -69,6 +72,7 @@ export default function AccountsDashboard({
                 {/* LEFT SIDE - ACCOUNTS */}
                 <LeftSideAccounts
                   userAllAccounts_withBalance={userAllAccounts_withBalance}
+                  allSaverAccounTypes={allSaverAccounTypes}
                 />
 
                 {/* RIGHT SIDE - USER DETAILS */}

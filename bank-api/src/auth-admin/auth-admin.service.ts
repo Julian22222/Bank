@@ -16,7 +16,7 @@ export class AuthAdminService {
     private configService: ConfigService,
   ) {}
 
-  async login(loginData: LoginAdminDto, res: Response) {
+  async login(loginData: LoginAdminDto) {
     const { email, password, rememberMe } = loginData;
 
     const result = await this.pool.query(
@@ -38,7 +38,7 @@ export class AuthAdminService {
 
     // 👇 JWT payload (keep it small!)
     const payload = {
-      sub: admin.customer_id,
+      sub: admin.admin_id,
       email: admin.email,
       role: admin.role,
     };
@@ -56,26 +56,26 @@ export class AuthAdminService {
       expiresIn: '7d',
     });
 
-    // 🍪 STORE BOTH IN HTTPONLY COOKIES
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: false, // true in production (HTTPS)
-      sameSite: 'lax',
-      maxAge: 15 * 60 * 1000,
-    });
+    // 🍪 If needed to STORE BOTH IN HTTPONLY COOKIES in B-End domain
+    // res.cookie('access_token', accessToken, {
+    //   httpOnly: true,
+    //   secure: false, // true in production (HTTPS)
+    //   sameSite: 'lax',
+    //   maxAge: 15 * 60 * 1000,
+    // });
 
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: false, // true in production (HTTPS)
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    // res.cookie('refresh_token', refreshToken, {
+    //   httpOnly: true,
+    //   secure: false, // true in production (HTTPS)
+    //   sameSite: 'lax',
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // });
 
     const adminResponse: AdminResponseDto = {
       //returning user data with no password
-      admin_id: admin.customer_id,
+      admin_id: admin.admin_id,
       role: admin.role,
-      admin_name: admin.first_name,
+      admin_name: admin.admin_name,
       email: admin.email,
       phone: admin.phone,
       customer_address: admin.customer_address,
@@ -85,13 +85,15 @@ export class AuthAdminService {
 
     return {
       adminResponse,
+      accessToken,
+      refreshToken,
     };
   }
 
   //refresh token should come from COOKIE, not from body or header for better security
-  async refreshToken(req: Request, res: Response) {
+  async refreshToken(req: Request) {
     try {
-      const refreshToken = req.cookies.refresh_token;
+      const refreshToken = req.cookies.admin_refresh_token;
 
       if (!refreshToken) {
         throw new UnauthorizedException('No refresh token');
@@ -104,7 +106,8 @@ export class AuthAdminService {
       const accessToken = this.jwtService.sign(
         {
           sub: payload.sub,
-          // email: payload.email,
+          email: payload.email,
+          role: payload.role,
         },
         {
           // secret: process.env.JWT_SECRET,
@@ -113,12 +116,12 @@ export class AuthAdminService {
         },
       );
 
-      res.cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        maxAge: 15 * 60 * 1000,
-      });
+      // res.cookie('access_token', accessToken, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   sameSite: 'lax',
+      //   maxAge: 15 * 60 * 1000,
+      // });
 
       // res.cookie('refresh_token', refreshToken, {
       //   httpOnly: true,
@@ -127,7 +130,7 @@ export class AuthAdminService {
       //   maxAge: 7 * 24 * 60 * 60 * 1000,
       // });
 
-      return { message: 'token refreshed' };
+      return { accessToken};
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }

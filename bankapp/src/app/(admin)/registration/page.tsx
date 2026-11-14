@@ -26,7 +26,7 @@ export default function RegistrationPage() {
     password: "",
     phone: "",
     customer_address: "",
-    dob: null as unknown as Date, // or just null if your interface allows
+    dob: null as unknown as Date,
   });
 
   useEffect(() => {

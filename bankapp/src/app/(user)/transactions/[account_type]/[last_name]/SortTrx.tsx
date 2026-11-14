@@ -13,9 +13,6 @@ type Props = {
 export default function SortTrx({ account_type, allTransactions }: Props) {
   const { currUserAllAccounts, activeUser } = useUser();
 
-  // console.log("activeUser from SORTTRX", activeUser);
-  // console.log("currUserAllAccounts from SORTTRX", currUserAllAccounts);
-
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [page, setPage] = useState(1);

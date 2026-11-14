@@ -3,31 +3,28 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../UserContext";
 import Link from "next/link";
-import PaymentForm from "@/src/app/(user)/user-page/PayModule";
+import PayModule from "@/src/app/(user)/user-page/PayModule";
 import { IAccount } from "../../../../../shared/types/account.interface";
 import { ITransaction } from "../../../../../shared/types/transaction.interface";
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
-import { apiFetch } from "@/src/lib/api";
 
 interface Props {
   allUserTransactions: ITransaction[];
   showPayModule: boolean;
   setShowPayModule: React.Dispatch<React.SetStateAction<boolean>>;
+  userAllAccLastBalance: AccountWithBalance;
 }
 
 export default function AccountOverview({
   allUserTransactions,
   showPayModule,
   setShowPayModule,
+  userAllAccLastBalance,
 }: Props) {
   const { activeUser, currUserAllAccounts, userAccountType, setCurrUserTrx } =
     useUser();
 
   const [additionalParam, setAdditionalParam] = useState<string>("");
-
-  const [userCardDetails, setUserCardDetails] = useState<
-    AccountWithBalance | undefined
-  >(undefined);
 
   const [messageStatus, setMessageStatus] = useState<string | null>(null);
 
@@ -40,28 +37,6 @@ export default function AccountOverview({
       return () => clearTimeout(timer);
     }
   }, [messageStatus]);
-
-  useEffect(() => {
-    const fetchAccount_withBalance = async () => {
-      const mainAccountId = currUserAllAccounts?.[0]?.account_id;
-      if (!mainAccountId) return;
-
-      try {
-        const data = await apiFetch(
-          `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${mainAccountId}/with-balance`,
-        );
-
-        const userData = await data.json();
-
-        setUserCardDetails(userData);
-      } catch (error) {
-        console.error("Error fetching accounts with balance:", error);
-        throw error;
-      }
-    };
-
-    fetchAccount_withBalance();
-  }, [activeUser, currUserAllAccounts, setCurrUserTrx]);
 
   useEffect(() => {
     if (!activeUser) return;
@@ -105,7 +80,7 @@ export default function AccountOverview({
       )}
 
       {showPayModule ? (
-        <PaymentForm
+        <PayModule
           setShowPayModule={setShowPayModule}
           additionalParam={additionalParam}
           setMessageStatus={setMessageStatus}
@@ -115,15 +90,15 @@ export default function AccountOverview({
           <h3 className="text-success">Main Account</h3>
 
           <p className="mt-3 mb-2">
-            Account Number: <strong>{userCardDetails?.account_nr}</strong>
+            Account Number: <strong>{userAllAccLastBalance?.account_nr}</strong>
           </p>
 
           <h1
             className="fw-bold my-4"
             style={{ fontSize: "36px", color: "#006a4d" }}
           >
-            {userCardDetails
-              ? "£" + Number(userCardDetails?.balance).toFixed(2)
+            {userAllAccLastBalance
+              ? "£" + Number(userAllAccLastBalance?.balance).toFixed(2)
               : "Loading..."}
           </h1>
 
@@ -131,7 +106,7 @@ export default function AccountOverview({
             <button
               onClick={() => {
                 setShowPayModule(true);
-                setAdditionalParam("Make A Payment");
+                setAdditionalParam("Payments / Transfers");
               }}
               className="btn fw-bold text-white"
               style={{ backgroundColor: "#006a4d" }}
@@ -142,7 +117,7 @@ export default function AccountOverview({
             <button
               onClick={() => {
                 setShowPayModule(true);
-                setAdditionalParam("Add Money to Your Account");
+                setAdditionalParam("Add Money");
               }}
               className="btn fw-bold text-white"
               style={{ backgroundColor: "#006a4d" }}

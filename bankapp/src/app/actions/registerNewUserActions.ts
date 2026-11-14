@@ -18,7 +18,7 @@ export async function registerNewUser(
   newUserData: ICreateUser,
 ): Promise<RegisterResponse> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/users/`, {
+    const res = await fetch(`${process.env.BACK_END_URL}/users/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export async function registerNewUser(
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/admin/user-registration/`,
+      `${process.env.BACK_END_URL}/admin/user-registration/`,
     );
 
     const getUsersFromRegister = await response.json();
@@ -52,7 +52,7 @@ export async function registerNewUser(
 
       const delUser = await fetch(
         //DELETE /admin/user-registration/email/:email
-        `${process.env.NEXT_PUBLIC_BACK_END_URL}/admin/user-registration/${registrationId}`,
+        `${process.env.BACK_END_URL}/admin/user-registration/${registrationId}`,
         {
           method: "DELETE",
           headers: {

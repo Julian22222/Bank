@@ -1,4 +1,4 @@
-import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+import { SSMClient, GetParametersCommand } from '@aws-sdk/client-ssm';
 
 const client = new SSMClient({
   region: 'eu-west-1',
@@ -13,23 +13,23 @@ const parameterNames = [
   'JWT_SECRET',
 ];
 
-//AWS SDK - to get secret values from Parameter store
 export async function loadParameters() {
-  try {
-    for (const name of parameterNames) {
-      const response = await client.send(
-        new GetParameterCommand({
-          Name: name,
-          WithDecryption: true,
-        }),
-      );
+  const response = await client.send(
+    new GetParametersCommand({
+      Names: parameterNames,
+      WithDecryption: true,
+    }),
+  );
 
-      if (response.Parameter?.Value) {
-        process.env[name] = response.Parameter.Value;
-      }
+  if (response.InvalidParameters?.length) {
+    throw new Error(
+      `Missing SSM parameters: ${response.InvalidParameters.join(', ')}`,
+    );
+  }
+
+  for (const parameter of response.Parameters ?? []) {
+    if (parameter.Name && parameter.Value) {
+      process.env[parameter.Name] = parameter.Value;
     }
-  } catch (err) {
-    console.error('AWS Parameter Store failed:', err.message);
-    throw err;
   }
 }

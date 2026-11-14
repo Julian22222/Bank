@@ -4,7 +4,7 @@ import { AuthAdminController } from './auth-admin.controller';
 import { PassportModule } from '@nestjs/passport';
 import { DatabaseModule } from '../database/database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './jwt-admin.strategy';
 
 @Module({
   imports: [

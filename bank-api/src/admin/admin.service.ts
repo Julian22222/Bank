@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -17,37 +18,31 @@ import bcrypt from 'bcrypt';
 export class AdminService {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}
 
-  async findAll() {
-    try {
-      const result = await this.pool.query(
-        `SELECT admin_id, admin_name, email, phone, customer_address, 
+  async findAll(): Promise<AdminResponseDto[]> {
+    const result = await this.pool.query(
+      `SELECT admin_id, role, admin_name, email, phone, customer_address, 
         dob, created_at FROM admins`,
-      );
+    );
 
-      const data = result.rows;
+    const data = result.rows;
 
-      const adminDataNoPasswordArray: AdminResponseDto[] = data.map(
-        (admin) => ({
-          admin_id: admin.admin_id,
-          admin_name: admin.admin_name,
-          email: admin.email,
-          phone: admin.phone,
-          customer_address: admin.customer_address,
-          dob: admin.dob,
-          created_at: admin.created_at,
-        }),
-      );
+    const adminDataNoPasswordArray: AdminResponseDto[] = data.map((admin) => ({
+      admin_id: admin.admin_id,
+      role: admin.role,
+      admin_name: admin.admin_name,
+      email: admin.email,
+      phone: admin.phone,
+      customer_address: admin.customer_address,
+      dob: admin.dob,
+      created_at: admin.created_at,
+    }));
 
-      return adminDataNoPasswordArray;
-    } catch (error) {
-      console.error('Error fetching admins:', error);
-      throw error;
-    }
+    return adminDataNoPasswordArray;
   }
 
-  async findOne(adminId: number) {
+  async findOne(adminId: number): Promise<AdminResponseDto> {
     const result = await this.pool.query(
-      `SELECT admins.admin_id, admins.admin_name, admins.email, 
+      `SELECT admins.admin_id, admins.role, admins.admin_name, admins.email, 
         admins.phone, admins.customer_address, admins.dob, 
         admins.created_at FROM admins WHERE admin_id = $1`,
       [adminId],
@@ -61,6 +56,7 @@ export class AdminService {
 
     const adminDataNoPassword: AdminResponseDto = {
       admin_id: data.admin_id,
+      role: data.role,
       admin_name: data.admin_name,
       email: data.email,
       phone: data.phone,
@@ -83,64 +79,33 @@ export class AdminService {
     }
   }
 
-  async login(loginData: AdminLoginDto) {
-    const { email, password, rememberMe } = loginData;
-
-    try {
-      const result = await this.pool.query(
-        `SELECT * FROM admins WHERE email = $1`,
-        [email],
-      );
-
-      if (!result.rows.length) {
-        throw new NotFoundException('Admin not found');
-      }
-
-      const admin = result.rows[0];
-
-      const isMatch = await bcrypt.compare(password, admin.password);
-
-      if (!isMatch) {
-        throw new BadRequestException('Invalid credentials');
-      }
-
-      const adminResponse: AdminResponseDto = {
-        admin_id: admin.admin_id,
-        admin_name: admin.admin_name,
-        email: admin.email,
-        phone: admin.phone,
-        customer_address: admin.customer_address,
-        dob: admin.dob,
-        created_at: admin.created_at,
-      };
-
-      return adminResponse;
-    } catch (error) {
-      console.error('Error during admin login:', error);
-      throw error;
-    }
-  }
-
-  async create(createAdminDto: CreateAdminDto) {
-    const { admin_name, email, password, phone, customer_address, dob } =
+  async create(createAdminDto: CreateAdminDto): Promise<AdminResponseDto> {
+    const { admin_name, role, email, password, phone, customer_address, dob } =
       createAdminDto;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
       const newAdmin = await this.pool.query(
-        `INSERT INTO admins (admin_name, email, password, phone, customer_address, dob) VALUES ($1, $2, $3, $4, $5, $6) 
-        RETURNING admin_id, admin_name, email, phone, customer_address, dob, created_at`,
-        [admin_name, email, hashedPassword, phone, customer_address, dob],
+        `INSERT INTO admins (admin_name, role, email, password, phone, customer_address, dob) VALUES ($1, $2, $3, $4, $5, $6, $7) 
+        RETURNING admin_id, role, admin_name, email, phone, customer_address, dob, created_at`,
+        [admin_name, role, email, hashedPassword, phone, customer_address, dob],
       );
 
       if (!newAdmin.rows.length) {
         throw new BadRequestException('Failed to create Admin');
       }
 
-      return newAdmin.rows[0];
+      const new_admin: AdminResponseDto = newAdmin.rows[0];
+
+      return new_admin;
     } catch (error) {
       console.error('Error creating user:', error);
+
+      if (error.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
+
       throw error;
     }
   }
@@ -168,7 +133,7 @@ export class AdminService {
     UPDATE admins
     SET ${fields.join(', ')}
     WHERE admin_id = $${index}
-    RETURNING admin_id, admin_name, email, phone, customer_address, dob, created_at
+    RETURNING admin_id, role, admin_name, email, phone, customer_address, dob, created_at
   `;
 
     try {
@@ -181,6 +146,11 @@ export class AdminService {
       return result.rows[0];
     } catch (error) {
       console.error('Error updating admin`s info', error);
+
+      if (error.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
+
       throw error;
     }
   }
@@ -188,7 +158,7 @@ export class AdminService {
   async updatePassword(
     adminId: number,
     updatePasswordAdminDto: UpdatePasswordAdminDto,
-  ) {
+  ): Promise<{ message: string }> {
     try {
       const result = await this.pool.query(
         `SELECT admins.password FROM admins WHERE admin_id = $1`,
@@ -197,22 +167,18 @@ export class AdminService {
 
       const admin = result.rows[0];
 
-      // if (updatePasswordDto.oldPassword !== admin.oldPassword) {
-      //   throw new Error('Old password does not match');
-      // }
-
       if (!admin) {
         throw new NotFoundException('Admin not found');
       }
 
-      const isMatch = await bcrypt.compare(
-        updatePasswordAdminDto.oldPassword,
-        admin.password,
-      );
+      // const isMatch = await bcrypt.compare(
+      //   updatePasswordAdminDto.oldPassword,
+      //   admin.password,
+      // );
 
-      if (!isMatch) {
-        throw new BadRequestException('Old password is incorrect');
-      }
+      // if (!isMatch) {
+      //   throw new BadRequestException('Old password is incorrect');
+      // }
 
       const hashedPassword = await bcrypt.hash(
         updatePasswordAdminDto.newPassword,
@@ -249,10 +215,10 @@ export class AdminService {
     }
   }
 
-  async remove(adminId: number) {
+  async remove(adminId: number): Promise<{ message: string }> {
     try {
       const result = await this.pool.query(
-        `DELETE FROM admins WHERE admin_id = $1 RETURNING *;`,
+        `DELETE FROM admins WHERE admin_id = $1 RETURNING admin_id, role, admin_name, email, phone, customer_address, dob, created_at`,
         [adminId],
       );
 

@@ -2,10 +2,6 @@ import Link from "next/link";
 import styles from "../../styles/FirstPage/firstPage.module.css";
 
 export default async function LogOn() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/2/accounts-balance`,
-  );
-
   return (
     <section className={`text-white text-center py-5 ${styles.logOnSection}`}>
       <div className="container py-5">

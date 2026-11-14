@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NEXT_DISABLE_TURBOPACK=1 next dev",
     "build": "next build",
-    "build-full": "export NEXT_PUBLIC_BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com && next build",
+    "build-full": "export BACK_END_URL=https://s4ydb64kcg.execute-api.us-east-1.amazonaws.com && next build",
     "start": "next start",
     "lint": "next lint",
     "json-server": "json-server --watch db.json --port 3005"
@@ -16,6 +16,7 @@
     "framer-motion": "^12.38.0",
     "html2pdf.js": "^0.14.0",
     "json-server": "^1.0.0-beta.3",
+    "jwt-decode": "^4.0.0",
     "next": "^15.5.14",
     "react": "19.2.0",
     "react-dom": "19.2.0"

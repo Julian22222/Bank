@@ -4,10 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "../UserContext";
 import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
 import Link from "next/link";
-import { apiFetch } from "@/src/lib/api";
+import { apiClientFetch } from "@/src/lib/api-client";
+import { useRouter } from "next/navigation";
 
 export function Savings() {
   const { activeUser, currUserAllAccounts } = useUser();
+
+  const router = useRouter();
 
   const [userAccountsNoMain, setUserAccountsNoMain] = useState<
     AccountWithBalance[]
@@ -24,17 +27,22 @@ export function Savings() {
 
         const results = await Promise.all(
           savingsAccounts.map(async (account) => {
-            const res = await apiFetch(
-              `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${account.account_id}/with-balance`,
+            const data = await apiClientFetch(
+              `accounts/user/${account.account_id}/with-balance`,
             );
 
-            return res.json();
+            return data;
           }),
         );
 
         setUserAccountsNoMain(results);
       } catch (error) {
         console.error("Error fetching accounts with balance:", error);
+
+        if (error instanceof Error && error.message === "SESSION_EXPIRED") {
+          router.replace("/login");
+          return;
+        }
         throw error;
       }
     };
@@ -44,7 +52,6 @@ export function Savings() {
 
   return (
     <>
-      {/* {userAccountsNoMain.length ? ( */}
       <ul className="list-unstyled d-flex flex-wrap gap-3 p-0 m-0">
         {userAccountsNoMain.map((account) => (
           <li

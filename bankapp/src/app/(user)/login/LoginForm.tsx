@@ -4,9 +4,9 @@ import { useUser } from "../UserContext";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { loadUser } from "../../actions/auth";
+import { loadUserClient } from "../../actions/auth-client";
 import styles from "../../../styles/LoginPage/logon.module.css";
-import { NextResponse } from "next/server";
+import { apiClientFetch } from "@/src/lib/api-client";
 
 export default function LoginForm() {
   const { setActiveUser, setUserAccountType, setCurrUserAllAccounts } =
@@ -16,15 +16,16 @@ export default function LoginForm() {
 
   const [formInput, setFormInput] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      //fetch user api server
-      const loginRes = await fetch(`api/auth/login`, {
+      const loginRes = await fetch(`/api/auth/login`, {
         method: "POST",
-        credentials: "include", //important to include cookies in the request
+        // credentials: "include", //important to include cookies in the request
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formInput),
       });
@@ -41,23 +42,11 @@ export default function LoginForm() {
         return;
       }
 
-      const user = await loadUser();
+      const user = await loadUserClient();
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${user.customer_id}/accounts-balance`,
-        {
-          credentials: "include",
-          cache: "no-store",
-        },
+      const userAccounts = await apiClientFetch(
+        `/accounts/user/${user.customer_id}/accounts-balance`,
       );
-
-      const userAccounts = await res.json();
-
-      if (!res.ok) {
-        setLoginError(
-          userAccounts?.message || "Failed to fetch user all accounts",
-        );
-      }
 
       // console.log("User data after login:", user);
 
@@ -65,13 +54,15 @@ export default function LoginForm() {
 
       setUserAccountType(userAccounts[0].account_type);
       setCurrUserAllAccounts(userAccounts);
+      setLoginError("");
 
       router.push("/user-page");
     } catch (error) {
-      //catch only for network/runtime issues: you only use catch for unexpected failures
       setLoginError(
         error instanceof Error ? error.message : "An unexpected error occurred",
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,8 +110,9 @@ export default function LoginForm() {
           <button
             type="submit"
             className={`btn w-100 fw-bold ${styles.loginBtn}`}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

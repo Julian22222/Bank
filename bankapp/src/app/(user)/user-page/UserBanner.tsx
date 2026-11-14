@@ -1,6 +1,5 @@
 "use client";
 
-// import { useGlobal } from "../../Context";
 import { useUser } from "../UserContext";
 
 export default function UserBanner() {

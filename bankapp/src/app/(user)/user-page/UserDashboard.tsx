@@ -15,12 +15,17 @@ import Footer from "@/src/components/Footer";
 
 import { ITransaction } from "../../../../../shared/types/transaction.interface";
 import styles from "../../../styles/User-Page/userPage.module.css";
+import { AccountWithBalance } from "@/src/shared/types/account_withBalance.interface";
 
 interface Props {
   allUserTransactions: ITransaction[];
+  userAllAccLastBalance: AccountWithBalance;
 }
 
-export default function UserDashboard({ allUserTransactions }: Props) {
+export default function UserDashboard({
+  allUserTransactions,
+  userAllAccLastBalance,
+}: Props) {
   const [showPayModule, setShowPayModule] = useState(false);
 
   return (
@@ -41,6 +46,7 @@ export default function UserDashboard({ allUserTransactions }: Props) {
             allUserTransactions={allUserTransactions}
             showPayModule={showPayModule}
             setShowPayModule={setShowPayModule}
+            userAllAccLastBalance={userAllAccLastBalance}
           />
 
           {/* Other sections */}

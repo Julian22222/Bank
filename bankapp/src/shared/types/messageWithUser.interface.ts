@@ -5,6 +5,7 @@ export interface MessageWithUser {
   msg_status: string;
   msg_body: string;
   msg_created_by: string;
+  flagged?: boolean;
   is_read: boolean;
   sent_at?: string;
   first_name?: string;

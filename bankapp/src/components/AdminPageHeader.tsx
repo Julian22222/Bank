@@ -16,14 +16,19 @@ const navLinks = [
 
 export default function AdminPageHeader() {
   const { setActiveAdmin } = useAdmin();
-  const router = useRouter();
+
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = async () => {
-    await adminLogOut();
     setActiveAdmin(null);
-    router.replace("/");
-    router.refresh();
+
+    await adminLogOut();
+
+    //or use Route handler (server) to clear the cookies:
+    //await fetch("/api/auth-admin/logout", { method: "POST", credentials: "include" });
+    // router.replace("/");
+    // router.refresh();
   };
 
   return (
@@ -65,7 +70,7 @@ export default function AdminPageHeader() {
 
         <button
           onClick={handleLogout}
-          className="btn btn-sm btn-outline-light fw-bold ms-3 cursor-pointer"
+          className="btn btn-sm btn-outline-light fw-bold ms-3"
         >
           Log out
         </button>

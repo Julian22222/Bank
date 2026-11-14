@@ -25,20 +25,17 @@ export async function openNewAccountAction({
     gen8Digits;
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/saving`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customer_id: customer_id,
-          account_type: accountType,
-          account_nr: newAccountNr,
-        }),
+    const res = await fetch(`${process.env.BACK_END_URL}/accounts/saving`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        customer_id: customer_id,
+        account_type: accountType,
+        account_nr: newAccountNr,
+      }),
+    });
 
     const result = await res.json();
 
@@ -47,7 +44,6 @@ export async function openNewAccountAction({
         success: false,
         error: result.message || "Failed to open new account",
       };
-      // throw new Error("Failed to open new account");
     }
 
     revalidatePath("/accounts"); // Revalidate the accounts page to reflect the new account

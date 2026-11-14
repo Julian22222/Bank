@@ -1,6 +1,10 @@
 "use client";
 
+import { sendVerificationEmailActions } from "../../actions/sendVerificationEmailActions";
 import { useUser } from "../UserContext";
+import { useState, useTransition, useEffect } from "react";
+
+const COOLDOWN_SECONDS = 60;
 
 export default function RightSideAccounts({
   setShowEditUserModule,
@@ -10,6 +14,35 @@ export default function RightSideAccounts({
   setShowChangePasswordModule: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { activeUser } = useUser();
+
+  const [isPending, startTransition] = useTransition();
+  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(
+    null,
+  );
+
+  //show seconds, when you can resend the verification request
+  const [cooldown, setCooldown] = useState(0);
+
+  const handleEmailVerify = async () => {
+    console.log("Verify your email");
+
+    const result = await sendVerificationEmailActions();
+
+    console.log("From RightSideAccounts", result);
+
+    setStatus(result);
+
+    if (result.ok) setCooldown(COOLDOWN_SECONDS);
+  };
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+
+    const id = setTimeout(() => setCooldown((c) => c - 1), 1000);
+
+    return () => clearTimeout(id);
+  }, [cooldown]);
+
   return (
     <div className="col-lg-6 my-4 row ms-1">
       <div
@@ -91,9 +124,14 @@ export default function RightSideAccounts({
           ) : (
             <button
               className="btn btn-outline-success"
-              onClick={() => console.log("Verify your email")}
+              onClick={handleEmailVerify}
+              disabled={isPending || cooldown > 0}
             >
-              Verify Email
+              {isPending
+                ? "Sending..."
+                : cooldown > 0
+                  ? `Resend in ${cooldown}s`
+                  : "Verify email"}
             </button>
           )}
         </div>

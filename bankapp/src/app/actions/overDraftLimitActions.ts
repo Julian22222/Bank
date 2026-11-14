@@ -14,7 +14,7 @@ export async function overDraftLimitActions(amount: string, accountId: string) {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/${accountId}`,
+      `${process.env.BACK_END_URL}/accounts/${accountId}`,
       {
         method: "PATCH",
         headers: {

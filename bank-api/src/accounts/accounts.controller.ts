@@ -14,7 +14,9 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountDto } from './dto/account.dto';
 import { UseGuards, Req } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtUserGuard } from '../auth/jwt-auth.guard';
+import { SaverAccountTypesDto } from './dto/saver-account-types.dto';
+import { CreateSaverAccountTypesDto } from './dto/create-saver-account-types.dto';
 
 @Controller('accounts')
 export class AccountsController {
@@ -31,6 +33,12 @@ export class AccountsController {
     return this.accountsService.getAllAccountsCustomers();
   }
 
+  //show all available Bank saver account types that user can open
+  @Get('saver-account/types')
+  findAllAccountTypes(): Promise<SaverAccountTypesDto> {
+    return this.accountsService.getAllAccountTypes();
+  }
+
   //all user accounts data + balance
   @Get('user/:userId/accounts-balance')
   findAllUserAccountsAndBalance(@Param('userId', ParseIntPipe) userId: number) {
@@ -39,7 +47,7 @@ export class AccountsController {
 
   //get ID from JWT and then get all accounts + balance for this user
   @Get('my-accounts-balance')
-  @UseGuards(JwtAuthGuard) // This route is protected, only accessible with a valid JWT
+  @UseGuards(JwtUserGuard) // This route is protected, only accessible with a valid JWT
   getMyAccountsAndBalance(@Req() req) {
     console.log(
       'FROM AccountsController - Current user from JWT payload:',
@@ -54,7 +62,7 @@ export class AccountsController {
   searchUsersAccountAndBalance(
     @Param('accountId', ParseIntPipe) accountId: number,
   ) {
-    return this.accountsService.findUserAccountAndBalance(accountId);
+    return this.accountsService.findUserAllAccountsLastBalance(accountId);
   }
 
   @Get(':accountId')
@@ -62,6 +70,14 @@ export class AccountsController {
     @Param('accountId', ParseIntPipe) accountId: number,
   ): Promise<AccountDto> {
     return this.accountsService.findOne(accountId);
+  }
+
+  //Add Bank saver account types that user can open (Admin feature)
+  @Post('saver-account/types')
+  createNewSaverAccountType(
+    @Body() createSaverAccountType: CreateSaverAccountTypesDto,
+  ): Promise<SaverAccountTypesDto> {
+    return this.accountsService.createSaverAccountType(createSaverAccountType);
   }
 
   //create account when user register + transactions data

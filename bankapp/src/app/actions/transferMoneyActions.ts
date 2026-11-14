@@ -20,7 +20,7 @@ export async function transferActions(
   try {
     //all accounts array with balance
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/my-accounts-balance`,
+      `${process.env.BACK_END_URL}/accounts/my-accounts-balance`,
       {
         headers: {
           Cookie: cookieStore.toString(),
@@ -54,7 +54,7 @@ export async function transferActions(
     const addedBalance = (Number(balance2) + moneyAmounNum).toFixed(2);
 
     const deductionTransaction = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions`,
+      `${process.env.BACK_END_URL}/transactions`,
       {
         method: "POST",
         headers: {
@@ -85,7 +85,7 @@ export async function transferActions(
     }
     /////////////////////////////////////////////////////
     const additionTransaction = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions`,
+      `${process.env.BACK_END_URL}/transactions`,
       {
         method: "POST",
         headers: {

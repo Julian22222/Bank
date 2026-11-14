@@ -1,35 +1,22 @@
 import SortTrx from "@/src/app/(user)/transactions/[account_type]/[last_name]/SortTrx";
 import UserPageHeader from "../../../user-page/UserPageHeader";
 import Footer from "@/src/components/Footer";
-import { cookies } from "next/headers";
-import { apiFetch } from "@/src/lib/api";
+import { apiServerFetch } from "@/src/lib/api-server";
 
 const fetchAllUsrTransactions = async () => {
-  const cookieStore = await cookies();
-
   try {
-    const res = await apiFetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions/my`,
+    const data = await apiServerFetch(
+      `${process.env.BACK_END_URL}/transactions/my`,
       {
-        headers: {
-          //JwtAuthGuard requires a JWT, If your JWT is stored in a cookie, then req.user. Needs this code
-          Cookie: cookieStore.toString(),
-        },
         cache: "no-store",
-
         next: { tags: ["transactions"] },
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to fetch transactions");
-    }
-
     return data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 

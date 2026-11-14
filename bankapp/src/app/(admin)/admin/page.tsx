@@ -5,18 +5,39 @@ import NewUserRegistration from "./NewUserRegistration";
 import WelcomeAdmin from "./WelcomeAdmin";
 import AdminTitle from "./AdminTitle";
 import styles from "../../../styles/Admin/admin.module.css";
+import ManageAdmins from "./ManageAdmins";
+import { cookies } from "next/headers";
+import { adminApiServerFetch } from "@/src/lib/admin-api-server";
+import AccountTypeBtn from "./AccountTypeBtn";
 
 export default async function AdminPage() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/admin/user-registration`,
+  const cookieStore = await cookies();
+
+  const access_token = cookieStore.get("admin_access_token")?.value;
+
+  console.log("DEBUG cookie string:", cookieStore.toString());
+  console.log("access_token in admin page.tsx", access_token);
+
+  const usersToRegister = await adminApiServerFetch(
+    `${process.env.BACK_END_URL}/admin/user-registration`,
+    {
+      headers: {
+        //JwtAuthGuard requires a JWT, If your JWT is stored in a cookie, then req.user
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    },
   );
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Failed to load users to register data: ${errorText}`);
-  }
-
-  const usersToRegister = await res.json();
+  const fetchOnlineUsers: string[] = [
+    "Julian Golovens",
+    "Tom Simpson",
+    "Jack Morgan",
+    "William Thompson",
+    "Jessica Evans",
+    "Arthur Cooper",
+    "Lily Richardson",
+  ];
 
   const registerNumber = usersToRegister?.length ?? 0;
 
@@ -34,10 +55,11 @@ export default async function AdminPage() {
       <hr />
       <div className="my-4" />
 
-      <div className="row g-3 m-4">
+      <div className="row g-3 m-4 align-items-stretch">
+        {/* Left block */}
         <div className="col-8">
           <div
-            className="rounded p-3"
+            className="rounded p-3 h-100"
             style={{
               border: "2px solid #a45d16",
             }}
@@ -47,9 +69,10 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <div className="col-4">
+        {/* RIGHT block*/}
+        <div className="col-4 d-flex flex-column">
           <div
-            className="rounded p-3"
+            className="rounded p-3 flex-grow-1"
             style={{
               border: "2px solid #a45d16",
             }}
@@ -68,21 +91,20 @@ export default async function AdminPage() {
 
             <div className="mt-3">
               <ul>
-                <li>🟢 Julian Golovens</li>
-                <li>🟢 Tom Simpson</li>
-                <li>🟢 Jack Morgan</li>
-                <li>🟢 William Thompson</li>
-                <li>🟢 Jessica Evans</li>
-                <li>🟢 Arthur Cooper</li>
-                <li>🟢 Lily Richardson</li>
+                {fetchOnlineUsers.slice(0, 6).map((user, index) => (
+                  <li key={index}>🟢 {user}</li>
+                ))}
               </ul>
             </div>
           </div>
+
+          {/* SuperAdmin role button */}
+          <ManageAdmins />
         </div>
       </div>
 
       <div className="row g-3 m-4">
-        <div className="col-6">
+        <div className="col-4">
           <div
             className="rounded p-3"
             style={{
@@ -99,7 +121,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <div className="col-6">
+        <div className="col-4">
           <div
             className="rounded p-3"
             style={{
@@ -114,6 +136,10 @@ export default async function AdminPage() {
               <li>Oliver Bennett</li>
             </div>
           </div>
+        </div>
+
+        <div className="col-4">
+          <AccountTypeBtn />
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { MessageWithUser } from "@/src/shared/types/messageWithUser.interface";
-// import { useUser } from "../UserContext";
 import { useState } from "react";
 import UserPageHeader from "../user-page/UserPageHeader";
 import SideBar from "../../../components/SideBar";

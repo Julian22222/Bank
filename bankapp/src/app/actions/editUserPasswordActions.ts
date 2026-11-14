@@ -11,9 +11,9 @@ export async function editUserPasswordActions(
 
   try {
     const res = await fetch(
-      //`${process.env.NEXT_PUBLIC_BACK_END_URL}/users/${customerId}/password`,
+      //`${process.env.BACK_END_URL}/users/${customerId}/password`,
       // use customerId from JWT in Nest.js
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/users/password`,
+      `${process.env.BACK_END_URL}/users/password`,
       {
         method: "PATCH",
         headers: {

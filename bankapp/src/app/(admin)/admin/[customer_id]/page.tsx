@@ -1,3 +1,4 @@
+import { adminApiServerFetch } from "@/src/lib/admin-api-server";
 import AdminUserDashboard from "./AdminUserDashboard";
 
 export default async function UsersData({
@@ -7,23 +8,18 @@ export default async function UsersData({
 }) {
   const { customer_id } = await params;
 
-  const [userResponse, accountsResponse] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/users/${customer_id}`, {
+  const [userData, currentUserAccounts] = await Promise.all([
+    adminApiServerFetch(`${process.env.BACK_END_URL}/users/${customer_id}`, {
       cache: "no-store",
       next: { tags: ["userData-Page"] },
     }),
-    fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/user/${customer_id}/accounts-balance`,
+    adminApiServerFetch(
+      `${process.env.BACK_END_URL}/accounts/user/${customer_id}/accounts-balance`,
       {
         cache: "no-store",
         next: { tags: ["userAccounts-Page"] },
       },
     ),
-  ]);
-
-  const [userData, currentUserAccounts] = await Promise.all([
-    userResponse.json(),
-    accountsResponse.json(),
   ]);
 
   return (

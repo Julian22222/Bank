@@ -7,7 +7,7 @@ export async function addPayment(formData: FormData) {
     Object.fromEntries(formData.entries());
 
   // const additionalParam = formData.get("additionalParam"); //To know is it payment or adding money to bank account
-  const isPayment = additionalParam === "Make A Payment";
+  const isPayment = additionalParam === "Payments / Transfers";
   // const lastName = formData.get("last_name"); // Get last_name from hidden input, from the form
   const accountBalanceNum = Number(LastBalance); // Get last balance from hidden input, from the form and convert string to Number
 
@@ -46,22 +46,19 @@ export async function addPayment(formData: FormData) {
   // console.log("accountType", accountType);
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          account_id: Number(formData.get("accountId")), // Get account_id from hidden input, from the form
-          customer_id: Number(formData.get("userId")), // Get customer_id from hidden input, from the form
-          money_amount: isPayment ? -moneyAmounNum : moneyAmounNum, // KEY FIXED, All the keys should be like in DB.
-          balance: Number(finalBalance_string),
-          details: moduleDetails, // payee + description
-        }),
+    const res = await fetch(`${process.env.BACK_END_URL}/transactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        account_id: Number(formData.get("accountId")), // Get account_id from hidden input, from the form
+        customer_id: Number(formData.get("userId")), // Get customer_id from hidden input, from the form
+        money_amount: isPayment ? -moneyAmounNum : moneyAmounNum, // KEY FIXED, All the keys should be like in DB.
+        balance: Number(finalBalance_string),
+        details: moduleDetails, // payee + description
+      }),
+    });
 
     const newTransaction = await res.json();
 
@@ -72,6 +69,7 @@ export async function addPayment(formData: FormData) {
     }
 
     revalidateTag("transactions");
+    revalidateTag("userAllAccountsLastBalance");
 
     return {
       success: true,

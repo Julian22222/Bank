@@ -1,52 +1,41 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IUserWithAccount } from "../shared/types/userWithAccount.interface";
 import { handleAdminMessage } from "../app/actions/adminMessageActions";
 import styles from "../styles/Admin/admin.module.css";
 import { useAdmin } from "../app/(admin)/AdminContext";
+import { ReturnUser } from "../shared/types/returnUser.interface";
 
 type Props = {
   setShowMsgModule: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string | null;
+  allUsersData: ReturnUser[];
 };
 
-export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
+export function AdminMessageModule({
+  setShowMsgModule,
+  userId,
+  allUsersData,
+}: Props) {
   const { activeAdmin } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [allUsers, setAllUsers] = useState<IUserWithAccount[]>([]);
   const [customerId, setCustomerId] = useState<number | undefined>();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [bodyText, setBodyText] = useState(
-    `Dear ${searchTerm},\n\nWrite your text here... \n\nKind regards,\nYour Bank Team.`,
+    "Dear ,\n\nWrite your text here...\n\nKind regards,\nYour Bank Team.",
   );
 
+  // pre-select the user when opened from a user card
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_URL}/users`,
-      );
+    if (userId === null) return;
 
-      const customersData = await response.json();
+    const user = allUsersData.find((u) => u.customer_id === Number(userId));
+    if (!user) return;
 
-      setAllUsers(customersData);
-
-      if (userId !== null) {
-        const user = customersData.find(
-          (user: IUserWithAccount) => user.customer_id === Number(userId),
-        );
-
-        if (!user) return;
-
-        setSearchTerm(`${user.first_name} ${user.last_name}`);
-        setCustomerId(user.customer_id);
-      }
-    };
-
-    fetchAllUsers();
-  }, [activeAdmin, userId]);
+    setSearchTerm(`${user.first_name} ${user.last_name}`);
+    setCustomerId(user.customer_id);
+  }, [userId, allUsersData]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -58,34 +47,34 @@ export function AdminMessageModule({ setShowMsgModule, userId }: Props) {
 
   const filterUsers = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-
-    return allUsers.filter((user) =>
+    return allUsersData.filter((user) =>
       `${user.first_name} ${user.last_name}`.toLowerCase().includes(term),
     );
-  }, [searchTerm, allUsers]);
+  }, [searchTerm, allUsersData]);
 
   const handleSubmit = async (formData: FormData) => {
+    setErrorMessage("");
+
+    if (customerId === undefined) {
+      setErrorMessage("Please select a valid user");
+      return;
+    }
+
     try {
-      if (customerId === undefined) {
-        alert("Please select a valid user");
+      const result = await handleAdminMessage(formData);
+
+      if (!result.success) {
+        setErrorMessage(
+          Array.isArray(result.error) ? result.error.join(", ") : result.error,
+        );
         return;
-      }
-
-      const newMessage = await handleAdminMessage(formData);
-
-      if (!newMessage.success) {
-        setErrorMessage(newMessage.error);
-        throw new Error(newMessage.error || "Failed to send message");
       }
 
       setSearchTerm("");
       setShowMsgModule(false);
-      // }
     } catch (error) {
       console.error("SEND MESSAGE ERROR:", error);
-      setErrorMessage(
-        error instanceof Error ? error.message : "An unknown error occurred",
-      );
+      setErrorMessage("Something went wrong. Please try again.");
     }
   };
 

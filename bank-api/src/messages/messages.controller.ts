@@ -14,7 +14,7 @@ import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageDto } from './dto/message.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtUserGuard } from '../auth/jwt-auth.guard';
 
 @Controller('messages')
 export class MessagesController {
@@ -35,7 +35,7 @@ export class MessagesController {
   //all-user-messages
   @Get('my')
   //Get userId from JWT cookies
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtUserGuard)
   getUserAllMessages(@Req() req): Promise<MessageDto[] | null> {
     console.log(
       'FROM MessagesController - Current user from JWT payload:',

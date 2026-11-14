@@ -2,12 +2,15 @@
 
 -- CREATE DATABASE bank;
 
+
+DROP TABLE IF EXISTS bank_saver_account_types;
 DROP TABLE IF EXISTS registration;
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS customers;
-
+DROP TABLE IF EXISTS email_verifications;
 -- \c bank;
 
 CREATE TABLE customers (
@@ -21,19 +24,21 @@ CREATE TABLE customers (
     dob DATE NOT NULL,
     phone_verified BOOLEAN DEFAULT FALSE,
     email_verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    failed_login_attempts INT NOT NULL DEFAULT 0,
+    account_locked_until TIMESTAMPTZ DEFAULT NULL
 );
 
 CREATE TABLE admins (
     admin_id SERIAL PRIMARY KEY,
-    role VARCHAR(30) DEFAULT 'admin',
+    role VARCHAR(30) NOT NULL,
     admin_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(15) NOT NULL,
     customer_address VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE accounts (
@@ -43,7 +48,7 @@ CREATE TABLE accounts (
     account_nr VARCHAR(30) UNIQUE NOT NULL,
     status VARCHAR(20) DEFAULT 'active',
     overdraft_limit DECIMAL(10,2) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE transactions (
@@ -52,7 +57,7 @@ CREATE TABLE transactions (
     customer_id INT REFERENCES customers(customer_id),
     money_amount DECIMAL(10, 2) DEFAULT 200.00,
     balance DECIMAL(10, 2) DEFAULT 200.00,
-    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    transaction_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     details TEXT
 );
 
@@ -63,8 +68,9 @@ CREATE TABLE messages (
     msg_status VARCHAR(50) NOT NULL,
     msg_body TEXT NOT NULL,
     msg_created_by VARCHAR(50) NOT NULL,
+    flagged BOOLEAN DEFAULT FALSE,
     is_read BOOLEAN DEFAULT FALSE,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    sent_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE registration (
@@ -75,8 +81,30 @@ CREATE TABLE registration (
     phone VARCHAR(15) NOT NULL,
     customer_address VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE bank_saver_account_types (
+    saving_id SERIAL PRIMARY KEY,
+    account_name VARCHAR(100) NOT NULL,
+    interest DECIMAL(5, 2) NOT NULL,
+    money_limit DECIMAL(10, 2) NOT NULL,
+    account_duration INT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE email_verifications (
+  id          SERIAL PRIMARY KEY,
+  customer_id INTEGER NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
+  token_hash  CHAR(64) NOT NULL UNIQUE,   -- SHA-256 hex is always 64 chars
+  expires_at  TIMESTAMPTZ NOT NULL,
+  used_at     TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_email_verifications_customer ON email_verifications(customer_id);
+
 
 -- CREATE TABLE login_attempts (
 --     attempt_id SERIAL PRIMARY KEY,
@@ -128,8 +156,9 @@ VALUES
 (3, 2, 1400.00, 1400.00, 'Initial deposit');
 
 INSERT INTO admins
-(admin_name, email, password, phone, customer_address, dob) 
-VALUES ('Sam', 'sam@admin.com', '$2b$10$CBMBY/pEjOv4Uq.KK1zGX..Aeceq1v0PGu92qXw72xogjG.1qUNe2', '+447835473879', 'Manchester, 156 Manchester Road', '1995-06-15');
+(admin_name, role, email, password, phone, customer_address, dob) 
+VALUES ('Sam', 'admin', 'sam@admin.com', '$2b$10$CBMBY/pEjOv4Uq.KK1zGX..Aeceq1v0PGu92qXw72xogjG.1qUNe2', '+447835473879', 'Manchester, 156 Manchester Road', '1995-06-15'),
+('Jack', 'superAdmin', 'jack@superadmin.com', '$2b$10$CBMBY/pEjOv4Uq.KK1zGX..Aeceq1v0PGu92qXw72xogjG.1qUNe2', '+447835473880', 'Manchester, 156 Manchester Road', '1997-08-19');
 
 INSERT INTO messages
 (customer_id, msg_subject, msg_status, msg_body, msg_created_by) VALUES
@@ -156,6 +185,10 @@ Please don’t hesitate to contact our loan department for more information. Our
 INSERT INTO registration (first_name, last_name, email, phone, customer_address, dob) VALUES (
 'Max', 'Goloven', 'max@test.com', '+447892828652', '23 Bolton Avenue, Spiningfield', '2001-06-15'),
 ('Michael', 'Goloven', 'mike@test.com', '+447892828657', '34 London Road, Spiningfield', '1998-11-15');
+
+INSERT INTO bank_saver_account_types (account_name, interest, money_limit, account_duration) VALUES (
+'Saver', 2.5, 10000.00, 12),
+('ISA', 3.0, 20000.00, 24);
 
 
 SELECT * FROM customers;

@@ -119,6 +119,8 @@ export class UsersService {
         ],
       );
 
+      const userData = newUser.rows[0];
+
       let newAccount;
 
       if (newUser.rows.length) {
@@ -157,7 +159,7 @@ export class UsersService {
           client,
         );
 
-        const userData = newUser.rows[0];
+        // const userData = newUser.rows[0];
 
         const welcomeMsg = `Dear ${userData.first_name} ${userData.last_name},\n\n
         Welcome to BIG bank, and thank you for opening a new account with us.\n\n
@@ -183,8 +185,6 @@ export class UsersService {
           );
         }
       }
-
-      const userData = newUser.rows[0];
 
       const new_user: UserResponseDto = {
         customer_id: userData.customer_id,
@@ -337,6 +337,17 @@ export class UsersService {
       throw error;
     } finally {
       client.release();
+    }
+  }
+
+  async markEmailVerified(customerId: number): Promise<void> {
+    const result = await this.pool.query(
+      `UPDATE customers SET email_verified = true WHERE customer_id = $1`,
+      [customerId],
+    );
+
+    if (result.rowCount === 0) {
+      throw new NotFoundException('User not found');
     }
   }
 }

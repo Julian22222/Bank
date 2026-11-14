@@ -5,7 +5,7 @@ export const loadUserAllAccounts = async () => {
   const cookieStore = await cookies();
 
   const meRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/accounts/my-accounts-balance`,
+    `${process.env.BACK_END_URL}/accounts/my-accounts-balance`,
     {
       headers: {
         Cookie: cookieStore.toString(),

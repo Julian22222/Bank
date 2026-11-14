@@ -15,6 +15,10 @@ export class AdminResponseDto {
   admin_id: number;
 
   @IsString()
+  @IsNotEmpty({ message: 'Role is required' })
+  role: string;
+
+  @IsString()
   @IsNotEmpty({ message: 'First name is required' })
   admin_name: string;
 

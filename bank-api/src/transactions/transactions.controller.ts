@@ -18,7 +18,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionDto } from './dto/transactions.dto';
 import { TransactionWithDetailsDto } from './dto/transactionsWithDetails.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtUserGuard } from '../auth/jwt-auth.guard';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -49,7 +49,7 @@ export class TransactionsController {
   //all user transactions from all accounts
   @Get('my')
   //Get userId from JWT cookies
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtUserGuard)
   getUserAllTransactions(@Req() req): Promise<TransactionDto[] | null> {
     console.log(
       'FROM TransactionsController - Current user from JWT payload:',

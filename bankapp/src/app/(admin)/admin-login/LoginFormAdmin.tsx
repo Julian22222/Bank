@@ -1,47 +1,59 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../../../styles/Admin/admin.module.css";
 import { useAdmin } from "../AdminContext";
+import { loadAdminClient } from "../../actions/auth-admin-client";
 
 export default function LoginFormAdmin() {
   const { setActiveAdmin } = useAdmin();
   const router = useRouter();
 
-  const [formInput, setFormInput] = React.useState({
+  const [formInput, setFormInput] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
-  const [loginError, setLoginError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [loginError, setLoginError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACK_END_URL}/admin/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formInput),
-        },
-      );
+      const loginResponse = await fetch(`/api/auth-admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formInput),
+      });
 
-      if (!res.ok) throw new Error();
+      const response = await loginResponse.json();
 
-      const admin = await res.json();
+      console.log("Login response status:", loginResponse);
+
+      if (!loginResponse.ok) {
+        // throw new Error();
+
+        console.error("Login failed:", await loginResponse.text());
+
+        setLoginError(response.message || "Failed to login");
+        return;
+      }
+
+      const admin = await loadAdminClient();
 
       setActiveAdmin(admin);
-      setLoginError(false);
+      setLoginError("");
 
       router.push("/admin");
     } catch (err) {
       console.error(err);
-      setLoginError(true);
+      setLoginError(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
     } finally {
       setLoading(false);
     }
@@ -108,6 +120,7 @@ export default function LoginFormAdmin() {
           <button
             className={`btn w-100 fw-bold border-2 ${styles.adminLoginBtn}`}
             disabled={loading}
+            type="submit"
           >
             {loading ? "Logging in..." : "Login as Admin"}
           </button>

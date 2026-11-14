@@ -74,24 +74,6 @@ export default function RecentTransactions({ allUserTransactions }: Props) {
                 </td>
               </tr>
             )}
-            {/* {lastFiveTxns.map((t, i) => (
-              <tr key={i}>
-                <td>{t.transaction_date}</td>
-                <td>{t.details}</td>
-
-                <td
-                  className="fw-bold"
-                  style={{
-                    color: Number(t.money_amount) < 0 ? "red" : "#006a4d",
-                  }}
-                >
-                  {Number(t.money_amount) < 0 ? "-" : ""}£
-                  {Math.abs(Number(t.money_amount)).toFixed(2)}
-                </td>
-
-                <td>£{t.balance}</td>
-              </tr>
-            ))} */}
           </tbody>
         </table>
       </div>

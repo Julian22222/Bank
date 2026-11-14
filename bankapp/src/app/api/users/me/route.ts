@@ -15,8 +15,10 @@ export async function GET() {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/users/me`, {
-    headers: { Cookie: `access_token=${accessToken}` }, // manually written, explicit
+  const res = await fetch(`${process.env.BACK_END_URL}/users/me`, {
+    headers: {
+      Cookie: `access_token=${accessToken}`,
+    },
     cache: "no-store",
   });
 

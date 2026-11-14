@@ -88,7 +88,7 @@ describe('AdminController', () => {
     };
 
     it('create new admin user', async () => {
-      const result = await controller.createNewAccount(newAdmin);
+      const result = await controller.createNewAdmin(newAdmin);
 
       expect(result).toEqual({
         admin_id: 2,
@@ -110,7 +110,7 @@ describe('AdminController', () => {
       mockAdminService.create.mockRejectedValue(
         new Error('Email already exists'),
       );
-      await expect(controller.createNewAccount(newAdmin)).rejects.toThrow(
+      await expect(controller.createNewAdmin(newAdmin)).rejects.toThrow(
         'Email already exists',
       );
     });

@@ -14,6 +14,10 @@ export class CreateAdminDto {
   @IsNotEmpty({ message: 'First name is required' })
   admin_name: string;
 
+  @IsString()
+  @IsNotEmpty({ message: 'Role is required' })
+  role: string;
+
   @IsNotEmpty()
   @IsEmail({}, { message: 'Invalid email format' })
   email: string;

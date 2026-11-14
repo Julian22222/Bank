@@ -1,40 +1,85 @@
 // src/app/api/auth/refresh/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
-  const cookieStore = await cookies();
-  const refreshToken = cookieStore.get("refresh_token")?.value;
+export async function POST(req: NextRequest) {
+  // const cookieStore = await cookies();
+  // const refreshToken = cookieStore.get("refresh_token")?.value;
+
+  const refreshToken = req.cookies.get("refresh_token")?.value;
 
   if (!refreshToken) {
     return NextResponse.json({ message: "No refresh token" }, { status: 401 });
   }
 
-  const backendRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/auth/refresh`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+  const backendRes = await fetch(`${process.env.BACK_END_URL}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      Cookie: `refresh_token=${refreshToken}`,
     },
-  );
+    cache: "no-store",
+  });
+
+  const data = await backendRes.json();
 
   if (!backendRes.ok) {
-    return NextResponse.json(
-      { message: "Invalid refresh token" },
-      { status: 401 },
-    );
+    const response = NextResponse.json(data, { status: backendRes.status });
+
+    // response.cookies.delete("access_token");
+    // response.cookies.delete("refresh_token");
+
+    response.cookies.set("access_token", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      expires: new Date(0),
+    });
+
+    // response.cookies.set("refresh_token", "", {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    //   path: "/",
+    //   expires: new Date(0),
+    // });
+
+    //if refresh and access token are expired  redirect to /login
+
+    return response;
   }
 
-  const { accessToken } = await backendRes.json();
+  const response = NextResponse.json({
+    message: "token refreshed",
+  });
 
-  const res = NextResponse.json({ message: "Token refreshed" });
-  res.cookies.set("access_token", accessToken, {
+  // const setCookie = backendRes.headers.get("set-cookie");
+
+  // response.cookies.set("access_token", data.accessToken, {
+  //   httpOnly: true,
+  //   secure: true,
+  //   sameSite: "none",
+  //   path: "/",
+  //   maxAge: 15 * 60,
+  // });
+
+  response.cookies.set("access_token", data.accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
+    path: "/",
     maxAge: 15 * 60,
   });
 
-  return res;
+  // Only do this if Nest returns a new refresh token
+  if (data.refreshToken) {
+    response.cookies.set("refresh_token", data.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+  }
+
+  return response;
 }

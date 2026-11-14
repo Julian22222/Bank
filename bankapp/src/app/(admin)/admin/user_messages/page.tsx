@@ -1,6 +1,7 @@
 import { MessageWithUser } from "@/src/shared/types/messageWithUser.interface";
 import AdminUserMessagesDashboard from "./AdminUserMessagesDashboard";
 import { notFound } from "next/navigation";
+import { adminApiServerFetch } from "@/src/lib/admin-api-server";
 
 interface Props {
   searchParams: Promise<{ userId: string }>;
@@ -17,16 +18,14 @@ export default async function AdminCurrentUserMessages({
     notFound();
   }
 
-  const allMessagesWithUser = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/messages/user/${userId}`,
+  const allMessagesWithUser: MessageWithUser[] = await adminApiServerFetch(
+    `${process.env.BACK_END_URL}/messages/user/${userId}`,
     { cache: "no-store", next: { tags: [`userMessages`] } },
   );
 
-  if (!allMessagesWithUser.ok) {
-    throw new Error("Failed to fetch user messages");
-  }
-
-  const allMessages: MessageWithUser[] = await allMessagesWithUser.json();
+  const allUsersData = await adminApiServerFetch(
+    `${process.env.NEXT_PUBLIC_BACK_END_URL}/users`,
+  );
 
   return (
     <div
@@ -39,7 +38,11 @@ export default async function AdminCurrentUserMessages({
         minHeight: "100vh",
       }}
     >
-      <AdminUserMessagesDashboard userId={userId} allMessages={allMessages} />
+      <AdminUserMessagesDashboard
+        userId={userId}
+        allMessages={allMessagesWithUser}
+        allUsersData={allUsersData}
+      />
     </div>
   );
 }

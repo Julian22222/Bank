@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AdminProvider } from "./AdminContext"; //To provide global state, Context
 import { redirect } from "next/navigation";
-import { loadAdmin } from "../actions/auth-admin";
+import { loadAdminServer } from "../actions/auth-admin-server";
 
 export const metadata: Metadata = {
   title: "Admin Bank login",
@@ -16,7 +16,7 @@ export default async function AdminLayout({
   let admin = null;
 
   try {
-    admin = await loadAdmin();
+    admin = await loadAdminServer();
   } catch {
     redirect("/login");
   }

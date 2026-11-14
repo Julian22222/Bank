@@ -10,7 +10,6 @@ export default function UserPageHeader() {
   const { activeUser, setActiveUser, userAccountType } = useUser();
 
   const pathname = usePathname();
-  const router = useRouter();
 
   const navLinks = [
     { href: "/user-page", label: "Home" },
@@ -25,10 +24,11 @@ export default function UserPageHeader() {
 
   const handleLogout = async () => {
     await userLogOut();
-    setActiveUser(null);
 
-    router.replace("/");
-    router.refresh();
+    //or use Route handler (server) to clear the cookies:
+    //await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+
+    setActiveUser(null);
   };
 
   return (

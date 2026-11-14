@@ -1,5 +1,6 @@
 export interface AdminReturn {
   admin_id: number;
+  role: string;
   admin_name: string;
   email: string;
   phone: string;

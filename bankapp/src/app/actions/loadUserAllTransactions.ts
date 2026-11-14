@@ -4,15 +4,12 @@ import { cookies } from "next/headers";
 export const loadUserAllTransactions = async () => {
   const cookieStore = await cookies();
 
-  const meRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions/my`,
-    {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
+  const meRes = await fetch(`${process.env.BACK_END_URL}/transactions/my`, {
+    headers: {
+      Cookie: cookieStore.toString(),
     },
-  );
+    cache: "no-store",
+  });
 
   if (!meRes.ok) {
     return null; // better for redirects

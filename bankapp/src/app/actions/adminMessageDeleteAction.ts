@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 export async function handleAdminMessageDeletion(message_id: number) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/messages/${message_id}`,
+      `${process.env.BACK_END_URL}/messages/${message_id}`,
       {
         method: "DELETE",
       },

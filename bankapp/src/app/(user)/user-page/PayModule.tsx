@@ -12,7 +12,7 @@ interface Props {
   setMessageStatus: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export default function PaymentForm({
+export default function PayModule({
   setShowPayModule,
   additionalParam,
   setMessageStatus,
@@ -34,13 +34,13 @@ export default function PaymentForm({
       setLoading(true);
 
       if (
-        (type === "PAY" && additionalParam === "Make A Payment") ||
-        additionalParam === "Add Money to Your Account"
+        (type === "PAY" && additionalParam === "Payments / Transfers") ||
+        additionalParam === "Add Money"
       ) {
         await addPayment(formData);
 
         setShowPayModule(false);
-        setMessageStatus("Payment added successfully");
+        setMessageStatus("Payment performed successfully");
       } else {
         await transferActions(formData, fromAccountValue, toAccountValue);
 
@@ -88,13 +88,11 @@ export default function PaymentForm({
 
         {/* Title */}
         <h2 className="text-center fw-bold">
-          {additionalParam === "Add Money to Your Account"
-            ? additionalParam
-            : "Payment Form"}
+          {additionalParam === "Add Money" ? additionalParam : "Payment Form"}
         </h2>
 
         {/* Type switch */}
-        {additionalParam !== "Add Money to Your Account" && (
+        {additionalParam !== "Add Money" && (
           <div className="d-flex gap-3">
             <label className="flex-fill">
               <input

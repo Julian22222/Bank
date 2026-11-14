@@ -29,22 +29,19 @@ export async function handleAdminMessage(formData: FormData) {
   }
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/messages`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customer_id: Number(userID),
-          msg_subject: messageSubject,
-          msg_status: messageStatus,
-          msg_body: messageBody,
-          msg_created_by: msgCreatedBy,
-        }),
+    const res = await fetch(`${process.env.BACK_END_URL}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        customer_id: Number(userID),
+        msg_subject: messageSubject,
+        msg_status: messageStatus,
+        msg_body: messageBody,
+        msg_created_by: msgCreatedBy,
+      }),
+    });
 
     const newMessage = await res.json();
 

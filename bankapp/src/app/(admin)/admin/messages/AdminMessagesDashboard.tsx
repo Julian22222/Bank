@@ -6,12 +6,17 @@ import AdminPageHeader from "../../../../components/AdminPageHeader";
 import SideBar from "@/src/components/SideBar";
 import ChatArea from "@/src/components/ChatArea";
 import { AdminMessageModule } from "@/src/components/AdminMessageModule";
+import { ReturnUser } from "@/src/shared/types/returnUser.interface";
 
 type Props = {
   allUsersMessages: MessageWithUser[];
+  allUsers: ReturnUser[];
 };
 
-export default function AdminUsersDashboard({ allUsersMessages }: Props) {
+export default function AdminUsersDashboard({
+  allUsersMessages,
+  allUsers,
+}: Props) {
   const [findMessage, setFindMessage] = useState<MessageWithUser | null>(null);
   const [showMsgModule, setShowMsgModule] = useState<boolean>(false);
 
@@ -24,7 +29,11 @@ export default function AdminUsersDashboard({ allUsersMessages }: Props) {
       )}
 
       {showMsgModule ? (
-        <AdminMessageModule setShowMsgModule={setShowMsgModule} userId={null} />
+        <AdminMessageModule
+          setShowMsgModule={setShowMsgModule}
+          userId={null}
+          allUsersData={allUsers}
+        />
       ) : (
         <div>
           <AdminPageHeader />

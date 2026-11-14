@@ -6,7 +6,7 @@ export default function WelcomeAdmin() {
   const { activeAdmin } = useAdmin();
 
   if (!activeAdmin) {
-    return <p>Redirecting...</p>;
+    return <p>No active Admin, Redirecting...</p>;
   }
 
   return (

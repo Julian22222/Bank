@@ -19,6 +19,10 @@ export class UpdateMessageDto {
 
   @IsOptional()
   @IsBoolean()
+  flagged?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
   is_read?: boolean;
 
   @IsOptional()

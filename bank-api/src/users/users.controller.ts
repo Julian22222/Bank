@@ -17,17 +17,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 import { UserResponseDto } from './dto/response-user.dto';
 // import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtUserGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  @UseGuards(JwtAuthGuard) // This route is protected, only accessible with a valid JWT
+  @UseGuards(JwtUserGuard) // This route is protected, only accessible with a valid JWT
   //JwtAuthGuard verifies the token. If valid, it calls the validate() method in JwtStrategy, which returns the payload (user info) and attaches it to req.user.
   //Then you can access req.user in your controller method to get the current user's info.
-  getCurrentUser(@Req() req) {
+  getCurrentUser(@Req() req): Promise<UserResponseDto> {
     console.log(
       'FROM UsersController - Current user from JWT payload:',
       req.user,
@@ -67,7 +67,7 @@ export class UsersController {
 
   //Edit password for the currently logged-in user (authenticated via JWT)
   @Patch('password')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtUserGuard)
   userPasswordUpdate(
     @Req() req,
     @Body() updatePasswordUserDto: UpdatePasswordUserDto,

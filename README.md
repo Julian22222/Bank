@@ -16,9 +16,14 @@ https://bigbankapp.duckdns.org
 - Email: `tomsimpson@test.com`
 - Password: `tom123`
 
-### 👤 Admin User
+### 👤 Admin
 
 - Email: `sam@admin.com`
+- Password: `admin123`
+
+### 👤 Super Admin
+
+- Email: `jack@superadmin.com`
 - Password: `admin123`
 
 ## 📸 Screenshots
@@ -70,23 +75,41 @@ The project was built to demonstrate full-stack software engineering practices i
 - JWT authentication
 - Password hashing with bcrypt
 - Protected API endpoints
-- Role-based authorization (Customer & Admin)
+- Role-based authorization (Admin & Super Admin)
 
 ## 👤 Customer Features
 
 - View account dashboard
+- Manage user details
 - Create, edit, and delete bank accounts
-- View account balances
-- View transaction history
+- Transfer funds to and from user's account
+- View account balances and transaction history
 - Filter transaction statements
+- Manage notifications and messages
+- Print statements
 - Responsive user interface
 
 ## 👨‍💼 Administrator Features
 
+- Administrative dashboard
 - View and manage users
 - View all transactions
-- Administrative dashboard
+- Send notifications and messages to Bank users
+- Register new users
 - Role management
+- Manage new Bank Accounts available for users
+
+## 🧑‍💼 Super Administrator Features
+
+- View and manage Admins
+- Register new Admins
+- Administrative dashboard
+- View and manage users
+- View all transactions
+- Send notifications and messages to Bank users
+- Register new users
+- Role management
+- Manage new Bank Accounts available for users
 
 ## ⚙️ Backend Features
 
@@ -144,6 +167,14 @@ The project was built to demonstrate full-stack software engineering practices i
 # 🏗 Architecture
 
 ![pic6](https://github.com/Julian22222/Bank/blob/main/screenshots/aws_architecture.png)
+
+# used AWS services:
+
+- EC2
+- RDS (PSQL)
+- API Gateway
+- Parameter Store
+- Auto Scaling Groups (ASG)
 
 # 📁 Project Structure
 
@@ -229,7 +260,7 @@ Frontend UI
 - PostgreSQL
 - Bootstrap
 
-## Clone Repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/Julian22222/Bank.git
@@ -237,33 +268,39 @@ git clone https://github.com/Julian22222/Bank.git
 
 # Backend Setup
 
+Navigate into the project
+
 ```bash
 cd bank-api
+```
 
+Install dependencies:
+
+```bash
 npm install
 ```
 
-Create a `.env` file.
+## Environment Variables
 
-Example:
+Create a `.env` file in the project root.
+
+The application expects the following environment variables:
 
 ```env
 DATABASE_URL=postgres://postgres:password@localhost:5432/bankdb
-
-PORT=3005
-
 JWT_SECRET=your-secret-key
-
 JWT_REFRESH_SECRET=your-secret-key
 ```
 
-Run development server
+## Run development server
+
+Start the B-End application with:
 
 ```bash
 npm run start:dev
 ```
 
-Build production
+## Build production
 
 ```bash
 npm run build
@@ -273,25 +310,37 @@ npm run start:prod
 
 # Frontend Setup
 
+Navigate into the project
+
 ```bash
 cd bankapp
+```
 
+Install dependencies:
+
+```bash
 npm install
 ```
 
-Create `.env.local`
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+The application expects the following environment variables:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
+BACK_END_URL=http://localhost:3005
 ```
 
-Run development server
+## Run development server
+
+Start the F-End application with:
 
 ```bash
 npm run dev
 ```
 
-Production
+## Build production
 
 ```bash
 npm run build
@@ -333,129 +382,91 @@ npm run lint
 
 ## Authentication
 
-```http
-POST /auth/login
-
-POST /auth/logout
-
-POST /auth/register
-
-POST /auth/refresh
-```
+| Method | Endpoint        | Description                                  |
+| ------ | --------------- | -------------------------------------------- |
+| GET    | `/auth`         | Check that the Auth User endpoint is working |
+| POST   | `/auth/login`   | User login                                   |
+| POST   | `/auth/logout`  | User logout                                  |
+| POST   | `/auth/refresh` | Get new Access token for a User              |
 
 ## Users
 
-```http
-GET /users/me
+| Method | Endpoint              | Description                                                                                   |
+| ------ | --------------------- | --------------------------------------------------------------------------------------------- |
+| GET    | `/users/me`           | Retrieve a Login User                                                                         |
+| GET    | `/users`              | Retrieve all Users                                                                            |
+| GET    | `/users/:id`          | Retrieve a User by Id                                                                         |
+| POST   | `/users`              | Create a new User + create Main account + create initial transaction + create welcome message |
+| PATCH  | `/users/:id`          | Update a User by Id                                                                           |
+| PATCH  | `/users/password`     | Update a Login User password                                                                  |
+| PATCH  | `/users/:id/password` | Update a User password by Id                                                                  |
+| DELETE | `/users/:id`          | Delete a User by Id                                                                           |
 
-GET /users
+## Authentication - Admin
 
-GET /users/:id
+| Method | Endpoint              | Description                                   |
+| ------ | --------------------- | --------------------------------------------- |
+| GET    | `/auth-admin`         | Check that the Auth Admin endpoint is working |
+| POST   | `/auth-admin/login`   | Admin login                                   |
+| POST   | `/auth-admin/logout`  | Admin logout                                  |
+| POST   | `/auth-admin/refresh` | Get new Access token for Admin                |
 
-POST /users
+## Admin
 
-PATCH /users/:id
-
-PATCH /users/password
-
-PATCH /users/:id/password
-
-DELETE /users/:id
-```
+| Method | Endpoint                                   | Description                                       |
+| ------ | ------------------------------------------ | ------------------------------------------------- |
+| GET    | `/admin/me`                                | Retrieve a Login Admin                            |
+| GET    | `/admin`                                   | Retrieve all Admins                               |
+| GET    | `/admin/user-registration`                 | Retrieve Users to register                        |
+| GET    | `/admin/:id`                               | Retrieve an Admin by Id                           |
+| POST   | `/admin`                                   | Create a new Admin                                |
+| PATCH  | `/admin/:id`                               | Update an Admin by Id                             |
+| PATCH  | `/admin/:id/password`                      | Update an Admin password by Id                    |
+| DELETE | `/admin/user-registration/:registrationId` | Delete a user from registration by registrationId |
+| DELETE | `/admin/:id`                               | Delete an Admin by id                             |
 
 ## Accounts
 
-```http
-GET /accounts/me
-
-GET /accounts
-
-GET /accounts/:id
-
-GET /accounts/user/:accountId/balance
-
-POST /accounts
-
-PATCH /accounts/:id
-
-DELETE /accounts/:id
-```
+| Method | Endpoint                                  | Description                                            |
+| ------ | ----------------------------------------- | ------------------------------------------------------ |
+| GET    | `/accounts`                               | Retrieve all Accounts                                  |
+| GET    | `/accounts/with-customers`                | Retrieve all Accounts with users data                  |
+| GET    | `/accounts/saver-account/types`           | Retrieve all Saving Account types                      |
+| GET    | `/accounts/user/:userId/accounts-balance` | Retrieve all User accounts with balance by userId      |
+| GET    | `/accounts/my-accounts-balance`           | Retrieve all Login User Accounts with balance          |
+| GET    | `/accounts/user/:accountId/with-balance`  | Retrieve a User Account data with balance by accountId |
+| GET    | `/accounts/:accountId`                    | Retrieve an Account by accountId                       |
+| POST   | `/accounts/saver-account/types`           | Create a new Saver Account type                        |
+| POST   | `/accounts`                               | Create a new Account                                   |
+| POST   | `/accounts/savings`                       | Create new saving account + crete new message          |
+| PATCH  | `/accounts/:accountId`                    | Update an Account by accountId                         |
+| DELETE | `/accounts/:accountId`                    | Delete an Account by accountId                         |
 
 ## Transactions
 
-```http
-GET /transactions/my
-
-GET /transactions
-
-GET /transactions/:id
-
-GET /transactions/user/:userId
-
-POST /transactions
-
-PATCH /transactions/:id
-
-DELETE /transactions/:id
-```
+| Method | Endpoint                                         | Description                                                                   |
+| ------ | ------------------------------------------------ | ----------------------------------------------------------------------------- |
+| GET    | `/transactions/my`                               | Retrieve all Login User Transactions                                          |
+| GET    | `/transactions`                                  | Retrieve all Transactions                                                     |
+| GET    | `/transactions/with-details`                     | Retrieve a Login User all Transactions with details                           |
+| GET    | `/transactions/customer_id/accounts/:account_id` | Retrieve a User Transactions for certain user account by userId and accountId |
+| GET    | `/transactions/user/:userId`                     | Retrieve all User Transactions from all accounts                              |
+| GET    | `/transactions/:transactionId`                   | Retrieve a Transaction by Id                                                  |
+| POST   | `/transactions`                                  | Create a new Transaction                                                      |
 
 ## Messages
 
-```http
-GET /messages/my
-
-GET /messages
-
-GET /messages/:id
-
-GET /messages/user/:userId
-
-POST /messages
-
-PATCH /messages/:id
-
-DELETE /messages/:id
-```
-
-## Administration
-
-```http
-GET /admin/me
-
-GET /admin
-
-GET /admin/:id
-
-GET /admin/user-registration
-
-POST /admin
-
-PATCH /admin/:id
-
-PATCH /admin/:id/password
-
-GET /admin/transactions
-```
+| Method | Endpoint                 | Description                      |
+| ------ | ------------------------ | -------------------------------- |
+| GET    | `/messages/my`           | Retrieve all Login User Messages |
+| GET    | `/messages`              | Retrieve all Messages            |
+| GET    | `/messages/user/:userId` | Retrieve all Messages by userId  |
+| GET    | `/messages/:messageId`   | Retrieve a Message by Id         |
+| POST   | `/messages`              | Create a new Message             |
+| PATCH  | `/messages/:messageId`   | Update a Message by messageId    |
+| DELETE | `/messages/:messageId`   | Delete a Message by messageId    |
 
 # 🧪 Testing
-
-Backend
-
-```bash
-npm test
-```
-
-End-to-End
-
-```bash
-npm run test:e2e
-```
-
-Frontend
-
-```bash
-npm run lint
-```
 
 Testing includes
 
@@ -463,6 +474,26 @@ Testing includes
 - Integration tests
 - API endpoint tests
 - Validation testing
+
+**50 automated tests covering controllers and API endpoints.**
+
+Backend / Run the tests with:
+
+```bash
+npm test
+```
+
+End-to-End / Run the tests with:
+
+```bash
+npm run test:e2e
+```
+
+Frontend / Run the tests with:
+
+```bash
+npm run lint
+```
 
 # 🚀 Deployment
 
@@ -512,11 +543,20 @@ PostgreSQL
 - Audit logging
 - Rate limiting
 - Account lockout after failed login attempts
-- File uploads for user profile pictures
-- Real-time notifications with WebSockets
+- File uploads in Chats
+- Real-time messages with WebSockets
 - messages microservice
-- Database migrations using Prisma or TypeORM
+- Database migrations using Prisma for messages microservice
+- Add React Testing Library (RTL)
 
 ## License
 
 MIT
+
+## 👨‍💻 Author
+
+**Julian Golovens**
+
+- **GitHub:** [Julian22222](https://github.com/Julian22222)
+- **LinkedIn:** [Julian Golovens](https://www.linkedin.com/in/julian-goloven-74a324256)
+- **Portfolio:** [Portfolio](https://julian22222.github.io/Portfolio/)

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { handleAdminMessageDeletion } from "../app/actions/adminMessageDeleteAction";
 import styles from "@/src/styles/Components/components.module.css";
 import { handleReadMessage } from "../app/actions/handleReadMessageActions";
+import { editFlaggedMessageStatus } from "../app/actions/editFlaggedMessageStatus";
 
 interface Props {
   allMessages: MessageWithUser[] | null;
@@ -161,6 +162,34 @@ export default function SideBar({
                       onClick={deleteMessage}
                     >
                       🗑️
+                    </button>
+                  )}
+                  {!fromAdminModule && !message.flagged && (
+                    <button
+                      className={`btn btn-sm ${styles["delete-btn"]}`}
+                      name={String(message.message_id)}
+                      onClick={() =>
+                        editFlaggedMessageStatus(
+                          message.message_id,
+                          !message.flagged,
+                        )
+                      }
+                    >
+                      🏳️
+                    </button>
+                  )}
+                  {!fromAdminModule && message.flagged && (
+                    <button
+                      className={`btn btn-sm`}
+                      name={String(message.message_id)}
+                      onClick={() =>
+                        editFlaggedMessageStatus(
+                          message.message_id,
+                          !message.flagged,
+                        )
+                      }
+                    >
+                      🏴
                     </button>
                   )}
                 </div>

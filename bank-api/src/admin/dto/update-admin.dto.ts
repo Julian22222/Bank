@@ -12,6 +12,10 @@ export class UpdateAdminDto {
   admin_name?: string;
 
   @IsOptional()
+  @IsString()
+  role?: string;
+
+  @IsOptional()
   @IsEmail()
   email?: string;
 

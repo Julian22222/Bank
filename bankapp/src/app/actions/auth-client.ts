@@ -1,7 +1,10 @@
-//this code can be used only in client side components
+//to send cookies from client component - use Route Handling
 
-export const loadUser = async () => {
-  const meRes = await fetch(`api/users/me`, { credentials: "include" }); // hits your own /api/users/me route
+export const loadUserClient = async () => {
+  const meRes = await fetch(`/api/users/me`, {
+    credentials: "include",
+    cache: "no-store",
+  });
 
   if (!meRes.ok) {
     throw new Error("Failed to fetch user");

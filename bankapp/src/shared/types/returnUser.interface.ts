@@ -6,7 +6,7 @@ export interface ReturnUser {
   phone: string;
   customer_address: string;
   dob: string;
-  phone_verified: boolean;
-  email_verified: boolean;
+  phone_verified?: boolean;
+  email_verified?: boolean;
   created_at: string;
 }

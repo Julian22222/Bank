@@ -25,15 +25,8 @@ export default function AdminUserDashboard({
   userData,
   currentUserAccounts,
 }: Props) {
-  // const [userAccounts, setUserAccounts] = useState<AccountWithBalance[]>([]);
   const [showModule, setShowModule] = useState<boolean>(false);
   const [showPasswordModule, setShowPasswordModule] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (showModule) return;
-
-  //   setUserAccounts(currentUserAccounts);
-  // }, [showModule, currentUserAccounts]);
 
   return (
     <>
@@ -57,7 +50,7 @@ export default function AdminUserDashboard({
       )}
 
       {userData && !showModule && !showPasswordModule ? (
-        <div className="p-8">
+        <div>
           <AdminPageHeader />
           <div className="max-w-2xl w-full bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mt-5 mb-0 mx-auto">
             {/* Header */}

@@ -13,16 +13,13 @@ export async function editUserAction(
   }
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/users/${userId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedUser),
+    const res = await fetch(`${process.env.BACK_END_URL}/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(updatedUser),
+    });
 
     let result;
 
@@ -34,10 +31,7 @@ export async function editUserAction(
 
     if (!res.ok) {
       return { success: false, error: result.message || "Failed to edit user" };
-      // throw new Error("Failed to update user details");
     }
-
-    // console.log("User details updated successfully:", result);
 
     revalidateTag("userData-Page");
 

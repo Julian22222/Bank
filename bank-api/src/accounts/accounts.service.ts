@@ -16,6 +16,8 @@ import { PG_POOL } from '../database/database.module';
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 import { AccountDto } from './dto/account.dto';
 import { MessagesService } from '../messages/messages.service';
+import { CreateSaverAccountTypesDto } from './dto/create-saver-account-types.dto';
+import { SaverAccountTypesDto } from './dto/saver-account-types.dto';
 
 @Injectable()
 export class AccountsService {
@@ -56,7 +58,25 @@ export class AccountsService {
     }
   }
 
-  //all user accounts data + balance
+  //show all available Bank saver account types that user can open
+  async getAllAccountTypes() {
+    try {
+      const result = await this.pool.query(
+        `SELECT * FROM bank_saver_account_types`,
+      );
+
+      if (!result.rows.length) {
+        throw new NotFoundException('Bank saver account types not found');
+      }
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching bank saver account types:', error);
+      throw error;
+    }
+  }
+
+  //all user accounts data + balance (last balance)
   async findUserAccounts_withBalance(userId: number) {
     try {
       const resultArr = await this.pool.query(
@@ -85,7 +105,7 @@ WHERE a.customer_id = $1;`,
   }
 
   //one user account data + balance
-  async findUserAccountAndBalance(id: number) {
+  async findUserAllAccountsLastBalance(id: number) {
     try {
       const resultArr = await this.pool.query(
         `SELECT accounts.*, transactions.balance FROM accounts LEFT JOIN transactions ON accounts.account_id = transactions.account_id WHERE accounts.account_id = $1`,
@@ -117,6 +137,29 @@ WHERE a.customer_id = $1;`,
       return allAccountsOfUser.rows[0];
     } catch (error) {
       console.error('Error fetching account:', error);
+      throw error;
+    }
+  }
+
+  //Add Bank saver account types that user can open (Admin feature)
+  async createSaverAccountType(
+    createSaverAccountType: CreateSaverAccountTypesDto,
+  ): Promise<SaverAccountTypesDto> {
+    const { account_name, interest, money_limit, account_duration } =
+      createSaverAccountType;
+    try {
+      const newServerAccountType = await this.pool.query(
+        `INSERT INTO bank_saver_account_types (account_name, interest, money_limit, account_duration) VALUES ($1, $2, $3, $4) RETURNING *`,
+        [account_name, interest, money_limit, account_duration],
+      );
+
+      if (newServerAccountType.rows.length === 0) {
+        throw new NotFoundException('Saver Account type is not found');
+      }
+
+      return newServerAccountType.rows[0];
+    } catch (error) {
+      console.error('Error creating account:', error);
       throw error;
     }
   }

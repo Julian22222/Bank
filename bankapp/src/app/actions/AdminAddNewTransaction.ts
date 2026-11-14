@@ -17,19 +17,18 @@ export async function handleAddNewTransactioninAdmin(data: {
 
   try {
     const result = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions/${data.customerId}/accounts/${data.accountId}`,
+      `${process.env.BACK_END_URL}/transactions/${data.customerId}/accounts/${data.accountId}`,
     );
 
+    const neededAccountData = await result.json();
+
     if (!result.ok) {
-      const errorText = await result.text();
-      //   console.error("API ERROR:", errorText);
       return {
         success: false,
-        error: errorText,
+        error: neededAccountData.message,
       };
     }
 
-    const neededAccountData = await result.json();
     const lastBalanceFromDb = neededAccountData[0].balance;
     let balance;
 
@@ -39,28 +38,23 @@ export async function handleAddNewTransactioninAdmin(data: {
       balance = (Number(lastBalanceFromDb) - Number(data.amount)).toFixed(2);
     }
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACK_END_URL}/transactions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          account_id: Number(data.accountId),
-          customer_id: data.customerId,
-          money_amount: amount,
-          balance: Number(balance),
-          details: data.details,
-        }),
+    const res = await fetch(`${process.env.BACK_END_URL}/transactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        account_id: Number(data.accountId),
+        customer_id: data.customerId,
+        money_amount: amount,
+        balance: Number(balance),
+        details: data.details,
+      }),
+    });
 
     const newAddedTransaction = await res.json();
 
     if (!res.ok) {
-      // const errorText = await res;
-      //   console.error("API ERROR:", errorText);
       return {
         success: false,
         error: Array.isArray(newAddedTransaction.message)

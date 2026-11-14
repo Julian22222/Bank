@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { UserProvider } from "./UserContext"; //To provide global state, Context
-import { loadUser } from "../actions/auth-server";
+import { loadUserServer } from "../actions/auth-server";
 import { redirect } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import { loadUserAllAccounts } from "../actions/loadUserAccounts";
 import { loadUserAllTransactions } from "../actions/loadUserAllTransactions";
+import AssistantWidget from "@/src/components/AssistantWidget";
 
 export const metadata: Metadata = {
   title: "User Bank login",
@@ -31,7 +32,7 @@ export default async function UserLayout({
   let userAllTransactions = null;
 
   try {
-    activeUser = await loadUser();
+    activeUser = await loadUserServer();
     userAllAccounts = await loadUserAllAccounts();
     userAllTransactions = await loadUserAllTransactions();
   } catch {
@@ -47,6 +48,7 @@ export default async function UserLayout({
       >
         {children}
       </UserProvider>
+      <AssistantWidget />
     </div>
   );
 }
