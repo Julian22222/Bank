@@ -93,7 +93,8 @@ export class AuthAdminService {
   //refresh token should come from COOKIE, not from body or header for better security
   async refreshToken(req: Request) {
     try {
-      const refreshToken = req.cookies.admin_refresh_token;
+      const refreshToken =
+        req.cookies?.refresh_token ?? req.cookies?.admin_refresh_token;
 
       if (!refreshToken) {
         throw new UnauthorizedException('No refresh token');

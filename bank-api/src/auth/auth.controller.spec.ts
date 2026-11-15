@@ -40,7 +40,7 @@ describe('AuthController', () => {
     const res = createMockResponse();
 
     it('should authenticate the user and set access/refresh cookies', async () => {
-      const result = await controller.login(loginData, res);
+      const result = await controller.login(loginData);
 
       expect(result).toEqual({
         customer_id: 1,
@@ -57,9 +57,9 @@ describe('AuthController', () => {
     it('should set access and refresh tokens as cookies', async () => {
       const res = createMockResponse();
 
-      await controller.login(loginData, res);
+      await controller.login(loginData);
 
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginData, res);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginData);
 
       // expect(res.cookie).toHaveBeenCalledWith(
       //   'access_token',
@@ -79,15 +79,15 @@ describe('AuthController', () => {
     it('should call authService.login with the correct parameters', async () => {
       const res = createMockResponse();
 
-      await controller.login(loginData, res);
+      await controller.login(loginData);
 
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginData, res);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginData);
       expect(mockAuthService.login).toHaveBeenCalledTimes(1);
     });
 
     it('should propagate authentication errors from the service', async () => {
       mockAuthService.login.mockRejectedValue(new Error('Invalid credentials'));
-      await expect(controller.login(loginData, res)).rejects.toThrow(
+      await expect(controller.login(loginData)).rejects.toThrow(
         'Invalid credentials',
       );
     });

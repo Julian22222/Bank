@@ -13,8 +13,11 @@ export class EmailVerificationService {
     private readonly emailService: EmailService,
   ) {}
 
-  async sendVerificationEmail(userId: number) {
+  async creatingAndDistributingTokens(userId: number) {
     const user = await this.usersService.findOne(userId); // throws NotFound if missing
+
+    // console.log('From EmailVerificationService', user);
+
     if (user.email_verified) return;
 
     const token = randomBytes(32).toString('hex');
@@ -32,55 +35,24 @@ export class EmailVerificationService {
     // Why SHA-256 here and not bcrypt
     // For passwords you use bcrypt because passwords are low-entropy and need a slow hash to resist brute force. This token is 256 bits of pure randomness, so it can’t be brute-forced, and a fast hash like SHA-256 is fine. It also lets you look up the row directly by hash.
 
-    await this.verificationRepo.invalidateOld(user.customer_id);
-    await this.verificationRepo.create({
+    await this.verificationRepo.addingVerificationToDB({
       userId: user.customer_id,
       tokenHash,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
 
-    await this.emailService.sendVerificationEmail(user.email, token);
+    await this.emailService.sendVerificationEmailLink(user.email, token);
   }
 
   async verifyEmail(token: string) {
     const tokenHash = createHash('sha256').update(token).digest('hex');
 
-    // const client = await this.pool.connect();
+    const customerId = await this.verificationRepo.compareTokens(tokenHash);
 
-    //     try {
-    //     await client.query('BEGIN');
-
-    //   const { rows } = await client.query(
-    //       `UPDATE email_verifications
-    //        SET used_at = NOW()
-    //        WHERE token_hash = $1 AND used_at IS NULL AND expires_at > NOW()
-    //        RETURNING customer_id`,
-    //       [tokenHash],
-    //     );
-
-    //     if (!rows.length) {
-    //       throw new BadRequestException('Invalid or expired token');
-    //     }
-
-    //     await client.query(
-    //       `UPDATE customers SET email_verified = true WHERE customer_id = $1`,
-    //       [rows[0].customer_id],
-    //     );
-
-    //     await client.query('COMMIT');
-    //   } catch (error) {
-    //     await client.query('ROLLBACK');
-    //     throw error;
-    //   } finally {
-    //     client.release();
-    //   }
-    // }
-
-    const customerId = await this.verificationRepo.consumeToken(tokenHash);
-    if (customerId === null) {
+    if (customerId !== null) {
+      return { message: 'Email verified' };
+    } else {
       throw new BadRequestException('Invalid or expired token');
     }
-
-    await this.usersService.markEmailVerified(customerId);
   }
 }

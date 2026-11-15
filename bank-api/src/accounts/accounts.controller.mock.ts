@@ -57,6 +57,14 @@ export const mockAccountsService = {
     balance: 2253.93,
   }),
 
+  findUserAllAccountsLastBalance: jest.fn().mockReturnValue({
+    accont_id: 1,
+    customer_id: 1,
+    account_type: 'Main',
+    account_nr: '12-34-56 / 98765432',
+    balance: 2253.93,
+  }),
+
   findOne: jest.fn().mockReturnValue([
     {
       accont_id: 1,

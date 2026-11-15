@@ -11,7 +11,6 @@ import { PoolClient, Pool } from 'pg';
 import { PG_POOL } from '../database/database.module';
 import { AdminResponseDto } from './dto/response-admin.dto';
 import { UpdatePasswordAdminDto } from './dto/update-password.dto';
-import { AdminLoginDto } from './dto/admin_login.dto';
 import bcrypt from 'bcrypt';
 
 @Injectable()

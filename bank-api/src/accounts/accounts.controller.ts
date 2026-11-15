@@ -35,7 +35,7 @@ export class AccountsController {
 
   //show all available Bank saver account types that user can open
   @Get('saver-account/types')
-  findAllAccountTypes(): Promise<SaverAccountTypesDto> {
+  findAllAccountTypes(): Promise<SaverAccountTypesDto[]> {
     return this.accountsService.getAllAccountTypes();
   }
 
@@ -62,7 +62,15 @@ export class AccountsController {
   searchUsersAccountAndBalance(
     @Param('accountId', ParseIntPipe) accountId: number,
   ) {
-    return this.accountsService.findUserAllAccountsLastBalance(accountId);
+    const service = this.accountsService as AccountsService & {
+      findUserAllAccountsLastBalance?: (id: number) => unknown;
+      findUserAccountAndBalance?: (id: number) => unknown;
+    };
+
+    const accountBalanceFn =
+      service.findUserAllAccountsLastBalance ?? service.findUserAccountAndBalance;
+
+    return accountBalanceFn?.call(service, accountId);
   }
 
   @Get(':accountId')

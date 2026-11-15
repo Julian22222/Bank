@@ -60,10 +60,15 @@ export class AdminController {
   @Post()
   @UseGuards(JwtAdminGuard, RolesGuard)
   @Roles('superAdmin')
-  createNewAdmin(
+  async createNewAdmin(
     @Body() createAdminDto: CreateAdminDto,
   ): Promise<AdminResponseDto> {
-    return this.adminService.create(createAdminDto);
+    const createdAdmin = await this.adminService.create(createAdminDto);
+
+    return {
+      ...createdAdmin,
+      role: createdAdmin?.role ?? createAdminDto.role ?? 'admin',
+    };
   }
 
   //Can be used with JWT Auth Guard to update the current admin's details without needing to provide the adminId in the URL.

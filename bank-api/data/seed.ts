@@ -8,6 +8,7 @@ import { allAdmins } from './test-data/admins.data';
 import { allMessages } from './test-data/messages.data';
 import { newUsersRegisteration } from './test-data/newUserRegistration.data';
 import { allSaverBankAccountTypes } from './test-data/saverBankAccounts.data';
+import { pool } from './dbconnection';
 
 type Props = {
   allusers: ICreateUser[];
@@ -18,8 +19,6 @@ type Props = {
 const seed = async ({ allusers, transactions, allAccounts }: Props) => {
   console.log('Seeding started...');
 
-  const pool = require('./dbconnection');
-
   try {
     await pool.query(`DROP TABLE IF EXISTS bank_saver_account_types;`);
     await pool.query(`DROP TABLE IF EXISTS registration;`);
@@ -28,7 +27,6 @@ const seed = async ({ allusers, transactions, allAccounts }: Props) => {
     await pool.query(`DROP TABLE IF EXISTS transactions;`);
     await pool.query(`DROP TABLE IF EXISTS accounts;`);
     await pool.query(`DROP TABLE IF EXISTS customers;`);
-    await pool.query(`DROP TABLE IF EXISTS email_verifications;`);
 
     const createCustomersTable = await pool.query(`
       CREATE TABLE customers (
@@ -42,6 +40,8 @@ const seed = async ({ allusers, transactions, allAccounts }: Props) => {
         dob DATE NOT NULL,
         phone_verified BOOLEAN DEFAULT FALSE,
         email_verified BOOLEAN DEFAULT FALSE,
+        verification_token_hash CHAR(64) UNIQUE,
+        verification_expires_at TIMESTAMPTZ,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         failed_login_attempts INT NOT NULL DEFAULT 0,
         account_locked_until TIMESTAMPTZ DEFAULT NULL
@@ -122,21 +122,6 @@ const seed = async ({ allusers, transactions, allAccounts }: Props) => {
         account_duration INTEGER NOT NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
-    `);
-
-    const createEmailVerificationTable = await pool.query(`
-      CREATE TABLE email_verifications (
-        id SERIAL PRIMARY KEY,
-        customer_id INTEGER NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
-        token_hash CHAR(64) NOT NULL UNIQUE,
-        expires_at TIMESTAMPTZ NOT NULL,
-        used_at TIMESTAMPTZ,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-    `);
-
-    await pool.query(`
-      CREATE INDEX idx_email_verifications_customer ON email_verifications(customer_id);
     `);
 
     for (const user of allusers) {

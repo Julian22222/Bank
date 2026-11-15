@@ -86,6 +86,7 @@ The project was built to demonstrate full-stack software engineering practices i
 - View account balances and transaction history
 - Filter transaction statements
 - Manage notifications and messages
+- Email and phone verification
 - Print statements
 - Responsive user interface
 
@@ -120,6 +121,8 @@ The project was built to demonstrate full-stack software engineering practices i
 - Centralized error handling
 - PostgreSQL database integration
 - Environment-based configuration
+- Rate limiting and throttling
+- Account lockout after failed 3 login attempts
 
 ## 🎨 Frontend Features
 
@@ -468,31 +471,38 @@ npm run lint
 
 # 🧪 Testing
 
-Testing includes
+## Backend
 
-- Unit tests
-- Integration tests
-- API endpoint tests
-- Validation testing
+The backend uses **Jest** and **Supertest** for unit, integration, API endpoint and validation tests.
 
-**50 automated tests covering controllers and API endpoints.**
+Run these commands from the backend directory
 
-Backend / Run the tests with:
+| Suite | Command            | Tests |
+| ----- | ------------------ | ----- |
+| Unit  | `npm test`         | 86    |
+| E2E   | `npm run test:e2e` | 62    |
+
+**86 automated tests · 89% statement coverage (unit)**
 
 ```bash
-npm test
+npm run test:cov   # unit tests with coverage report
 ```
 
-End-to-End / Run the tests with:
+## Frontend
+
+The frontend uses **Jest** and **React Testing Library** to test components and user interactions.
+
+Run these commands from the frontend directory
+
+| Suite | Command    | Tests |
+| ----- | ---------- | ----- |
+| Unit  | `npm test` | 49    |
+
+**49 automated tests**
 
 ```bash
-npm run test:e2e
-```
-
-Frontend / Run the tests with:
-
-```bash
-npm run lint
+npm run test:cov   # tests with coverage report
+npm run lint       # ESLint checks
 ```
 
 # 🚀 Deployment
@@ -528,6 +538,8 @@ PostgreSQL
 - Role-Based Authorization
 - Protected Routes
 - DTO Validation
+- Email and phone verification
+- Account lockout after failed 3 login attempts
 - Request Validation
 - Environment Variables
 - Secure REST API
@@ -535,19 +547,15 @@ PostgreSQL
 # 🚀 Future Improvements
 
 - Docker support
+- Password reset via email
 - Redis caching for frequently accessed data
 - Swagger/OpenAPI documentation
-- Email and phone verification
-- Password reset via email
 - Two-factor authentication (2FA)
 - Audit logging
-- Rate limiting
-- Account lockout after failed login attempts
 - File uploads in Chats
 - Real-time messages with WebSockets
 - messages microservice
 - Database migrations using Prisma for messages microservice
-- Add React Testing Library (RTL)
 
 ## License
 

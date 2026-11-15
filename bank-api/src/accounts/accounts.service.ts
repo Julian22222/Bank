@@ -59,7 +59,7 @@ export class AccountsService {
   }
 
   //show all available Bank saver account types that user can open
-  async getAllAccountTypes() {
+  async getAllAccountTypes(): Promise<SaverAccountTypesDto[]> {
     try {
       const result = await this.pool.query(
         `SELECT * FROM bank_saver_account_types`,

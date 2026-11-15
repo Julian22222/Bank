@@ -1,13 +1,30 @@
 name: Bank API test
 
-on:
-  # push:
-  #   branches: [main]
+"on":
+  push:
+    branches: [main]
+    paths:
+      - "bank-api/**"
+      - "bankapp/**"
+      - "shared/**"
+      - ".github/workflows/bank_api.yml"
+  pull_request:
+    paths:
+      - "bank-api/**"
+      - "bankapp/**"
+      - "shared/**"
+      - ".github/workflows/bank_api.yml"
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bank-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,91 +34,96 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
+          cache-dependency-path: bank-api/package-lock.json
 
       - name: Install dependencies
-        working-directory: bank-api
         run: npm ci
 
       - name: Build project
-        working-directory: bank-api
         run: npm run build
 
   test:
-    needs: [build]
+    needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bank-api
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Node setup
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+          cache-dependency-path: bank-api/package-lock.json
 
       - name: Install dependencies
-        working-directory: bank-api
         run: npm ci
 
-      - name: Run unit tests and e2e tests
-        working-directory: bank-api
+      - name: Run unit tests
         run: |
-          mkdir -p artifacts 
-          npm start &
-          sleep 5
-          npm test -- --coverage --json --outputFile=artifacts/unit_tests.json > artifacts/unit_tests.txt
-          npm run test:e2e -- --coverage > artifacts/e2e_tests.txt
+          mkdir -p artifacts
+          npm test -- --coverage --ci --runInBand --json --outputFile=artifacts/unit_tests.json > artifacts/unit_tests.txt 2>&1
 
-      # - name: create unit_test2 file for artifact
-      #   working-directory: bank-api
-      #   run: npm test -- --json > artifacts/unit_tests.json
+      - name: Run e2e tests
+        run: |
+          npm run test:e2e -- --coverage --runInBand > artifacts/e2e_tests.txt 2>&1
 
-      # - name: create e2e_test file Notes for artifact
-      #   working-directory: bank-api
-      #   run: npm run test:e2e > artifacts/e2e_tests.txt
-
-      # - name: create unit_test coverage file for artifact
-      #   working-directory: bank-api
-      #   run: npm test -- --coverage --json --outputFile=artifacts/unit_tests.json > artifacts/unit_tests.txt
-
-      # - name: create e2e_test file coverage for artifact
-      #   working-directory: bank-api
-      #   run: npm test:e2e -- --coverage > artifacts/e2e_tests_coverage.txt
-
-      - name: Upload Artifacts
+      - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-files
+          name: bank-api-test-results
           path: |
-            bank-api/build
             bank-api/artifacts
             bank-api/coverage
 
-  deploy:
-    needs: test
+  frontend-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bankapp
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Node setup
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
+          cache-dependency-path: bankapp/package-lock.json
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run React Testing Library tests
+        run: npm test -- --ci --runInBand
+
+  deploy:
+    needs: [test, frontend-test]
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        working-directory: bank-api
-        run: npm ci
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: bank-api/package-lock.json
 
-      - name: Get tests from Bank API project
+      - name: Download test artifacts
         uses: actions/download-artifact@v4
         with:
+          name: bank-api-test-results
           path: build
-          name: build-files
 
       - name: Show files / Check files
         run: ls -R build
 
-      - name: deploy
+      - name: Deploy
         run: echo AWS deploying ...

@@ -16,13 +16,14 @@ export class EmailService {
     this.resend = new Resend(this.config.getOrThrow<string>('RESEND_API_KEY'));
   }
 
-  async sendVerificationEmail(to: string, token: string) {
+  //send a link via RESEND Free email service
+  async sendVerificationEmailLink(userEmail: string, token: string) {
     const appUrl = this.config.getOrThrow<string>('APP_URL');
     const verifyUrl = `${appUrl}/verify-email?token=${token}`;
 
     const { error } = await this.resend.emails.send({
       from: this.config.getOrThrow<string>('EMAIL_FROM'),
-      to,
+      to: userEmail,
       subject: 'Verify your email address',
       html: `
         <p>Please confirm your email address to activate your account.</p>

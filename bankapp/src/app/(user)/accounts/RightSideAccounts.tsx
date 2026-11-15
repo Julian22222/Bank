@@ -1,6 +1,6 @@
 "use client";
 
-import { sendVerificationEmailActions } from "../../actions/sendVerificationEmailActions";
+import { sendVerificationEmailBtnActions } from "../../actions/sendVerificationEmailActions";
 import { useUser } from "../UserContext";
 import { useState, useTransition, useEffect } from "react";
 
@@ -24,9 +24,7 @@ export default function RightSideAccounts({
   const [cooldown, setCooldown] = useState(0);
 
   const handleEmailVerify = async () => {
-    console.log("Verify your email");
-
-    const result = await sendVerificationEmailActions();
+    const result = await sendVerificationEmailBtnActions();
 
     console.log("From RightSideAccounts", result);
 

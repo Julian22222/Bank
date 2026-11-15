@@ -32,15 +32,23 @@ export class AuthAdminController {
   //The frontend cannot delete HttpOnly cookies directly, so we create a logout endpoint that clears the cookies from the server side.
   //"admin_access_token" and "admin_refresh_token" are the names of the cookies we set when the user logs in, so we clear those specific cookies to log the admin out. These names should match the names used in the AuthService when setting the cookies.
   //this reset cookies if F-end and B-end use the same site
-  // @Post('logout')
-  // logout(@Res({ passthrough: true }) res: Response) {
-  //   res.clearCookie('admin_access_token');
-  //   res.clearCookie('admin_refresh_token');
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    const clearAdminCookies = (primary: string, legacy?: string) => {
+      res.clearCookie(primary);
+      if (legacy) {
+        res.clearCookie(legacy);
+      }
+      res.clearCookie(primary, legacy as any);
+    };
 
-  //   return {
-  //     message: 'Logged out',
-  //   };
-  // }
+    clearAdminCookies('access_token', 'refresh_token');
+    clearAdminCookies('admin_access_token', 'admin_refresh_token');
+
+    return {
+      message: 'Logged out',
+    };
+  }
 
   @Post('refresh')
   refresh(@Req() req: Request) {

@@ -80,6 +80,7 @@ describe('AdminController', () => {
   describe('create', () => {
     const newAdmin = {
       admin_name: 'Tom',
+      role: 'admin',
       email: 'tom.doe@example.com',
       password: 'mypassword',
       phone: '+4408951416587',
@@ -93,6 +94,7 @@ describe('AdminController', () => {
       expect(result).toEqual({
         admin_id: 2,
         admin_name: 'Tom',
+        role: 'admin',
         email: 'tom.doe@example.com',
         phone: '123456789',
         customer_address: 'Leeds, UK',

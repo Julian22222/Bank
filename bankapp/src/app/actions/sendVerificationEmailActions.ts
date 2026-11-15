@@ -1,14 +1,16 @@
+//clicking "verify email" button from Actions -> then go to this actions
 "use server";
 
 import { cookies } from "next/headers";
 
-export async function sendVerificationEmailActions(): Promise<{
+//Get LogedIn user access_token and pass it to B-End
+export async function sendVerificationEmailBtnActions(): Promise<{
   ok: boolean;
   message: string;
 }> {
   const accessToken = (await cookies()).get("access_token")?.value; // adjust to your auth setup
 
-  console.log("sendVerificationEmailActions", accessToken);
+  // console.log("sendVerificationEmailActions", accessToken);
 
   if (!accessToken) return { ok: false, message: "Please sign in again." };
 

@@ -14,9 +14,7 @@ import { UserResponseDto } from './dto/response-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { randomBytes, createHash } from 'crypto';
 import { EmailVerificationService } from '../email-verification/email-verification.service';
-import { VerificationRepo } from '../email-verification/verification.repo';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +24,6 @@ export class AuthService {
     private configService: ConfigService,
     private readonly userService: UsersService,
     private readonly emailVerificationService: EmailVerificationService,
-    private readonly verificationRepo: VerificationRepo,
   ) {}
 
   async login(loginData: LoginDto) {
@@ -179,25 +176,11 @@ export class AuthService {
 
   //RESEND email verification
   async sendVerificationEmail(userId: number) {
-    const user = await this.userService.findOne(userId);
-    if (!user || user.email_verified) return; // silent no-op
+    await this.emailVerificationService.creatingAndDistributingTokens(userId);
 
-    //
-    const token = randomBytes(32).toString('hex'); //create cryptographically secure random data (like 9f3a...c1)
-    const tokenHash = createHash('sha256').update(token).digest('hex'); //hash the string, This is the verification token: the secret that goes into the link you email to the user (/verify-email?token=9f3a...).
-    //Don’t use Math.random() or a timestamp for tokenHash, it is not secured
-    //createHash('sha256') -It hashes the token one-way: createHash('sha256').update(token).digest('hex') produces a fixed 64-character fingerprint. You can’t reverse it to get the token back.
-    //The raw token is sent to the user in the email and never stored.
-    //Why SHA-256 here and not bcrypt? For passwords you use bcrypt because passwords are low-entropy and need a slow hash to resist brute force. This token is 256 bits of pure randomness, so it can’t be brute-forced, and a fast hash like SHA-256 is fine. It also lets you look up the row directly by hash.
-    //When the user clicks the link, hash the incoming token the same way and compare it with what’s stored:
-
-    await this.verificationRepo.invalidateOld(user.customer_id);
-    await this.verificationRepo.create({
-      userId: user.customer_id,
-      tokenHash,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
-    });
-
-    await this.emailVerificationService.sendVerificationEmail(user.customer_id);
+    return {
+      message:
+        'If your email is unverified, a verification link has been sent.',
+    };
   }
 }

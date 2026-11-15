@@ -51,15 +51,11 @@ export class AuthController {
     return this.authService.refreshToken(req);
   }
 
-  // RESEND email verification
+  // RESEND email verification logic
   @Post('send-verification')
   @UseGuards(JwtUserGuard)
   @Throttle({ default: { limit: 3, ttl: 60_000 } }) // 3 per minute
-  async sendVerification(@Req() req) {
-    await this.authService.sendVerificationEmail(req.user.sub);
-    return {
-      message:
-        'If your email is unverified, a verification link has been sent.',
-    };
+  sendVerification(@Req() req) {
+    return this.authService.sendVerificationEmail(req.user.sub);
   }
 }

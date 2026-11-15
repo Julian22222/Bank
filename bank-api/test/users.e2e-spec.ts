@@ -5,6 +5,14 @@ import {
   ValidationPipe,
   NotFoundException,
 } from '@nestjs/common';
+
+jest.mock('@nestjs/schedule', () => ({
+  ScheduleModule: {
+    forRoot: jest.fn(() => ({ module: class MockScheduleModule {} })),
+  },
+  Cron: jest.fn(),
+}));
+
 import { AppModule } from '../src/app.module';
 import { UsersService } from '../src/users/users.service';
 

@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS accounts;
 DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS email_verifications;
 -- \c bank;
 
 CREATE TABLE customers (
@@ -24,6 +23,8 @@ CREATE TABLE customers (
     dob DATE NOT NULL,
     phone_verified BOOLEAN DEFAULT FALSE,
     email_verified BOOLEAN DEFAULT FALSE,
+    verification_token_hash CHAR(64) UNIQUE,
+    verification_expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     failed_login_attempts INT NOT NULL DEFAULT 0,
     account_locked_until TIMESTAMPTZ DEFAULT NULL
@@ -92,19 +93,6 @@ CREATE TABLE bank_saver_account_types (
     account_duration INT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
-
-
-CREATE TABLE email_verifications (
-  id          SERIAL PRIMARY KEY,
-  customer_id INTEGER NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
-  token_hash  CHAR(64) NOT NULL UNIQUE,   -- SHA-256 hex is always 64 chars
-  expires_at  TIMESTAMPTZ NOT NULL,
-  used_at     TIMESTAMPTZ,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_email_verifications_customer ON email_verifications(customer_id);
-
 
 -- CREATE TABLE login_attempts (
 --     attempt_id SERIAL PRIMARY KEY,

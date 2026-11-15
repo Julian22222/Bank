@@ -8,7 +8,14 @@ describe('EmailVerificationController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmailVerificationController],
-      providers: [EmailVerificationService],
+      providers: [
+        {
+          provide: EmailVerificationService,
+          useValue: {
+            verifyEmail: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<EmailVerificationController>(EmailVerificationController);
